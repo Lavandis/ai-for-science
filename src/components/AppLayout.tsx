@@ -17,7 +17,8 @@ export function AppLayout({ children }: AppLayoutProps) {
           <NavLink to="/" end>
             首页
           </NavLink>
-          <NavLink to="/parameter-matching">参数匹配</NavLink>
+          <NavLink to="/image-recognition">图像识别</NavLink>
+          <NavLink to="/template-matching">模板匹配</NavLink>
           <NavLink to="/time-series-forecast">时序预测</NavLink>
         </nav>
       </header>

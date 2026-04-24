@@ -3,14 +3,22 @@ import { FeatureCard } from "../components/FeatureCard";
 const features = [
   {
     eyebrow: "Module 01",
-    title: "参数匹配",
-    description: "围绕研究目标、输入参数和约束条件，展示推荐参数组合与候选方案。",
-    details: ["独立页面", "静态输入占位", "推荐结果表格"],
-    href: "/parameter-matching",
-    actionLabel: "进入参数匹配"
+    title: "图像识别",
+    description: "用于展示样本图像、关键区域与识别结果摘要，作为图像识别模块的独立入口。",
+    details: ["独立页面", "图像样本预览", "识别结果摘要"],
+    href: "/image-recognition",
+    actionLabel: "进入图像识别"
   },
   {
     eyebrow: "Module 02",
+    title: "模板匹配",
+    description: "用于承接目标模板、候选模板与匹配结论，保持模板匹配流程在独立页面中展开。",
+    details: ["独立页面", "模板输入占位", "匹配结果概览"],
+    href: "/template-matching",
+    actionLabel: "进入模板匹配"
+  },
+  {
+    eyebrow: "Module 03",
     title: "时序预测",
     description: "面向科研序列数据，展示预测窗口、趋势图占位、预测区间与摘要指标。",
     details: ["独立页面", "趋势图占位", "预测摘要指标"],
@@ -27,8 +35,8 @@ export function HomePage() {
           <p className="eyebrow">Frontend Prototype</p>
           <h1>AI for Science</h1>
           <p className="hero-copy">
-            一个面向科研工作流的前端原型。首版只保留两个清晰模块：
-            参数匹配与时序预测，后续可以在各自模块内替换为真实模型服务。
+            一个面向科研工作流的前端原型首页，聚合图像识别、模板匹配与时序预测
+            三个独立模块的入口，便于后续分别接入真实模型服务。
           </p>
         </div>
         <aside className="hero-note" aria-label="模型接入提示">
