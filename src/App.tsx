@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
-import { ParameterMatchingPage as TemplateMatchingPage } from "./features/parameterMatching/ParameterMatchingPage";
+import { TemplateMatchingPage } from "./features/templateMatching/TemplateMatchingPage";
 import { HomePage } from "./pages/HomePage";
 import { TimeSeriesForecastPage } from "./features/timeSeriesForecast/TimeSeriesForecastPage";
 
