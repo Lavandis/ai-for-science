@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import type { ReactNode } from "react";
+import { moduleCatalog } from "../moduleCatalog";
 
 type AppLayoutProps = {
   children: ReactNode;
@@ -17,9 +18,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           <NavLink to="/" end>
             首页
           </NavLink>
-          <NavLink to="/image-recognition">图像识别</NavLink>
-          <NavLink to="/template-matching">模板匹配</NavLink>
-          <NavLink to="/time-series-forecast">时序预测</NavLink>
+          {moduleCatalog.map((module) => (
+            <NavLink key={module.href} to={module.href}>
+              {module.navLabel}
+            </NavLink>
+          ))}
         </nav>
       </header>
       <main>{children}</main>
