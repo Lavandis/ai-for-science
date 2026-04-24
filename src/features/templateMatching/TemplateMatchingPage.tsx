@@ -25,11 +25,10 @@ export function TemplateMatchingPage() {
           </div>
         </InfoPanel>
 
-        <InfoPanel title="静态结果" tone="soft">
+        <InfoPanel title="推荐模板" tone="soft">
           <div className="recommendation-card">
             <div>
               <p className="eyebrow">Best Match</p>
-              <h3>{recommendedTemplate.title}</h3>
               <p>{recommendedTemplate.description}</p>
             </div>
             <MetricCard label="匹配度" value={recommendedTemplate.score} note="静态示例评分" />
