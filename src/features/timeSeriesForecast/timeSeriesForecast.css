@@ -1,0 +1,61 @@
+.chart-card {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.chart-card svg {
+  width: 100%;
+  min-height: 210px;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.9), rgba(236, 244, 252, 0.82)),
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(43, 77, 111, 0.08) 28px);
+}
+
+.chart-card line {
+  stroke: rgba(52, 74, 98, 0.28);
+  stroke-width: 1;
+}
+
+.chart-card polyline,
+.chart-card path {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.chart-card path {
+  stroke: var(--color-accent-soft);
+  stroke-dasharray: 7 8;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}
+
+.chart-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 3px;
+  margin-right: var(--space-2);
+  border-radius: 999px;
+  background: var(--color-accent);
+  vertical-align: middle;
+}
+
+.chart-legend span:last-child::before {
+  background: var(--color-accent-soft);
+}
+
+.summary-copy {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.85;
+}
