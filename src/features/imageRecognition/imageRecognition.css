@@ -5,7 +5,10 @@
 
 .pendulum-frame {
   position: relative;
-  min-height: 260px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+  overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background:
@@ -22,41 +25,45 @@
 }
 
 .pivot-dot {
-  top: 28px;
-  left: 148px;
-  width: 12px;
-  height: 12px;
+  top: 10.8%;
+  left: 41.5%;
+  width: clamp(10px, 3.2vw, 12px);
+  height: clamp(10px, 3.2vw, 12px);
   border-radius: 999px;
   background: var(--color-accent-dark);
+  transform: translate(-50%, -50%);
 }
 
 .pendulum-line {
-  top: 38px;
-  left: 154px;
+  top: 14.5%;
+  left: 43%;
   width: 2px;
-  height: 170px;
+  height: 63%;
   background: linear-gradient(180deg, var(--color-accent-dark), var(--color-accent-soft));
   transform: rotate(29deg);
   transform-origin: top center;
 }
 
 .bob-dot {
-  top: 188px;
-  left: 238px;
-  width: 24px;
-  height: 24px;
+  top: 73.5%;
+  left: 67%;
+  width: clamp(18px, 6vw, 24px);
+  height: clamp(18px, 6vw, 24px);
   border-radius: 999px;
   background: var(--color-accent);
   box-shadow: 0 0 0 8px rgba(47, 111, 159, 0.14);
+  transform: translate(-50%, -50%);
 }
 
 .scale-mark {
-  top: 208px;
-  left: 306px;
-  width: 48px;
+  top: 81%;
+  left: 84%;
+  width: 14%;
+  max-width: 48px;
   height: 4px;
   border-radius: 999px;
   background: var(--color-accent-soft);
+  transform: translateX(-50%);
 }
 
 .preview-legend,
@@ -89,5 +96,17 @@
 @media (max-width: 860px) {
   .image-results-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-legend span,
+  .recognized-object-chip {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.86rem;
+  }
+
+  .bob-dot {
+    box-shadow: 0 0 0 6px rgba(47, 111, 159, 0.14);
   }
 }
