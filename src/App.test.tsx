@@ -26,10 +26,10 @@ describe("AI for Science routes", () => {
       "href",
       "/time-series-forecast"
     );
+    expect(within(featureEntrySection).getByRole("heading", { name: "图像识别" })).toBeInTheDocument();
+    expect(within(featureEntrySection).getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
+    expect(within(featureEntrySection).getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
     expect(screen.getByText(/图像识别、模板匹配与时序预测/)).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "模板匹配" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();
   });
 
   test("renders 图像识别 as an independent page", () => {
