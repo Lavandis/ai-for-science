@@ -24,8 +24,9 @@
 
 ### 3. 时序预测
 
-- 以 PANORAMA 单摆实验为默认示例，展示预测配置、任务状态、趋势图、指标和评估表
+- 以 PANORAMA 单摆实验真实模型输出为默认示例，展示预测配置、任务状态、趋势图、指标和评估表
 - 使用前端 mock service 模拟任务式接口，流程为配置内置单摆数据集、运行预测任务、查看状态和预测结果
+- 默认结果由 `assets/PANORAMA_PROJECT-master` 中的 `panorama_model.pth` 和 `pendulum_data_updated.csv` 生成
 - 后续接入真实模型服务时，可替换 `src/features/timeSeriesForecast/mockForecastService.ts`
 
 ## 技术栈
@@ -76,6 +77,7 @@ http://localhost:8080
 ```bash
 npm test
 npm run build
+assets/PANORAMA_PROJECT-master/.venv/bin/python scripts/generate_panorama_forecast_fixture.py
 docker build -t ai-for-science-frontend:test .
 ```
 

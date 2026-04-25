@@ -176,6 +176,8 @@ describe("AI for Science routes", () => {
     });
     expect(screen.getByText("预测完成")).toBeInTheDocument();
     expect(screen.getByText("PANORAMA RMSE")).toBeInTheDocument();
+    expect(screen.getByText("0.012909 rad")).toBeInTheDocument();
+    expect(screen.getByText("+91.33%")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "运行预测" })).toBeEnabled();
 

@@ -8,18 +8,19 @@ import type {
   ForecastSeriesPoint,
   ForecastVariable
 } from "./forecastContract";
+import panoramaForecastFixture from "./panoramaForecastResult.json";
 
 export type { ForecastSeriesPoint as PendulumSeriesPoint } from "./forecastContract";
 
 export const forecastDatasets: ForecastDataset[] = [
   {
     id: "pendulum-200fps",
-    name: "单摆实验 200fps 样例",
-    sourcePath: "data/processed/200_data.csv",
+    name: "PANORAMA 单摆实验真实数据",
+    sourcePath: "assets/PANORAMA_PROJECT-master/data/processed/pendulum_data_updated.csv",
     sampleRateFps: 200,
     durationSeconds: 240,
     variables: ["theta", "omega"],
-    description: "由单摆角度序列预处理得到，包含 theta 摆角和 omega 角速度。"
+    description: "来自 PANORAMA_PROJECT 的真实单摆 CSV，包含 theta 摆角和由时间序列导出的 omega 角速度。"
   }
 ];
 
@@ -28,8 +29,8 @@ export const forecastModels: ForecastModel[] = [
     id: "panorama-v1",
     name: "PANORAMA 混合动力学模型",
     kind: "panorama",
-    version: "v1-static",
-    description: "物理白盒项 F_p 加神经残差项 F_a，并按原始 fps 数值积分。",
+    version: "pth-fixture",
+    description: "物理白盒项 F_p 加已加载 panorama_model.pth 的神经残差项 F_a，并按原始 fps 数值积分。",
     supportsBaselineComparison: true
   }
 ];
@@ -48,8 +49,8 @@ export const experimentProfile = {
   title: "单摆实验长时预测",
   model: "PANORAMA 混合动力学模型",
   description:
-    "以单摆角度序列为例，将物理白盒模型、神经残差修正和数值积分组合起来，对测试段进行滚动外推。",
-  source: "data/processed/200_data.csv"
+    "以 PANORAMA_PROJECT 中的真实单摆角度序列为例，将物理白盒模型、神经残差修正和数值积分组合起来，对测试段进行滚动外推。",
+  source: "assets/PANORAMA_PROJECT-master"
 };
 
 export const forecastInputs = [
@@ -213,22 +214,59 @@ function createResultMetrics(targetVariable: ForecastVariable, horizonSeconds: n
 }
 
 export function createStaticForecastResult(jobId: string, request = defaultForecastJobRequest): ForecastResult {
-  const series = createResultSeries(request.targetVariable, request.baselineEnabled);
+  const baseResult = createRealPanoramaForecastResult(jobId);
+  const series =
+    request.targetVariable === "theta" && request.baselineEnabled
+      ? baseResult.series
+      : createResultSeries(request.targetVariable, request.baselineEnabled);
 
   return {
     jobId,
     targetVariable: request.targetVariable,
     baselineEnabled: request.baselineEnabled,
+    source:
+      request.targetVariable === "theta" && request.baselineEnabled
+        ? "panorama_project_assets"
+        : "static_demo",
+    generatedFrom:
+      request.targetVariable === "theta" && request.baselineEnabled
+        ? baseResult.generatedFrom
+        : undefined,
     series,
-    metrics: createResultMetrics(request.targetVariable, request.horizonSeconds, request.baselineEnabled),
-    evaluationRows: createResultRows(series, request.targetVariable, request.baselineEnabled),
-    conclusion: request.baselineEnabled
+    metrics:
+      request.targetVariable === "theta" && request.baselineEnabled
+        ? baseResult.metrics
+        : createResultMetrics(request.targetVariable, request.horizonSeconds, request.baselineEnabled),
+    evaluationRows:
+      request.targetVariable === "theta" && request.baselineEnabled
+        ? baseResult.evaluationRows
+        : createResultRows(series, request.targetVariable, request.baselineEnabled),
+    conclusion: request.targetVariable === "theta" && request.baselineEnabled
+      ? baseResult.conclusion
+      : request.baselineEnabled
       ? variableMeta[request.targetVariable].conclusion
       : `${variableMeta[request.targetVariable].name} 结果已生成；本次运行关闭物理基线，仅展示 PANORAMA 预测与真实序列对照。`,
     modelSummary: {
-      physicsTerm: "F_p：阻尼单摆动力学",
-      augmentationTerm: "F_a：神经网络残差修正",
-      integrator: "原始 200fps 下滚动积分"
+      physicsTerm: baseResult.modelSummary.physicsTerm,
+      augmentationTerm:
+        request.targetVariable === "theta" && request.baselineEnabled
+          ? baseResult.modelSummary.augmentationTerm
+          : "F_a：静态派生残差示例",
+      integrator: baseResult.modelSummary.integrator
     }
+  };
+}
+
+export function createRealPanoramaForecastResult(jobId: string): ForecastResult {
+  return {
+    ...panoramaForecastFixture,
+    jobId,
+    targetVariable: "theta",
+    baselineEnabled: true,
+    source: "panorama_project_assets",
+    series: panoramaForecastFixture.series.map((point) => ({
+      ...point,
+      phase: point.phase as "train" | "test"
+    }))
   };
 }

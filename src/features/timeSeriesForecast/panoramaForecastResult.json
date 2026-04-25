@@ -1,0 +1,1904 @@
+{
+  "source": "panorama_project_assets",
+  "generatedFrom": {
+    "dataset": "assets/PANORAMA_PROJECT-master/data/processed/pendulum_data_updated.csv",
+    "model": "assets/PANORAMA_PROJECT-master/assets/models/panorama_model.pth",
+    "trainRatio": 0.75,
+    "fps": 200.0,
+    "horizonSeconds": 60.0,
+    "hiddenDim": 64,
+    "rawPoints": 12000
+  },
+  "targetVariable": "theta",
+  "baselineEnabled": true,
+  "series": [
+    {
+      "second": 0.0,
+      "actual": -0.091911,
+      "actualOmega": 0.529544,
+      "physics": -0.09168,
+      "physicsOmega": 0.578314,
+      "panorama": -0.091679,
+      "panoramaOmega": 0.578738,
+      "phase": "test"
+    },
+    {
+      "second": 0.330002,
+      "actual": 0.124444,
+      "actualOmega": 0.496217,
+      "physics": 0.117454,
+      "physicsOmega": 0.495733,
+      "panorama": 0.120026,
+      "panoramaOmega": 0.503691,
+      "phase": "test"
+    },
+    {
+      "second": 0.660004,
+      "actual": 0.152018,
+      "actualOmega": -0.375151,
+      "physics": 0.147254,
+      "physicsOmega": -0.342266,
+      "panorama": 0.149249,
+      "panoramaOmega": -0.353996,
+      "phase": "test"
+    },
+    {
+      "second": 0.990005,
+      "actual": -0.052113,
+      "actualOmega": -0.677504,
+      "physics": -0.047501,
+      "physicsOmega": -0.658105,
+      "panorama": -0.049159,
+      "panoramaOmega": -0.660336,
+      "phase": "test"
+    },
+    {
+      "second": 1.320007,
+      "actual": -0.172426,
+      "actualOmega": 0.040047,
+      "physics": -0.169597,
+      "physicsOmega": 0.030188,
+      "panorama": -0.166175,
+      "panoramaOmega": 0.061069,
+      "phase": "test"
+    },
+    {
+      "second": 1.650009,
+      "actual": -0.022019,
+      "actualOmega": 0.729865,
+      "physics": -0.033021,
+      "physicsOmega": 0.671831,
+      "panorama": -0.019981,
+      "panoramaOmega": 0.686673,
+      "phase": "test"
+    },
+    {
+      "second": 1.980011,
+      "actual": 0.166517,
+      "actualOmega": 0.242807,
+      "physics": 0.153791,
+      "physicsOmega": 0.287983,
+      "panorama": 0.161606,
+      "panoramaOmega": 0.24255,
+      "phase": "test"
+    },
+    {
+      "second": 2.309998,
+      "actual": 0.103847,
+      "actualOmega": -0.582479,
+      "physics": 0.105931,
+      "physicsOmega": -0.534054,
+      "panorama": 0.096153,
+      "panoramaOmega": -0.577687,
+      "phase": "test"
+    },
+    {
+      "second": 2.639999,
+      "actual": -0.11225,
+      "actualOmega": -0.545211,
+      "physics": -0.103443,
+      "physicsOmega": -0.541189,
+      "panorama": -0.114236,
+      "panoramaOmega": -0.498006,
+      "phase": "test"
+    },
+    {
+      "second": 2.970001,
+      "actual": -0.151486,
+      "actualOmega": 0.320642,
+      "physics": -0.154835,
+      "physicsOmega": 0.276662,
+      "panorama": -0.142009,
+      "panoramaOmega": 0.355771,
+      "phase": "test"
+    },
+    {
+      "second": 3.300003,
+      "actual": 0.054882,
+      "actualOmega": 0.68595,
+      "physics": 0.0299,
+      "physicsOmega": 0.67236,
+      "panorama": 0.055754,
+      "panoramaOmega": 0.655197,
+      "phase": "test"
+    },
+    {
+      "second": 3.630005,
+      "actual": 0.176977,
+      "actualOmega": 0.039091,
+      "physics": 0.168834,
+      "physicsOmega": 0.041982,
+      "panorama": 0.170985,
+      "panoramaOmega": -0.064994,
+      "phase": "test"
+    },
+    {
+      "second": 3.960007,
+      "actual": 0.032625,
+      "actualOmega": -0.688143,
+      "physics": 0.050236,
+      "physicsOmega": -0.651675,
+      "panorama": 0.02469,
+      "panoramaOmega": -0.68334,
+      "phase": "test"
+    },
+    {
+      "second": 4.290009,
+      "actual": -0.158921,
+      "actualOmega": -0.269109,
+      "physics": -0.144877,
+      "physicsOmega": -0.350621,
+      "panorama": -0.155216,
+      "panoramaOmega": -0.237203,
+      "phase": "test"
+    },
+    {
+      "second": 4.62001,
+      "actual": -0.097016,
+      "actualOmega": 0.611125,
+      "physics": -0.118882,
+      "physicsOmega": 0.484212,
+      "panorama": -0.088851,
+      "panoramaOmega": 0.576944,
+      "phase": "test"
+    },
+    {
+      "second": 4.949997,
+      "actual": 0.120979,
+      "actualOmega": 0.534077,
+      "physics": 0.088391,
+      "physicsOmega": 0.580251,
+      "panorama": 0.120227,
+      "panoramaOmega": 0.492065,
+      "phase": "test"
+    },
+    {
+      "second": 5.279999,
+      "actual": 0.156406,
+      "actualOmega": -0.325336,
+      "physics": 0.16063,
+      "physicsOmega": -0.208534,
+      "panorama": 0.14651,
+      "panoramaOmega": -0.357443,
+      "phase": "test"
+    },
+    {
+      "second": 5.610001,
+      "actual": -0.047557,
+      "actualOmega": -0.668523,
+      "physics": -0.012108,
+      "physicsOmega": -0.678986,
+      "panorama": -0.050594,
+      "panoramaOmega": -0.650216,
+      "phase": "test"
+    },
+    {
+      "second": 5.940002,
+      "actual": -0.1709,
+      "actualOmega": 0.063627,
+      "physics": -0.166199,
+      "physicsOmega": -0.113102,
+      "panorama": -0.16408,
+      "panoramaOmega": 0.069048,
+      "phase": "test"
+    },
+    {
+      "second": 6.270004,
+      "actual": -0.015566,
+      "actualOmega": 0.697096,
+      "physics": -0.066749,
+      "physicsOmega": 0.624412,
+      "panorama": -0.017599,
+      "panoramaOmega": 0.680131,
+      "phase": "test"
+    },
+    {
+      "second": 6.600006,
+      "actual": 0.16742,
+      "actualOmega": 0.265589,
+      "physics": 0.134423,
+      "physicsOmega": 0.408874,
+      "panorama": 0.160577,
+      "panoramaOmega": 0.231643,
+      "phase": "test"
+    },
+    {
+      "second": 6.930008,
+      "actual": 0.094257,
+      "actualOmega": -0.578073,
+      "physics": 0.130403,
+      "physicsOmega": -0.429409,
+      "panorama": 0.093305,
+      "panoramaOmega": -0.576077,
+      "phase": "test"
+    },
+    {
+      "second": 7.26001,
+      "actual": -0.118977,
+      "actualOmega": -0.532648,
+      "physics": -0.072477,
+      "physicsOmega": -0.612543,
+      "panorama": -0.114486,
+      "panoramaOmega": -0.486334,
+      "phase": "test"
+    },
+    {
+      "second": 7.589996,
+      "actual": -0.145116,
+      "actualOmega": 0.361717,
+      "physics": -0.164593,
+      "physicsOmega": 0.138664,
+      "panorama": -0.139271,
+      "panoramaOmega": 0.359412,
+      "phase": "test"
+    },
+    {
+      "second": 7.919998,
+      "actual": 0.057311,
+      "actualOmega": 0.658577,
+      "physics": -0.005673,
+      "physicsOmega": 0.677984,
+      "panorama": 0.057234,
+      "panoramaOmega": 0.645118,
+      "phase": "test"
+    },
+    {
+      "second": 8.25,
+      "actual": 0.176546,
+      "actualOmega": -0.054144,
+      "physics": 0.161741,
+      "physicsOmega": 0.1824,
+      "panorama": 0.16891,
+      "panoramaOmega": -0.073144,
+      "phase": "test"
+    },
+    {
+      "second": 8.580002,
+      "actual": 0.029149,
+      "actualOmega": -0.695312,
+      "physics": 0.082384,
+      "physicsOmega": -0.590428,
+      "panorama": 0.022271,
+      "panoramaOmega": -0.67692,
+      "phase": "test"
+    },
+    {
+      "second": 8.910004,
+      "actual": -0.157911,
+      "actualOmega": -0.300903,
+      "physics": -0.122561,
+      "physicsOmega": -0.462136,
+      "panorama": -0.154224,
+      "panoramaOmega": -0.226172,
+      "phase": "test"
+    },
+    {
+      "second": 9.240005,
+      "actual": -0.091018,
+      "actualOmega": 0.530219,
+      "physics": -0.140382,
+      "physicsOmega": 0.370308,
+      "panorama": -0.085983,
+      "panoramaOmega": 0.575498,
+      "phase": "test"
+    },
+    {
+      "second": 9.570007,
+      "actual": 0.127002,
+      "actualOmega": 0.50225,
+      "physics": 0.055887,
+      "physicsOmega": 0.637766,
+      "panorama": 0.12052,
+      "panoramaOmega": 0.480352,
+      "phase": "test"
+    },
+    {
+      "second": 9.900009,
+      "actual": 0.148195,
+      "actualOmega": -0.392848,
+      "physics": 0.166699,
+      "physicsOmega": -0.067838,
+      "panorama": 0.143771,
+      "panoramaOmega": -0.361268,
+      "phase": "test"
+    },
+    {
+      "second": 10.230011,
+      "actual": -0.056997,
+      "actualOmega": -0.640553,
+      "physics": 0.023245,
+      "physicsOmega": -0.669445,
+      "panorama": -0.05212,
+      "panoramaOmega": -0.640175,
+      "phase": "test"
+    },
+    {
+      "second": 10.559998,
+      "actual": -0.168671,
+      "actualOmega": 0.15934,
+      "physics": -0.155527,
+      "physicsOmega": -0.249133,
+      "panorama": -0.162024,
+      "panoramaOmega": 0.077366,
+      "phase": "test"
+    },
+    {
+      "second": 10.889999,
+      "actual": -0.012311,
+      "actualOmega": 0.713656,
+      "physics": -0.096976,
+      "physicsOmega": 0.550176,
+      "panorama": -0.015146,
+      "panoramaOmega": 0.673815,
+      "phase": "test"
+    },
+    {
+      "second": 11.220001,
+      "actual": 0.166966,
+      "actualOmega": 0.217697,
+      "physics": 0.109436,
+      "physicsOmega": 0.509865,
+      "panorama": 0.159618,
+      "panoramaOmega": 0.220501,
+      "phase": "test"
+    },
+    {
+      "second": 11.550003,
+      "actual": 0.090663,
+      "actualOmega": -0.54652,
+      "physics": 0.148723,
+      "physicsOmega": -0.307613,
+      "panorama": 0.090416,
+      "panoramaOmega": -0.57479,
+      "phase": "test"
+    },
+    {
+      "second": 11.880005,
+      "actual": -0.122933,
+      "actualOmega": -0.484815,
+      "physics": -0.038811,
+      "physicsOmega": -0.655708,
+      "panorama": -0.114821,
+      "panoramaOmega": -0.474574,
+      "phase": "test"
+    },
+    {
+      "second": 12.210007,
+      "actual": -0.135971,
+      "actualOmega": 0.407701,
+      "physics": -0.166944,
+      "physicsOmega": -0.003157,
+      "panorama": -0.136531,
+      "panoramaOmega": 0.36341,
+      "phase": "test"
+    },
+    {
+      "second": 12.540009,
+      "actual": 0.069162,
+      "actualOmega": 0.639496,
+      "physics": -0.040416,
+      "physicsOmega": 0.653544,
+      "panorama": 0.0588,
+      "panoramaOmega": 0.635108,
+      "phase": "test"
+    },
+    {
+      "second": 12.87001,
+      "actual": 0.172791,
+      "actualOmega": -0.104347,
+      "physics": 0.147644,
+      "physicsOmega": 0.312591,
+      "panorama": 0.166871,
+      "panoramaOmega": -0.081616,
+      "phase": "test"
+    },
+    {
+      "second": 13.199997,
+      "actual": 0.018989,
+      "actualOmega": -0.66528,
+      "physics": 0.110374,
+      "physicsOmega": -0.504175,
+      "panorama": 0.019784,
+      "panoramaOmega": -0.670707,
+      "phase": "test"
+    },
+    {
+      "second": 13.529999,
+      "actual": -0.15938,
+      "actualOmega": -0.197772,
+      "physics": -0.095206,
+      "physicsOmega": -0.551581,
+      "panorama": -0.153296,
+      "panoramaOmega": -0.214917,
+      "phase": "test"
+    },
+    {
+      "second": 13.860001,
+      "actual": -0.084398,
+      "actualOmega": 0.565481,
+      "physics": -0.155354,
+      "physicsOmega": 0.242052,
+      "panorama": -0.083077,
+      "panoramaOmega": 0.574353,
+      "phase": "test"
+    },
+    {
+      "second": 14.190002,
+      "actual": 0.125583,
+      "actualOmega": 0.489358,
+      "physics": 0.021444,
+      "physicsOmega": 0.666238,
+      "panorama": 0.120892,
+      "panoramaOmega": 0.46855,
+      "phase": "test"
+    },
+    {
+      "second": 14.520004,
+      "actual": 0.147027,
+      "actualOmega": -0.318898,
+      "physics": 0.165346,
+      "physicsOmega": 0.073542,
+      "panorama": 0.14103,
+      "panoramaOmega": -0.365429,
+      "phase": "test"
+    },
+    {
+      "second": 14.850006,
+      "actual": -0.055805,
+      "actualOmega": -0.667936,
+      "physics": 0.057,
+      "physicsOmega": -0.630536,
+      "panorama": -0.053726,
+      "panoramaOmega": -0.630194,
+      "phase": "test"
+    },
+    {
+      "second": 15.180008,
+      "actual": -0.165766,
+      "actualOmega": 0.124655,
+      "physics": -0.138196,
+      "physicsOmega": -0.372108,
+      "panorama": -0.16,
+      "panoramaOmega": 0.085987,
+      "phase": "test"
+    },
+    {
+      "second": 15.51001,
+      "actual": -0.012157,
+      "actualOmega": 0.708057,
+      "physics": -0.122444,
+      "physicsOmega": 0.452999,
+      "panorama": -0.012629,
+      "panoramaOmega": 0.667689,
+      "phase": "test"
+    },
+    {
+      "second": 15.839996,
+      "actual": 0.165048,
+      "actualOmega": 0.208641,
+      "physics": 0.08004,
+      "physicsOmega": 0.586879,
+      "panorama": 0.158717,
+      "panoramaOmega": 0.209145,
+      "phase": "test"
+    },
+    {
+      "second": 16.169998,
+      "actual": 0.096415,
+      "actualOmega": -0.557596,
+      "physics": 0.160219,
+      "physicsOmega": -0.174376,
+      "panorama": 0.087491,
+      "panoramaOmega": -0.573784,
+      "phase": "test"
+    },
+    {
+      "second": 16.5,
+      "actual": -0.114172,
+      "actualOmega": -0.515622,
+      "physics": -0.003982,
+      "physicsOmega": -0.669314,
+      "panorama": -0.11523,
+      "panoramaOmega": -0.462725,
+      "phase": "test"
+    },
+    {
+      "second": 16.830002,
+      "actual": -0.142602,
+      "actualOmega": 0.346604,
+      "physics": -0.161941,
+      "physicsOmega": -0.142554,
+      "panorama": -0.133787,
+      "panoramaOmega": 0.367721,
+      "phase": "test"
+    },
+    {
+      "second": 17.160004,
+      "actual": 0.055478,
+      "actualOmega": 0.655365,
+      "physics": -0.072819,
+      "physicsOmega": 0.600758,
+      "panorama": 0.06044,
+      "panoramaOmega": 0.625148,
+      "phase": "test"
+    },
+    {
+      "second": 17.490005,
+      "actual": 0.172895,
+      "actualOmega": -0.057627,
+      "physics": 0.127302,
+      "physicsOmega": 0.427069,
+      "panorama": 0.164859,
+      "panoramaOmega": -0.090373,
+      "phase": "test"
+    },
+    {
+      "second": 17.820007,
+      "actual": 0.02591,
+      "actualOmega": -0.694676,
+      "physics": 0.133066,
+      "physicsOmega": -0.397271,
+      "panorama": 0.017236,
+      "panoramaOmega": -0.664666,
+      "phase": "test"
+    },
+    {
+      "second": 18.150009,
+      "actual": -0.156173,
+      "actualOmega": -0.273406,
+      "physics": -0.064114,
+      "physicsOmega": -0.615429,
+      "panorama": -0.152422,
+      "panoramaOmega": -0.203456,
+      "phase": "test"
+    },
+    {
+      "second": 18.480011,
+      "actual": -0.08974,
+      "actualOmega": 0.635368,
+      "physics": -0.163282,
+      "physicsOmega": 0.105347,
+      "panorama": -0.080133,
+      "panoramaOmega": 0.573467,
+      "phase": "test"
+    },
+    {
+      "second": 18.809998,
+      "actual": 0.119569,
+      "actualOmega": 0.505863,
+      "physics": -0.013382,
+      "physicsOmega": 0.664977,
+      "panorama": 0.121334,
+      "panoramaOmega": 0.456659,
+      "phase": "test"
+    },
+    {
+      "second": 19.139999,
+      "actual": 0.150986,
+      "actualOmega": -0.296459,
+      "physics": 0.156784,
+      "physicsOmega": 0.209455,
+      "panorama": 0.138282,
+      "panoramaOmega": -0.369883,
+      "phase": "test"
+    },
+    {
+      "second": 19.470001,
+      "actual": -0.045389,
+      "actualOmega": -0.671497,
+      "physics": 0.087706,
+      "physicsOmega": -0.564611,
+      "panorama": -0.055402,
+      "panoramaOmega": -0.620251,
+      "phase": "test"
+    },
+    {
+      "second": 19.800003,
+      "actual": -0.166888,
+      "actualOmega": 0.051601,
+      "physics": -0.115096,
+      "physicsOmega": -0.476912,
+      "panorama": -0.158,
+      "panoramaOmega": 0.094879,
+      "phase": "test"
+    },
+    {
+      "second": 20.130005,
+      "actual": -0.022388,
+      "actualOmega": 0.661496,
+      "physics": -0.142139,
+      "physicsOmega": 0.337653,
+      "panorama": -0.010053,
+      "panoramaOmega": 0.661719,
+      "phase": "test"
+    },
+    {
+      "second": 20.460007,
+      "actual": 0.159447,
+      "actualOmega": 0.242867,
+      "physics": 0.047611,
+      "physicsOmega": 0.636976,
+      "panorama": 0.157867,
+      "panoramaOmega": 0.197591,
+      "phase": "test"
+    },
+    {
+      "second": 20.790009,
+      "actual": 0.101127,
+      "actualOmega": -0.574316,
+      "physics": 0.164529,
+      "physicsOmega": -0.03573,
+      "panorama": 0.084529,
+      "panoramaOmega": -0.573015,
+      "phase": "test"
+    },
+    {
+      "second": 21.12001,
+      "actual": -0.113253,
+      "actualOmega": -0.50127,
+      "physics": 0.030458,
+      "physicsOmega": -0.65335,
+      "panorama": -0.115704,
+      "panoramaOmega": -0.450786,
+      "phase": "test"
+    },
+    {
+      "second": 21.449997,
+      "actual": -0.141534,
+      "actualOmega": 0.362357,
+      "physics": -0.149949,
+      "physicsOmega": -0.273537,
+      "panorama": -0.131036,
+      "panoramaOmega": 0.372305,
+      "phase": "test"
+    },
+    {
+      "second": 21.779999,
+      "actual": 0.054942,
+      "actualOmega": 0.65808,
+      "physics": -0.101508,
+      "physicsOmega": 0.522567,
+      "panorama": 0.062147,
+      "panoramaOmega": 0.615217,
+      "phase": "test"
+    },
+    {
+      "second": 22.110001,
+      "actual": 0.170857,
+      "actualOmega": -0.041729,
+      "physics": 0.101726,
+      "physicsOmega": 0.521136,
+      "panorama": 0.16287,
+      "panoramaOmega": -0.099387,
+      "phase": "test"
+    },
+    {
+      "second": 22.440002,
+      "actual": 0.025478,
+      "actualOmega": -0.690124,
+      "physics": 0.14958,
+      "physicsOmega": -0.274841,
+      "panorama": 0.014632,
+      "panoramaOmega": -0.658765,
+      "phase": "test"
+    },
+    {
+      "second": 22.770004,
+      "actual": -0.155857,
+      "actualOmega": -0.294604,
+      "physics": -0.030719,
+      "physicsOmega": -0.65135,
+      "panorama": -0.151595,
+      "panoramaOmega": -0.191805,
+      "phase": "test"
+    },
+    {
+      "second": 23.100006,
+      "actual": -0.086151,
+      "actualOmega": 0.616841,
+      "physics": -0.163966,
+      "physicsOmega": -0.033712,
+      "panorama": -0.077156,
+      "panoramaOmega": 0.5728,
+      "phase": "test"
+    },
+    {
+      "second": 23.430008,
+      "actual": 0.120955,
+      "actualOmega": 0.485863,
+      "physics": -0.047061,
+      "physicsOmega": 0.634642,
+      "panorama": 0.121835,
+      "panoramaOmega": 0.444677,
+      "phase": "test"
+    },
+    {
+      "second": 23.76001,
+      "actual": 0.148087,
+      "actualOmega": -0.338534,
+      "physics": 0.141528,
+      "physicsOmega": 0.334129,
+      "panorama": 0.135526,
+      "panoramaOmega": -0.374591,
+      "phase": "test"
+    },
+    {
+      "second": 24.089996,
+      "actual": -0.048661,
+      "actualOmega": -0.680594,
+      "physics": 0.114086,
+      "physicsOmega": -0.475153,
+      "panorama": -0.057139,
+      "panoramaOmega": -0.61033,
+      "phase": "test"
+    },
+    {
+      "second": 24.419998,
+      "actual": -0.164464,
+      "actualOmega": 0.064676,
+      "physics": -0.087349,
+      "physicsOmega": -0.559309,
+      "panorama": -0.15602,
+      "panoramaOmega": 0.104011,
+      "phase": "test"
+    },
+    {
+      "second": 24.75,
+      "actual": -0.018924,
+      "actualOmega": 0.66713,
+      "physics": -0.155325,
+      "physicsOmega": 0.209552,
+      "panorama": -0.007425,
+      "panoramaOmega": 0.655873,
+      "phase": "test"
+    },
+    {
+      "second": 25.080002,
+      "actual": 0.161527,
+      "actualOmega": 0.244276,
+      "physics": 0.013627,
+      "physicsOmega": 0.658464,
+      "panorama": 0.157058,
+      "panoramaOmega": 0.185855,
+      "phase": "test"
+    },
+    {
+      "second": 25.410004,
+      "actual": 0.091813,
+      "actualOmega": -0.543857,
+      "physics": 0.161616,
+      "physicsOmega": 0.102228,
+      "panorama": 0.081534,
+      "panoramaOmega": -0.572447,
+      "phase": "test"
+    },
+    {
+      "second": 25.740005,
+      "actual": -0.117211,
+      "actualOmega": -0.468751,
+      "physics": 0.063013,
+      "physicsOmega": -0.609132,
+      "panorama": -0.116233,
+      "panoramaOmega": -0.438756,
+      "phase": "test"
+    },
+    {
+      "second": 26.070007,
+      "actual": -0.138339,
+      "actualOmega": 0.390615,
+      "physics": -0.131629,
+      "physicsOmega": -0.390603,
+      "panorama": -0.128276,
+      "panoramaOmega": 0.377126,
+      "phase": "test"
+    },
+    {
+      "second": 26.400009,
+      "actual": 0.058201,
+      "actualOmega": 0.658225,
+      "physics": -0.125313,
+      "physicsOmega": 0.422949,
+      "panorama": 0.063911,
+      "panoramaOmega": 0.605299,
+      "phase": "test"
+    },
+    {
+      "second": 26.730011,
+      "actual": 0.169299,
+      "actualOmega": -0.073521,
+      "physics": 0.072132,
+      "physicsOmega": 0.591067,
+      "panorama": 0.160896,
+      "panoramaOmega": -0.108626,
+      "phase": "test"
+    },
+    {
+      "second": 27.059998,
+      "actual": 0.01901,
+      "actualOmega": -0.682507,
+      "physics": 0.159329,
+      "physicsOmega": -0.142522,
+      "panorama": 0.011978,
+      "panoramaOmega": -0.652973,
+      "phase": "test"
+    },
+    {
+      "second": 27.389999,
+      "actual": -0.155566,
+      "actualOmega": -0.204252,
+      "physics": 0.003475,
+      "physicsOmega": -0.658309,
+      "panorama": -0.150803,
+      "panoramaOmega": -0.179979,
+      "phase": "test"
+    },
+    {
+      "second": 27.720001,
+      "actual": -0.084885,
+      "actualOmega": 0.555467,
+      "physics": -0.157523,
+      "physicsOmega": -0.169088,
+      "panorama": -0.074145,
+      "panoramaOmega": 0.572314,
+      "phase": "test"
+    },
+    {
+      "second": 28.050003,
+      "actual": 0.120249,
+      "actualOmega": 0.520466,
+      "physics": -0.078146,
+      "physicsOmega": 0.577177,
+      "panorama": 0.122386,
+      "panoramaOmega": 0.432602,
+      "phase": "test"
+    },
+    {
+      "second": 28.380005,
+      "actual": 0.143224,
+      "actualOmega": -0.301424,
+      "physics": 0.120374,
+      "physicsOmega": 0.442385,
+      "panorama": 0.13276,
+      "panoramaOmega": -0.379516,
+      "phase": "test"
+    },
+    {
+      "second": 28.710007,
+      "actual": -0.0576,
+      "actualOmega": -0.615566,
+      "physics": 0.135083,
+      "physicsOmega": -0.366576,
+      "panorama": -0.058931,
+      "panoramaOmega": -0.600411,
+      "phase": "test"
+    },
+    {
+      "second": 29.040009,
+      "actual": -0.162214,
+      "actualOmega": -0.011019,
+      "physics": -0.056251,
+      "physicsOmega": -0.61612,
+      "panorama": -0.154052,
+      "panoramaOmega": 0.113357,
+      "phase": "test"
+    },
+    {
+      "second": 29.37001,
+      "actual": -0.01144,
+      "actualOmega": 0.685806,
+      "physics": -0.161566,
+      "physicsOmega": 0.074494,
+      "panorama": -0.004749,
+      "panoramaOmega": 0.650119,
+      "phase": "test"
+    },
+    {
+      "second": 29.699997,
+      "actual": 0.161216,
+      "actualOmega": 0.237316,
+      "physics": -0.020401,
+      "physicsOmega": 0.650962,
+      "panorama": 0.156281,
+      "panoramaOmega": 0.17395,
+      "phase": "test"
+    },
+    {
+      "second": 30.029999,
+      "actual": 0.090714,
+      "actualOmega": -0.508042,
+      "physics": 0.15175,
+      "physicsOmega": 0.233583,
+      "panorama": 0.078506,
+      "panoramaOmega": -0.572041,
+      "phase": "test"
+    },
+    {
+      "second": 30.360001,
+      "actual": -0.113526,
+      "actualOmega": -0.473476,
+      "physics": 0.092304,
+      "physicsOmega": -0.539195,
+      "panorama": -0.116807,
+      "panoramaOmega": -0.426631,
+      "phase": "test"
+    },
+    {
+      "second": 30.690002,
+      "actual": -0.138765,
+      "actualOmega": 0.370378,
+      "physics": -0.107899,
+      "physicsOmega": -0.488952,
+      "panorama": -0.125503,
+      "panoramaOmega": 0.382147,
+      "phase": "test"
+    },
+    {
+      "second": 31.020004,
+      "actual": 0.061309,
+      "actualOmega": 0.892603,
+      "physics": -0.143304,
+      "physicsOmega": 0.306694,
+      "panorama": 0.065726,
+      "panoramaOmega": 0.595374,
+      "phase": "test"
+    },
+    {
+      "second": 31.350006,
+      "actual": 0.167425,
+      "actualOmega": -0.091375,
+      "physics": 0.039885,
+      "physicsOmega": 0.634258,
+      "panorama": 0.158931,
+      "panoramaOmega": -0.118067,
+      "phase": "test"
+    },
+    {
+      "second": 31.680008,
+      "actual": 0.021637,
+      "actualOmega": -0.676034,
+      "physics": 0.16203,
+      "physicsOmega": -0.006213,
+      "panorama": 0.00928,
+      "panoramaOmega": -0.647259,
+      "phase": "test"
+    },
+    {
+      "second": 32.01001,
+      "actual": -0.154096,
+      "actualOmega": -0.224252,
+      "physics": 0.036968,
+      "physicsOmega": -0.636578,
+      "panorama": -0.150041,
+      "panoramaOmega": -0.167991,
+      "phase": "test"
+    },
+    {
+      "second": 32.339996,
+      "actual": -0.081344,
+      "actualOmega": 0.579798,
+      "physics": -0.144376,
+      "physicsOmega": -0.295041,
+      "panorama": -0.071102,
+      "panoramaOmega": 0.571974,
+      "phase": "test"
+    },
+    {
+      "second": 32.669998,
+      "actual": 0.122117,
+      "actualOmega": 0.507213,
+      "physics": -0.105343,
+      "physicsOmega": 0.495671,
+      "panorama": 0.122979,
+      "panoramaOmega": 0.420432,
+      "phase": "test"
+    },
+    {
+      "second": 33.0,
+      "actual": 0.143721,
+      "actualOmega": -0.361717,
+      "physics": 0.094351,
+      "physicsOmega": 0.529846,
+      "panorama": 0.129979,
+      "panoramaOmega": -0.384626,
+      "phase": "test"
+    },
+    {
+      "second": 33.330002,
+      "actual": -0.051183,
+      "actualOmega": -0.629338,
+      "physics": 0.149903,
+      "physicsOmega": -0.243989,
+      "panorama": -0.060769,
+      "panoramaOmega": -0.590477,
+      "phase": "test"
+    },
+    {
+      "second": 33.660004,
+      "actual": -0.161183,
+      "actualOmega": 0.070612,
+      "physics": -0.023217,
+      "physicsOmega": -0.64535,
+      "panorama": -0.15209,
+      "panoramaOmega": 0.122891,
+      "phase": "test"
+    },
+    {
+      "second": 33.990005,
+      "actual": -0.014388,
+      "actualOmega": 0.659563,
+      "physics": -0.160735,
+      "physicsOmega": -0.061586,
+      "panorama": -0.002031,
+      "panoramaOmega": 0.644431,
+      "phase": "test"
+    },
+    {
+      "second": 34.320007,
+      "actual": 0.159525,
+      "actualOmega": 0.214412,
+      "physics": -0.052998,
+      "physicsOmega": 0.615389,
+      "panorama": 0.155529,
+      "panoramaOmega": 0.16189,
+      "phase": "test"
+    },
+    {
+      "second": 34.650009,
+      "actual": 0.089944,
+      "actualOmega": -0.540972,
+      "physics": 0.135496,
+      "physicsOmega": 0.352829,
+      "panorama": 0.075448,
+      "panoramaOmega": -0.571766,
+      "phase": "test"
+    },
+    {
+      "second": 34.980011,
+      "actual": -0.112324,
+      "actualOmega": -0.488037,
+      "physics": 0.117134,
+      "physicsOmega": -0.447137,
+      "panorama": -0.117419,
+      "panoramaOmega": -0.41441,
+      "phase": "test"
+    },
+    {
+      "second": 35.309998,
+      "actual": -0.137186,
+      "actualOmega": 0.390872,
+      "physics": -0.079889,
+      "physicsOmega": -0.564676,
+      "panorama": -0.122716,
+      "panoramaOmega": 0.387338,
+      "phase": "test"
+    },
+    {
+      "second": 35.639999,
+      "actual": 0.05478,
+      "actualOmega": 0.637012,
+      "physics": -0.154826,
+      "physicsOmega": 0.179166,
+      "panorama": 0.067584,
+      "panoramaOmega": 0.585427,
+      "phase": "test"
+    },
+    {
+      "second": 35.970001,
+      "actual": 0.166967,
+      "actualOmega": -0.070652,
+      "physics": 0.006431,
+      "physicsOmega": 0.649342,
+      "panorama": 0.156971,
+      "panoramaOmega": -0.127683,
+      "phase": "test"
+    },
+    {
+      "second": 36.300003,
+      "actual": 0.027367,
+      "actualOmega": -0.66961,
+      "physics": 0.157711,
+      "physicsOmega": 0.12818,
+      "panorama": 0.006541,
+      "panoramaOmega": -0.641598,
+      "phase": "test"
+    },
+    {
+      "second": 36.630005,
+      "actual": -0.151639,
+      "actualOmega": -0.204057,
+      "physics": 0.068324,
+      "physicsOmega": -0.587698,
+      "panorama": -0.1493,
+      "panoramaOmega": -0.155854,
+      "phase": "test"
+    },
+    {
+      "second": 36.960007,
+      "actual": -0.082843,
+      "actualOmega": 0.570325,
+      "physics": -0.125221,
+      "physicsOmega": -0.406355,
+      "panorama": -0.068028,
+      "panoramaOmega": 0.571749,
+      "phase": "test"
+    },
+    {
+      "second": 37.290009,
+      "actual": 0.121091,
+      "actualOmega": 0.502483,
+      "physics": -0.127561,
+      "physicsOmega": 0.394176,
+      "panorama": 0.123607,
+      "panoramaOmega": 0.408165,
+      "phase": "test"
+    },
+    {
+      "second": 37.62001,
+      "actual": 0.140612,
+      "actualOmega": -0.350382,
+      "physics": 0.064678,
+      "physicsOmega": 0.593117,
+      "panorama": 0.127184,
+      "panoramaOmega": -0.389892,
+      "phase": "test"
+    },
+    {
+      "second": 37.949997,
+      "actual": -0.054003,
+      "actualOmega": -0.669885,
+      "physics": 0.158036,
+      "physicsOmega": -0.112944,
+      "panorama": -0.062647,
+      "panoramaOmega": -0.580516,
+      "phase": "test"
+    },
+    {
+      "second": 38.279999,
+      "actual": -0.159176,
+      "actualOmega": 0.060891,
+      "physics": 0.010288,
+      "physicsOmega": -0.646261,
+      "panorama": -0.150131,
+      "panoramaOmega": 0.132589,
+      "phase": "test"
+    },
+    {
+      "second": 38.610001,
+      "actual": -0.010972,
+      "actualOmega": 0.659803,
+      "physics": -0.15301,
+      "physicsOmega": -0.192867,
+      "panorama": 0.000726,
+      "panoramaOmega": 0.638784,
+      "phase": "test"
+    },
+    {
+      "second": 38.940002,
+      "actual": 0.159137,
+      "actualOmega": 0.180042,
+      "physics": -0.082787,
+      "physicsOmega": 0.553877,
+      "panorama": 0.154795,
+      "panoramaOmega": 0.149687,
+      "phase": "test"
+    },
+    {
+      "second": 39.270004,
+      "actual": 0.088866,
+      "actualOmega": -0.562503,
+      "physics": 0.113676,
+      "physicsOmega": 0.455083,
+      "panorama": 0.072359,
+      "panoramaOmega": -0.571591,
+      "phase": "test"
+    },
+    {
+      "second": 39.600006,
+      "actual": -0.114383,
+      "actualOmega": -0.44208,
+      "physics": 0.136527,
+      "physicsOmega": -0.337406,
+      "panorama": -0.118062,
+      "panoramaOmega": -0.402093,
+      "phase": "test"
+    },
+    {
+      "second": 39.930008,
+      "actual": -0.134213,
+      "actualOmega": 0.335639,
+      "physics": -0.048889,
+      "physicsOmega": -0.614921,
+      "panorama": -0.119912,
+      "panoramaOmega": 0.392668,
+      "phase": "test"
+    },
+    {
+      "second": 40.26001,
+      "actual": 0.061006,
+      "actualOmega": 0.597071,
+      "physics": -0.159517,
+      "physicsOmega": 0.046046,
+      "panorama": 0.069477,
+      "panoramaOmega": 0.575444,
+      "phase": "test"
+    },
+    {
+      "second": 40.589996,
+      "actual": 0.164264,
+      "actualOmega": -0.081364,
+      "physics": -0.026762,
+      "physicsOmega": 0.636213,
+      "panorama": 0.15501,
+      "panoramaOmega": -0.137452,
+      "phase": "test"
+    },
+    {
+      "second": 40.919998,
+      "actual": 0.020242,
+      "actualOmega": -0.642045,
+      "physics": 0.146698,
+      "physicsOmega": 0.254972,
+      "panorama": 0.003766,
+      "panoramaOmega": -0.635966,
+      "phase": "test"
+    },
+    {
+      "second": 41.25,
+      "actual": -0.150688,
+      "actualOmega": -0.221125,
+      "physics": 0.096238,
+      "physicsOmega": -0.51436,
+      "panorama": -0.148573,
+      "panoramaOmega": -0.14358,
+      "phase": "test"
+    },
+    {
+      "second": 41.580002,
+      "actual": -0.082038,
+      "actualOmega": 0.550807,
+      "physics": -0.100998,
+      "physicsOmega": -0.498529,
+      "panorama": -0.064926,
+      "panoramaOmega": 0.571609,
+      "phase": "test"
+    },
+    {
+      "second": 41.910004,
+      "actual": 0.118139,
+      "actualOmega": 0.480668,
+      "physics": -0.143949,
+      "physicsOmega": 0.277479,
+      "panorama": 0.12426,
+      "panoramaOmega": 0.395801,
+      "phase": "test"
+    },
+    {
+      "second": 42.240005,
+      "actual": 0.142566,
+      "actualOmega": -0.360055,
+      "physics": 0.0327,
+      "physicsOmega": 0.629912,
+      "panorama": 0.124371,
+      "panoramaOmega": -0.395282,
+      "phase": "test"
+    },
+    {
+      "second": 42.570007,
+      "actual": -0.044237,
+      "actualOmega": -0.625453,
+      "physics": 0.159271,
+      "physicsOmega": 0.020807,
+      "panorama": -0.064558,
+      "panoramaOmega": -0.570511,
+      "phase": "test"
+    },
+    {
+      "second": 42.900009,
+      "actual": -0.159296,
+      "actualOmega": 0.047887,
+      "physics": 0.042813,
+      "physicsOmega": -0.619379,
+      "panorama": -0.148168,
+      "panoramaOmega": 0.142428,
+      "phase": "test"
+    },
+    {
+      "second": 43.230011,
+      "actual": -0.016656,
+      "actualOmega": 0.646423,
+      "physics": -0.138858,
+      "physicsOmega": -0.313855,
+      "panorama": 0.003516,
+      "panoramaOmega": 0.633153,
+      "phase": "test"
+    },
+    {
+      "second": 43.559998,
+      "actual": 0.154359,
+      "actualOmega": 0.210876,
+      "physics": -0.108544,
+      "physicsOmega": 0.469636,
+      "panorama": 0.154073,
+      "panoramaOmega": 0.137352,
+      "phase": "test"
+    },
+    {
+      "second": 43.889999,
+      "actual": 0.092962,
+      "actualOmega": -0.576636,
+      "physics": 0.087333,
+      "physicsOmega": 0.536275,
+      "panorama": 0.069242,
+      "panoramaOmega": -0.571487,
+      "phase": "test"
+    },
+    {
+      "second": 44.220001,
+      "actual": -0.109208,
+      "actualOmega": -0.458259,
+      "physics": 0.149764,
+      "physicsOmega": -0.215071,
+      "panorama": -0.118727,
+      "panoramaOmega": -0.389677,
+      "phase": "test"
+    },
+    {
+      "second": 44.550003,
+      "actual": -0.134441,
+      "actualOmega": 0.292739,
+      "physics": -0.016289,
+      "physicsOmega": -0.637994,
+      "panorama": -0.11709,
+      "panoramaOmega": 0.398109,
+      "phase": "test"
+    },
+    {
+      "second": 44.880005,
+      "actual": 0.057806,
+      "actualOmega": 0.643689,
+      "physics": -0.157317,
+      "physicsOmega": -0.086902,
+      "panorama": 0.071401,
+      "panoramaOmega": 0.565411,
+      "phase": "test"
+    },
+    {
+      "second": 45.210007,
+      "actual": 0.163653,
+      "actualOmega": -0.054399,
+      "physics": -0.058274,
+      "physicsOmega": 0.596011,
+      "panorama": 0.153044,
+      "panoramaOmega": -0.147351,
+      "phase": "test"
+    },
+    {
+      "second": 45.540009,
+      "actual": 0.026417,
+      "actualOmega": -1.017555,
+      "physics": 0.12959,
+      "physicsOmega": 0.368917,
+      "panorama": 0.00096,
+      "panoramaOmega": -0.630337,
+      "phase": "test"
+    },
+    {
+      "second": 45.87001,
+      "actual": -0.14825,
+      "actualOmega": -0.221868,
+      "physics": 0.119585,
+      "physicsOmega": -0.420243,
+      "panorama": -0.147854,
+      "panoramaOmega": -0.131179,
+      "phase": "test"
+    },
+    {
+      "second": 46.199997,
+      "actual": -0.086268,
+      "actualOmega": 0.541023,
+      "physics": -0.07284,
+      "physicsOmega": -0.567964,
+      "panorama": -0.061796,
+      "panoramaOmega": 0.571526,
+      "phase": "test"
+    },
+    {
+      "second": 46.529999,
+      "actual": 0.112728,
+      "actualOmega": 0.478277,
+      "physics": -0.153927,
+      "physicsOmega": 0.150875,
+      "panorama": 0.124933,
+      "panoramaOmega": 0.383337,
+      "phase": "test"
+    },
+    {
+      "second": 46.860001,
+      "actual": 0.140985,
+      "actualOmega": -0.329708,
+      "physics": -0.000165,
+      "physicsOmega": 0.639146,
+      "panorama": 0.121539,
+      "panoramaOmega": -0.400768,
+      "phase": "test"
+    },
+    {
+      "second": 47.190002,
+      "actual": -0.048065,
+      "actualOmega": -0.62921,
+      "physics": 0.153693,
+      "physicsOmega": 0.151545,
+      "panorama": -0.066495,
+      "panoramaOmega": -0.560447,
+      "phase": "test"
+    },
+    {
+      "second": 47.520004,
+      "actual": -0.156802,
+      "actualOmega": 0.120831,
+      "physics": 0.072985,
+      "physicsOmega": -0.566434,
+      "panorama": -0.146198,
+      "panoramaOmega": 0.152387,
+      "phase": "test"
+    },
+    {
+      "second": 47.850006,
+      "actual": -0.015976,
+      "actualOmega": 0.674967,
+      "physics": -0.119008,
+      "physicsOmega": -0.419604,
+      "panorama": 0.006336,
+      "panoramaOmega": 0.627513,
+      "phase": "test"
+    },
+    {
+      "second": 48.180008,
+      "actual": 0.153494,
+      "actualOmega": 0.23624,
+      "physics": -0.129254,
+      "physicsOmega": 0.366762,
+      "panorama": 0.153355,
+      "panoramaOmega": 0.124896,
+      "phase": "test"
+    },
+    {
+      "second": 48.51001,
+      "actual": 0.094164,
+      "actualOmega": -0.457454,
+      "physics": 0.057682,
+      "physicsOmega": 0.593312,
+      "panorama": 0.066098,
+      "panoramaOmega": -0.571423,
+      "phase": "test"
+    },
+    {
+      "second": 48.839996,
+      "actual": -0.103995,
+      "actualOmega": -0.455644,
+      "physics": 0.156409,
+      "physicsOmega": -0.085589,
+      "panorama": -0.119408,
+      "panoramaOmega": -0.37716,
+      "phase": "test"
+    },
+    {
+      "second": 49.169998,
+      "actual": -0.133132,
+      "actualOmega": 0.332047,
+      "physics": 0.016485,
+      "physicsOmega": -0.633425,
+      "panorama": -0.114247,
+      "panoramaOmega": 0.403633,
+      "phase": "test"
+    },
+    {
+      "second": 49.5,
+      "actual": 0.054613,
+      "actualOmega": 0.628784,
+      "physics": -0.148454,
+      "physicsOmega": -0.214063,
+      "panorama": 0.073349,
+      "panoramaOmega": 0.555313,
+      "phase": "test"
+    },
+    {
+      "second": 49.830002,
+      "actual": 0.162483,
+      "actualOmega": -0.067741,
+      "physics": -0.086794,
+      "physicsOmega": 0.53103,
+      "panorama": 0.151068,
+      "panoramaOmega": -0.15736,
+      "phase": "test"
+    },
+    {
+      "second": 50.160004,
+      "actual": 0.025749,
+      "actualOmega": -0.613285,
+      "physics": 0.107236,
+      "physicsOmega": 0.465414,
+      "panorama": -0.001874,
+      "panoramaOmega": -0.624689,
+      "phase": "test"
+    },
+    {
+      "second": 50.490005,
+      "actual": -0.145874,
+      "actualOmega": -0.247534,
+      "physics": 0.137463,
+      "physicsOmega": -0.309807,
+      "panorama": -0.147137,
+      "panoramaOmega": -0.118663,
+      "phase": "test"
+    },
+    {
+      "second": 50.820007,
+      "actual": -0.08493,
+      "actualOmega": 0.57895,
+      "physics": -0.042026,
+      "physicsOmega": -0.612104,
+      "panorama": -0.058639,
+      "panoramaOmega": 0.571469,
+      "phase": "test"
+    },
+    {
+      "second": 51.150009,
+      "actual": 0.114472,
+      "actualOmega": 0.436568,
+      "physics": -0.157201,
+      "physicsOmega": 0.01992,
+      "panorama": 0.125618,
+      "panoramaOmega": 0.370773,
+      "phase": "test"
+    },
+    {
+      "second": 51.480011,
+      "actual": 0.137562,
+      "actualOmega": -0.321711,
+      "physics": -0.032498,
+      "physicsOmega": 0.620963,
+      "panorama": 0.118686,
+      "panoramaOmega": -0.406325,
+      "phase": "test"
+    },
+    {
+      "second": 51.809998,
+      "actual": -0.048299,
+      "actualOmega": -0.580351,
+      "physics": 0.141673,
+      "physicsOmega": 0.273811,
+      "panorama": -0.068454,
+      "panoramaOmega": -0.550314,
+      "phase": "test"
+    },
+    {
+      "second": 52.139999,
+      "actual": -0.156326,
+      "actualOmega": -0.024867,
+      "physics": 0.099565,
+      "physicsOmega": -0.490245,
+      "panorama": -0.144215,
+      "panoramaOmega": 0.162446,
+      "phase": "test"
+    },
+    {
+      "second": 52.470001,
+      "actual": -0.018695,
+      "actualOmega": 0.633283,
+      "physics": -0.094413,
+      "physicsOmega": -0.5059,
+      "panorama": 0.009181,
+      "panoramaOmega": 0.621845,
+      "phase": "test"
+    },
+    {
+      "second": 52.800003,
+      "actual": 0.152176,
+      "actualOmega": 0.279067,
+      "physics": -0.14414,
+      "physicsOmega": 0.250023,
+      "panorama": 0.152636,
+      "panoramaOmega": 0.11233,
+      "phase": "test"
+    },
+    {
+      "second": 53.130005,
+      "actual": 0.090526,
+      "actualOmega": -0.504161,
+      "physics": 0.026047,
+      "physicsOmega": 0.6242,
+      "panorama": 0.062928,
+      "panoramaOmega": -0.571376,
+      "phase": "test"
+    },
+    {
+      "second": 53.460007,
+      "actual": -0.10534,
+      "actualOmega": -0.46854,
+      "physics": 0.156312,
+      "physicsOmega": 0.045435,
+      "panorama": -0.120098,
+      "panoramaOmega": -0.364542,
+      "phase": "test"
+    },
+    {
+      "second": 53.790009,
+      "actual": -0.134613,
+      "actualOmega": 0.309676,
+      "physics": 0.048034,
+      "physicsOmega": -0.601963,
+      "panorama": -0.111383,
+      "panoramaOmega": 0.409216,
+      "phase": "test"
+    },
+    {
+      "second": 54.12001,
+      "actual": 0.051802,
+      "actualOmega": 0.619046,
+      "physics": -0.133437,
+      "physicsOmega": -0.330184,
+      "panorama": 0.075316,
+      "panoramaOmega": 0.545139,
+      "phase": "test"
+    },
+    {
+      "second": 54.449997,
+      "actual": 0.161333,
+      "actualOmega": -0.06641,
+      "physics": -0.11117,
+      "physicsOmega": 0.444572,
+      "panorama": 0.149077,
+      "panoramaOmega": -0.16746,
+      "phase": "test"
+    },
+    {
+      "second": 54.779999,
+      "actual": 0.024569,
+      "actualOmega": -0.626554,
+      "physics": 0.080685,
+      "physicsOmega": 0.540679,
+      "panorama": -0.004732,
+      "panoramaOmega": -0.619002,
+      "phase": "test"
+    },
+    {
+      "second": 55.110001,
+      "actual": -0.145006,
+      "actualOmega": -0.244458,
+      "physics": 0.149228,
+      "physicsOmega": -0.188073,
+      "panorama": -0.146416,
+      "panoramaOmega": -0.106042,
+      "phase": "test"
+    },
+    {
+      "second": 55.440002,
+      "actual": -0.08376,
+      "actualOmega": 0.531953,
+      "physics": -0.009918,
+      "physicsOmega": -0.629533,
+      "panorama": -0.055456,
+      "panoramaOmega": 0.571418,
+      "phase": "test"
+    },
+    {
+      "second": 55.770004,
+      "actual": 0.11418,
+      "actualOmega": 0.45016,
+      "physics": -0.153767,
+      "physicsOmega": -0.10979,
+      "panorama": 0.12631,
+      "panoramaOmega": 0.358107,
+      "phase": "test"
+    },
+    {
+      "second": 56.100006,
+      "actual": 0.13804,
+      "actualOmega": -0.30202,
+      "physics": -0.062934,
+      "physicsOmega": 0.576697,
+      "panorama": 0.115809,
+      "panoramaOmega": -0.41193,
+      "phase": "test"
+    },
+    {
+      "second": 56.430008,
+      "actual": -0.048502,
+      "actualOmega": -0.658883,
+      "physics": 0.123846,
+      "physicsOmega": 0.382613,
+      "panorama": -0.070429,
+      "panoramaOmega": -0.540099,
+      "phase": "test"
+    },
+    {
+      "second": 56.76001,
+      "actual": -0.153644,
+      "actualOmega": 0.07848,
+      "physics": 0.121498,
+      "physicsOmega": -0.39455,
+      "panorama": -0.142216,
+      "panoramaOmega": 0.172586,
+      "phase": "test"
+    },
+    {
+      "second": 57.089996,
+      "actual": -0.01752,
+      "actualOmega": 0.617768,
+      "physics": -0.066207,
+      "physicsOmega": -0.569431,
+      "panorama": 0.012049,
+      "panoramaOmega": 0.616127,
+      "phase": "test"
+    },
+    {
+      "second": 57.419998,
+      "actual": 0.150232,
+      "actualOmega": 0.222102,
+      "physics": -0.152691,
+      "physicsOmega": 0.124634,
+      "panorama": 0.15191,
+      "panoramaOmega": 0.099664,
+      "phase": "test"
+    },
+    {
+      "second": 57.75,
+      "actual": 0.094378,
+      "actualOmega": -0.446097,
+      "physics": -0.006187,
+      "physicsOmega": 0.628113,
+      "panorama": 0.059732,
+      "panoramaOmega": -0.571322,
+      "phase": "test"
+    },
+    {
+      "second": 58.080002,
+      "actual": -0.10323,
+      "actualOmega": -0.412649,
+      "physics": 0.149611,
+      "physicsOmega": 0.172475,
+      "panorama": -0.120792,
+      "panoramaOmega": -0.351823,
+      "phase": "test"
+    },
+    {
+      "second": 58.410004,
+      "actual": -0.134579,
+      "actualOmega": 0.253761,
+      "physics": 0.077043,
+      "physicsOmega": -0.545502,
+      "panorama": -0.108495,
+      "panoramaOmega": 0.414834,
+      "phase": "test"
+    },
+    {
+      "second": 58.740005,
+      "actual": 0.046524,
+      "actualOmega": 0.591198,
+      "physics": -0.113017,
+      "physicsOmega": -0.430579,
+      "panorama": 0.077295,
+      "panoramaOmega": 0.534879,
+      "phase": "test"
+    },
+    {
+      "second": 59.070007,
+      "actual": 0.160627,
+      "actualOmega": -0.007296,
+      "physics": -0.130454,
+      "physicsOmega": 0.340758,
+      "panorama": 0.147068,
+      "panoramaOmega": -0.177631,
+      "phase": "test"
+    },
+    {
+      "second": 59.400009,
+      "actual": 0.029958,
+      "actualOmega": -0.648828,
+      "physics": 0.051141,
+      "physicsOmega": 0.591905,
+      "panorama": -0.007611,
+      "panoramaOmega": -0.613256,
+      "phase": "test"
+    },
+    {
+      "second": 59.730011,
+      "actual": -0.143601,
+      "actualOmega": -0.205162,
+      "physics": 0.154507,
+      "physicsOmega": -0.06039,
+      "panorama": -0.145685,
+      "panoramaOmega": -0.093326,
+      "phase": "test"
+    },
+    {
+      "second": 59.99501,
+      "actual": -0.115904,
+      "actualOmega": 0.466883,
+      "physics": 0.061183,
+      "physicsOmega": -0.575696,
+      "panorama": -0.087018,
+      "panoramaOmega": 0.492186,
+      "phase": "test"
+    }
+  ],
+  "metrics": [
+    {
+      "label": "PANORAMA RMSE",
+      "value": "0.012909 rad",
+      "note": "真实模型评估"
+    },
+    {
+      "label": "物理基线 RMSE",
+      "value": "0.148839 rad",
+      "note": "同一测试窗口"
+    },
+    {
+      "label": "误差改善",
+      "value": "+91.33%",
+      "note": "相对纯物理模型"
+    },
+    {
+      "label": "外推窗口",
+      "value": "60 s",
+      "note": "测试段滚动预测"
+    }
+  ],
+  "evaluationRows": [
+    {
+      "time": "0.00 s",
+      "actual": "-0.0919 rad",
+      "physics": "-0.0917 rad",
+      "panorama": "-0.0917 rad",
+      "note": "真实 PANORAMA 评估切片"
+    },
+    {
+      "time": "20.13 s",
+      "actual": "-0.0224 rad",
+      "physics": "-0.1421 rad",
+      "panorama": "-0.0101 rad",
+      "note": "真实 PANORAMA 评估切片"
+    },
+    {
+      "time": "40.26 s",
+      "actual": "0.0610 rad",
+      "physics": "-0.1595 rad",
+      "panorama": "0.0695 rad",
+      "note": "真实 PANORAMA 评估切片"
+    },
+    {
+      "time": "60.00 s",
+      "actual": "-0.1159 rad",
+      "physics": "0.0612 rad",
+      "panorama": "-0.0870 rad",
+      "note": "真实 PANORAMA 评估切片"
+    }
+  ],
+  "conclusion": "该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。PANORAMA 在 60s 测试窗口内的 RMSE 为 0.012909 rad，相对纯物理基线改善 +91.33%。",
+  "modelSummary": {
+    "physicsTerm": "F_p：阻尼单摆动力学",
+    "augmentationTerm": "F_a：已加载 panorama_model.pth 的神经残差修正",
+    "integrator": "RK4，原始 200fps 下滚动积分"
+  }
+}

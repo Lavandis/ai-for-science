@@ -61,6 +61,7 @@ describe("createMockForecastService", () => {
     await expect(service.getForecastResult(job.id)).resolves.toMatchObject({
       jobId: job.id,
       targetVariable: "theta",
+      source: "panorama_project_assets",
       metrics: expect.arrayContaining([expect.objectContaining({ label: "PANORAMA RMSE" })])
     });
   });

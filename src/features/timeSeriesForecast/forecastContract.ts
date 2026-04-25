@@ -44,8 +44,11 @@ export type ForecastJob = {
 export type ForecastSeriesPoint = {
   second: number;
   actual: number;
+  actualOmega?: number;
   physics: number | null;
+  physicsOmega?: number | null;
   panorama: number | null;
+  panoramaOmega?: number | null;
   phase: "train" | "test";
 };
 
@@ -67,6 +70,16 @@ export type ForecastResult = {
   jobId: string;
   targetVariable: ForecastVariable;
   baselineEnabled: boolean;
+  source?: "static_demo" | "panorama_project_assets";
+  generatedFrom?: {
+    dataset: string;
+    model: string;
+    trainRatio: number;
+    fps: number;
+    horizonSeconds: number;
+    hiddenDim?: number;
+    rawPoints: number;
+  };
   series: ForecastSeriesPoint[];
   metrics: ForecastMetric[];
   evaluationRows: ForecastEvaluationRow[];
