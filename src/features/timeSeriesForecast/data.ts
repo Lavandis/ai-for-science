@@ -213,60 +213,80 @@ function createResultMetrics(targetVariable: ForecastVariable, horizonSeconds: n
   return metrics;
 }
 
-export function createStaticForecastResult(jobId: string, request = defaultForecastJobRequest): ForecastResult {
-  const baseResult = createRealPanoramaForecastResult(jobId);
-  const series =
-    request.targetVariable === "theta" && request.baselineEnabled
-      ? baseResult.series
-      : createResultSeries(request.targetVariable, request.baselineEnabled);
+function selectRealSeries(targetVariable: ForecastVariable, baselineEnabled: boolean): ForecastSeriesPoint[] {
+  return panoramaForecastFixture.series.map((point) => {
+    const phase = point.phase as "train" | "test";
 
-  return {
-    jobId,
-    targetVariable: request.targetVariable,
-    baselineEnabled: request.baselineEnabled,
-    source:
-      request.targetVariable === "theta" && request.baselineEnabled
-        ? "panorama_project_assets"
-        : "static_demo",
-    generatedFrom:
-      request.targetVariable === "theta" && request.baselineEnabled
-        ? baseResult.generatedFrom
-        : undefined,
-    series,
-    metrics:
-      request.targetVariable === "theta" && request.baselineEnabled
-        ? baseResult.metrics
-        : createResultMetrics(request.targetVariable, request.horizonSeconds, request.baselineEnabled),
-    evaluationRows:
-      request.targetVariable === "theta" && request.baselineEnabled
-        ? baseResult.evaluationRows
-        : createResultRows(series, request.targetVariable, request.baselineEnabled),
-    conclusion: request.targetVariable === "theta" && request.baselineEnabled
-      ? baseResult.conclusion
-      : request.baselineEnabled
-      ? variableMeta[request.targetVariable].conclusion
-      : `${variableMeta[request.targetVariable].name} 结果已生成；本次运行关闭物理基线，仅展示 PANORAMA 预测与真实序列对照。`,
-    modelSummary: {
-      physicsTerm: baseResult.modelSummary.physicsTerm,
-      augmentationTerm:
-        request.targetVariable === "theta" && request.baselineEnabled
-          ? baseResult.modelSummary.augmentationTerm
-          : "F_a：静态派生残差示例",
-      integrator: baseResult.modelSummary.integrator
+    if (targetVariable === "omega") {
+      return {
+        second: point.second,
+        actual: point.actualOmega,
+        actualOmega: point.actualOmega,
+        physics: baselineEnabled ? point.physicsOmega : null,
+        physicsOmega: baselineEnabled ? point.physicsOmega : null,
+        panorama: point.panoramaOmega,
+        panoramaOmega: point.panoramaOmega,
+        phase
+      };
     }
-  };
+
+    return {
+      ...point,
+      physics: baselineEnabled ? point.physics : null,
+      physicsOmega: baselineEnabled ? point.physicsOmega : null,
+      phase
+    };
+  });
 }
 
-export function createRealPanoramaForecastResult(jobId: string): ForecastResult {
+function selectRealMetrics(targetVariable: ForecastVariable, baselineEnabled: boolean): ForecastMetric[] {
+  const summary = panoramaForecastFixture.variableSummaries[targetVariable];
+  const metrics = summary.metrics.filter(
+    (metric) => baselineEnabled || (metric.label !== "物理基线 RMSE" && metric.label !== "误差改善")
+  );
+
+  if (baselineEnabled) return metrics;
+
+  const horizonMetric = metrics.find((metric) => metric.label === "外推窗口");
+  const panoramaMetric = metrics.filter((metric) => metric.label !== "外推窗口");
+
+  return [
+    ...panoramaMetric,
+    { label: "基线对照", value: "已关闭", note: "本次运行仅显示 PANORAMA 预测" },
+    ...(horizonMetric ? [horizonMetric] : [])
+  ];
+}
+
+function selectRealRows(targetVariable: ForecastVariable, baselineEnabled: boolean): ForecastEvaluationRow[] {
+  return panoramaForecastFixture.variableSummaries[targetVariable].evaluationRows.map((row) => ({
+    ...row,
+    physics: baselineEnabled ? row.physics : "未启用",
+    note: baselineEnabled ? row.note : "未启用物理基线对照"
+  }));
+}
+
+export function createStaticForecastResult(jobId: string, request = defaultForecastJobRequest): ForecastResult {
+  return createRealPanoramaForecastResult(jobId, request.targetVariable, request.baselineEnabled);
+}
+
+export function createRealPanoramaForecastResult(
+  jobId: string,
+  targetVariable: ForecastVariable = "theta",
+  baselineEnabled = true
+): ForecastResult {
+  const summary = panoramaForecastFixture.variableSummaries[targetVariable];
+
   return {
     ...panoramaForecastFixture,
     jobId,
-    targetVariable: "theta",
-    baselineEnabled: true,
+    targetVariable,
+    baselineEnabled,
     source: "panorama_project_assets",
-    series: panoramaForecastFixture.series.map((point) => ({
-      ...point,
-      phase: point.phase as "train" | "test"
-    }))
+    series: selectRealSeries(targetVariable, baselineEnabled),
+    metrics: selectRealMetrics(targetVariable, baselineEnabled),
+    evaluationRows: selectRealRows(targetVariable, baselineEnabled),
+    conclusion: baselineEnabled
+      ? `该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。${summary.conclusion}`
+      : `${variableMeta[targetVariable].name} 结果由真实 PANORAMA 模型和单摆数据生成；本次运行关闭物理基线，仅展示 PANORAMA 预测与真实序列对照。`
   };
 }

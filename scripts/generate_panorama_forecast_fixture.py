@@ -96,7 +96,29 @@ def make_series(
     return series
 
 
-def make_rows(series: list[dict[str, Any]], unit: str) -> list[dict[str, str]]:
+def make_metrics(
+    rmse_pano: float,
+    rmse_phys: float,
+    horizon_seconds: float,
+    unit: str,
+) -> list[dict[str, str]]:
+    improvement = (rmse_phys - rmse_pano) / rmse_phys * 100 if rmse_phys else 0.0
+
+    return [
+        {"label": "PANORAMA RMSE", "value": f"{rmse_pano:.6f} {unit}", "note": "真实模型评估"},
+        {"label": "物理基线 RMSE", "value": f"{rmse_phys:.6f} {unit}", "note": "同一测试窗口"},
+        {"label": "误差改善", "value": f"{improvement:+.2f}%", "note": "相对纯物理模型"},
+        {"label": "外推窗口", "value": f"{horizon_seconds:.0f} s", "note": "测试段滚动预测"},
+    ]
+
+
+def make_rows(
+    series: list[dict[str, Any]],
+    unit: str,
+    actual_key: str = "actual",
+    physics_key: str = "physics",
+    panorama_key: str = "panorama",
+) -> list[dict[str, str]]:
     if len(series) < 4:
         selected = series
     else:
@@ -105,9 +127,9 @@ def make_rows(series: list[dict[str, Any]], unit: str) -> list[dict[str, str]]:
     return [
         {
             "time": f"{point['second']:.2f} s",
-            "actual": f"{point['actual']:.4f} {unit}",
-            "physics": f"{point['physics']:.4f} {unit}",
-            "panorama": f"{point['panorama']:.4f} {unit}",
+            "actual": f"{point[actual_key]:.4f} {unit}",
+            "physics": f"{point[physics_key]:.4f} {unit}",
+            "panorama": f"{point[panorama_key]:.4f} {unit}",
             "note": "真实 PANORAMA 评估切片",
         }
         for point in selected
@@ -184,9 +206,12 @@ def main() -> None:
     physics_np = physics_traj.cpu().numpy().squeeze()
     panorama_np = panorama_traj.cpu().numpy().squeeze()
 
-    rmse_phys = calculate_rmse_numpy(physics_np[:, 0], true_theta)
-    rmse_pano = calculate_rmse_numpy(panorama_np[:, 0], true_theta)
-    improvement = (rmse_phys - rmse_pano) / rmse_phys * 100 if rmse_phys else 0.0
+    theta_rmse_phys = calculate_rmse_numpy(physics_np[:, 0], true_theta)
+    theta_rmse_pano = calculate_rmse_numpy(panorama_np[:, 0], true_theta)
+    theta_improvement = (theta_rmse_phys - theta_rmse_pano) / theta_rmse_phys * 100 if theta_rmse_phys else 0.0
+    omega_rmse_phys = calculate_rmse_numpy(physics_np[:, 1], true_omega)
+    omega_rmse_pano = calculate_rmse_numpy(panorama_np[:, 1], true_omega)
+    omega_improvement = (omega_rmse_phys - omega_rmse_pano) / omega_rmse_phys * 100 if omega_rmse_phys else 0.0
 
     time_axis = df["Time"].to_numpy(dtype="float32")[start_idx + 1 : start_idx + 1 + actual_len]
     time_axis = time_axis - time_axis[0]
@@ -207,17 +232,32 @@ def main() -> None:
         "targetVariable": "theta",
         "baselineEnabled": True,
         "series": series,
-        "metrics": [
-            {"label": "PANORAMA RMSE", "value": f"{rmse_pano:.6f} rad", "note": "真实模型评估"},
-            {"label": "物理基线 RMSE", "value": f"{rmse_phys:.6f} rad", "note": "同一测试窗口"},
-            {"label": "误差改善", "value": f"{improvement:+.2f}%", "note": "相对纯物理模型"},
-            {"label": "外推窗口", "value": f"{actual_len / fps:.0f} s", "note": "测试段滚动预测"},
-        ],
+        "metrics": make_metrics(theta_rmse_pano, theta_rmse_phys, actual_len / fps, "rad"),
         "evaluationRows": make_rows(series, "rad"),
+        "variableSummaries": {
+            "theta": {
+                "unit": "rad",
+                "metrics": make_metrics(theta_rmse_pano, theta_rmse_phys, actual_len / fps, "rad"),
+                "evaluationRows": make_rows(series, "rad"),
+                "conclusion": (
+                    f"PANORAMA 在 {actual_len / fps:.0f}s 测试窗口内的 theta RMSE 为 {theta_rmse_pano:.6f} rad，"
+                    f"相对纯物理基线改善 {theta_improvement:+.2f}%。"
+                ),
+            },
+            "omega": {
+                "unit": "rad/s",
+                "metrics": make_metrics(omega_rmse_pano, omega_rmse_phys, actual_len / fps, "rad/s"),
+                "evaluationRows": make_rows(series, "rad/s", "actualOmega", "physicsOmega", "panoramaOmega"),
+                "conclusion": (
+                    f"PANORAMA 在 {actual_len / fps:.0f}s 测试窗口内的 omega RMSE 为 {omega_rmse_pano:.6f} rad/s，"
+                    f"相对纯物理基线改善 {omega_improvement:+.2f}%。"
+                ),
+            },
+        },
         "conclusion": (
             f"该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。"
-            f"PANORAMA 在 {actual_len / fps:.0f}s 测试窗口内的 RMSE 为 {rmse_pano:.6f} rad，"
-            f"相对纯物理基线改善 {improvement:+.2f}%。"
+            f"PANORAMA 在 {actual_len / fps:.0f}s 测试窗口内的 theta RMSE 为 {theta_rmse_pano:.6f} rad，"
+            f"相对纯物理基线改善 {theta_improvement:+.2f}%。"
         ),
         "modelSummary": {
             "physicsTerm": "F_p：阻尼单摆动力学",

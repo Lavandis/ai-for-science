@@ -64,4 +64,34 @@ describe("ForecastChart", () => {
     expect(screen.queryByText("纯物理基线")).not.toBeInTheDocument();
     expect(getSeriesLines(container)).toHaveLength(2);
   });
+
+  test("draws omega charts from omega-specific series fields", () => {
+    const series: ForecastSeriesPoint[] = [
+      {
+        second: 0,
+        actual: 0,
+        actualOmega: -1,
+        physics: 0,
+        physicsOmega: -0.5,
+        panorama: 0,
+        panoramaOmega: -0.8,
+        phase: "test"
+      },
+      {
+        second: 10,
+        actual: 0,
+        actualOmega: 1,
+        physics: 0,
+        physicsOmega: 0.5,
+        panorama: 0,
+        panoramaOmega: 0.8,
+        phase: "test"
+      }
+    ];
+
+    const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="omega" />);
+    const actualLine = container.querySelector(".series-line--actual");
+
+    expect(actualLine?.getAttribute("points")).toBe("42.0,273.5 878.0,46.5");
+  });
 });

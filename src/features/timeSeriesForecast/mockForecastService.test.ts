@@ -79,6 +79,7 @@ describe("createMockForecastService", () => {
       jobId: job.id,
       targetVariable: "omega",
       baselineEnabled: true,
+      source: "panorama_project_assets",
       metrics: expect.arrayContaining([expect.objectContaining({ value: expect.stringContaining("rad/s") })]),
       evaluationRows: expect.arrayContaining([expect.objectContaining({ actual: expect.stringContaining("rad/s") })])
     });

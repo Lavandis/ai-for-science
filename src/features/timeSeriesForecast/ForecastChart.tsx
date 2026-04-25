@@ -15,6 +15,7 @@ const variableLabel: Record<ForecastVariable, string> = {
 const chartWidth = 920;
 const chartHeight = 320;
 const chartPadding = 42;
+type SeriesKey = "actual" | "physics" | "panorama";
 
 function getY(value: number, minValue: number, maxValue: number) {
   const plotHeight = chartHeight - chartPadding * 2;
@@ -33,20 +34,25 @@ function getX(pointSecond: number, firstSecond: number, lastSecond: number) {
   return chartPadding + ((pointSecond - firstSecond) / secondRange) * plotWidth;
 }
 
-function toPolyline(
-  series: ForecastSeriesPoint[],
-  key: "actual" | "physics" | "panorama",
-  minValue: number,
-  maxValue: number
-) {
+function getSeriesValue(point: ForecastSeriesPoint, key: SeriesKey, targetVariable: ForecastVariable) {
+  if (targetVariable === "omega") {
+    if (key === "actual") return point.actualOmega ?? point.actual;
+    if (key === "physics") return point.physicsOmega ?? point.physics;
+    return point.panoramaOmega ?? point.panorama;
+  }
+
+  return point[key];
+}
+
+function toPolyline(series: ForecastSeriesPoint[], key: SeriesKey, targetVariable: ForecastVariable, minValue: number, maxValue: number) {
   const first = series[0];
   const last = series[series.length - 1];
 
   return series
-    .filter((point) => point[key] !== null)
+    .filter((point) => getSeriesValue(point, key, targetVariable) !== null)
     .map((point) => {
       const x = getX(point.second, first.second, last.second);
-      const y = getY(point[key] ?? 0, minValue, maxValue);
+      const y = getY(getSeriesValue(point, key, targetVariable) ?? 0, minValue, maxValue);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join(" ");
@@ -66,9 +72,11 @@ export function ForecastChart({ baselineEnabled, series, targetVariable }: Forec
   }
 
   const values = series.flatMap((point) => {
-    const pointValues = [point.actual, point.panorama ?? point.actual];
-    return baselineEnabled ? [...pointValues, point.physics ?? point.actual] : pointValues;
-  });
+    const actual = getSeriesValue(point, "actual", targetVariable);
+    const panorama = getSeriesValue(point, "panorama", targetVariable) ?? actual;
+    const pointValues = [actual, panorama];
+    return baselineEnabled ? [...pointValues, getSeriesValue(point, "physics", targetVariable) ?? actual] : pointValues;
+  }).filter((value): value is number => value !== null);
   const minValue = Math.min(...values) - 0.04;
   const maxValue = Math.max(...values) + 0.04;
   const firstPoint = series[0];
@@ -108,11 +116,11 @@ export function ForecastChart({ baselineEnabled, series, targetVariable }: Forec
         <line className="forecast-axis" x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - chartPadding} y2={chartHeight - chartPadding} />
         <line className="forecast-axis" x1={chartPadding} x2={chartPadding} y1={chartPadding} y2={chartHeight - chartPadding} />
         <line className="forecast-split" x1={splitX} x2={splitX} y1={chartPadding} y2={chartHeight - chartPadding} />
-        <polyline className="series-line series-line--actual" points={toPolyline(series, "actual", minValue, maxValue)} />
+        <polyline className="series-line series-line--actual" points={toPolyline(series, "actual", targetVariable, minValue, maxValue)} />
         {baselineEnabled ? (
-          <polyline className="series-line series-line--physics" points={toPolyline(series, "physics", minValue, maxValue)} />
+          <polyline className="series-line series-line--physics" points={toPolyline(series, "physics", targetVariable, minValue, maxValue)} />
         ) : null}
-        <polyline className="series-line series-line--panorama" points={toPolyline(series, "panorama", minValue, maxValue)} />
+        <polyline className="series-line series-line--panorama" points={toPolyline(series, "panorama", targetVariable, minValue, maxValue)} />
       </svg>
       <div className="chart-legend">
         <span className="legend-actual">真实{label}</span>

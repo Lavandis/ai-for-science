@@ -1895,7 +1895,121 @@
       "note": "真实 PANORAMA 评估切片"
     }
   ],
-  "conclusion": "该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。PANORAMA 在 60s 测试窗口内的 RMSE 为 0.012909 rad，相对纯物理基线改善 +91.33%。",
+  "variableSummaries": {
+    "theta": {
+      "unit": "rad",
+      "metrics": [
+        {
+          "label": "PANORAMA RMSE",
+          "value": "0.012909 rad",
+          "note": "真实模型评估"
+        },
+        {
+          "label": "物理基线 RMSE",
+          "value": "0.148839 rad",
+          "note": "同一测试窗口"
+        },
+        {
+          "label": "误差改善",
+          "value": "+91.33%",
+          "note": "相对纯物理模型"
+        },
+        {
+          "label": "外推窗口",
+          "value": "60 s",
+          "note": "测试段滚动预测"
+        }
+      ],
+      "evaluationRows": [
+        {
+          "time": "0.00 s",
+          "actual": "-0.0919 rad",
+          "physics": "-0.0917 rad",
+          "panorama": "-0.0917 rad",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "20.13 s",
+          "actual": "-0.0224 rad",
+          "physics": "-0.1421 rad",
+          "panorama": "-0.0101 rad",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "40.26 s",
+          "actual": "0.0610 rad",
+          "physics": "-0.1595 rad",
+          "panorama": "0.0695 rad",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "60.00 s",
+          "actual": "-0.1159 rad",
+          "physics": "0.0612 rad",
+          "panorama": "-0.0870 rad",
+          "note": "真实 PANORAMA 评估切片"
+        }
+      ],
+      "conclusion": "PANORAMA 在 60s 测试窗口内的 theta RMSE 为 0.012909 rad，相对纯物理基线改善 +91.33%。"
+    },
+    "omega": {
+      "unit": "rad/s",
+      "metrics": [
+        {
+          "label": "PANORAMA RMSE",
+          "value": "0.068988 rad/s",
+          "note": "真实模型评估"
+        },
+        {
+          "label": "物理基线 RMSE",
+          "value": "0.603063 rad/s",
+          "note": "同一测试窗口"
+        },
+        {
+          "label": "误差改善",
+          "value": "+88.56%",
+          "note": "相对纯物理模型"
+        },
+        {
+          "label": "外推窗口",
+          "value": "60 s",
+          "note": "测试段滚动预测"
+        }
+      ],
+      "evaluationRows": [
+        {
+          "time": "0.00 s",
+          "actual": "0.5295 rad/s",
+          "physics": "0.5783 rad/s",
+          "panorama": "0.5787 rad/s",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "20.13 s",
+          "actual": "0.6615 rad/s",
+          "physics": "0.3377 rad/s",
+          "panorama": "0.6617 rad/s",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "40.26 s",
+          "actual": "0.5971 rad/s",
+          "physics": "0.0460 rad/s",
+          "panorama": "0.5754 rad/s",
+          "note": "真实 PANORAMA 评估切片"
+        },
+        {
+          "time": "60.00 s",
+          "actual": "0.4669 rad/s",
+          "physics": "-0.5757 rad/s",
+          "panorama": "0.4922 rad/s",
+          "note": "真实 PANORAMA 评估切片"
+        }
+      ],
+      "conclusion": "PANORAMA 在 60s 测试窗口内的 omega RMSE 为 0.068988 rad/s，相对纯物理基线改善 +88.56%。"
+    }
+  },
+  "conclusion": "该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。PANORAMA 在 60s 测试窗口内的 theta RMSE 为 0.012909 rad，相对纯物理基线改善 +91.33%。",
   "modelSummary": {
     "physicsTerm": "F_p：阻尼单摆动力学",
     "augmentationTerm": "F_a：已加载 panorama_model.pth 的神经残差修正",
