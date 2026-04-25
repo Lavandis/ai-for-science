@@ -154,6 +154,21 @@
   box-shadow: 0 16px 28px rgba(47, 111, 159, 0.22);
 }
 
+.forecast-run-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 32px rgba(47, 111, 159, 0.26);
+}
+
+.forecast-run-button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 10px 18px rgba(47, 111, 159, 0.2);
+}
+
+.forecast-run-button:focus-visible {
+  outline: 3px solid rgba(47, 111, 159, 0.28);
+  outline-offset: 3px;
+}
+
 .forecast-run-button:disabled {
   cursor: not-allowed;
   opacity: 0.62;

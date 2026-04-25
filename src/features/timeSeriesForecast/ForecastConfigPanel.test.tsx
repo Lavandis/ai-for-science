@@ -56,4 +56,43 @@ describe("ForecastConfigPanel", () => {
 
     expect(screen.getByRole("button", { name: "预测运行中" })).toBeDisabled();
   });
+
+  test("handles empty datasets and models without enabling run", () => {
+    render(
+      <ForecastConfigPanel
+        datasets={[]}
+        models={[]}
+        value={defaultForecastJobRequest}
+        isRunning={false}
+        onChange={vi.fn()}
+        onRun={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText("暂无可用数据集")).toBeInTheDocument();
+    expect(screen.getByText("暂无可用模型")).toBeInTheDocument();
+    expect(screen.getByText("请先配置可用数据集与模型")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "运行预测" })).toBeDisabled();
+  });
+
+  test("clamps numeric configuration changes to supported ranges", () => {
+    const onChange = vi.fn();
+
+    render(
+      <ForecastConfigPanel
+        datasets={forecastDatasets}
+        models={forecastModels}
+        value={defaultForecastJobRequest}
+        isRunning={false}
+        onChange={onChange}
+        onRun={vi.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText("训练比例"), { target: { value: "95" } });
+    fireEvent.change(screen.getByLabelText("预测窗口"), { target: { value: "" } });
+
+    expect(onChange).toHaveBeenNthCalledWith(1, { ...defaultForecastJobRequest, trainRatio: 0.9 });
+    expect(onChange).toHaveBeenNthCalledWith(2, { ...defaultForecastJobRequest, horizonSeconds: 10 });
+  });
 });

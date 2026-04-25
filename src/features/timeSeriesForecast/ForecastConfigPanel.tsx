@@ -9,6 +9,8 @@ type ForecastConfigPanelProps = {
   onRun: (request: ForecastJobRequest) => void;
 };
 
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
 export function ForecastConfigPanel({
   datasets,
   models,
@@ -22,6 +24,7 @@ export function ForecastConfigPanel({
   };
 
   const selectedDataset = datasets.find((dataset) => dataset.id === value.datasetId) ?? datasets[0];
+  const canRun = !isRunning && datasets.length > 0 && models.length > 0;
 
   return (
     <section className="forecast-config-card" aria-label="预测配置">
@@ -34,6 +37,7 @@ export function ForecastConfigPanel({
       <label className="forecast-control">
         <span>数据集</span>
         <select value={value.datasetId} onChange={(event) => update({ datasetId: event.target.value })}>
+          {datasets.length === 0 ? <option value="">暂无可用数据集</option> : null}
           {datasets.map((dataset) => (
             <option key={dataset.id} value={dataset.id}>
               {dataset.name}
@@ -45,6 +49,7 @@ export function ForecastConfigPanel({
       <label className="forecast-control">
         <span>模型版本</span>
         <select value={value.modelId} onChange={(event) => update({ modelId: event.target.value })}>
+          {models.length === 0 ? <option value="">暂无可用模型</option> : null}
           {models.map((model) => (
             <option key={model.id} value={model.id}>
               {model.name} {model.version}
@@ -72,7 +77,7 @@ export function ForecastConfigPanel({
           step="5"
           type="number"
           value={Math.round(value.trainRatio * 100)}
-          onChange={(event) => update({ trainRatio: Number(event.target.value) / 100 })}
+          onChange={(event) => update({ trainRatio: clamp(Number(event.target.value), 50, 90) / 100 })}
         />
       </label>
 
@@ -84,7 +89,7 @@ export function ForecastConfigPanel({
           step="10"
           type="number"
           value={value.horizonSeconds}
-          onChange={(event) => update({ horizonSeconds: Number(event.target.value) })}
+          onChange={(event) => update({ horizonSeconds: clamp(Number(event.target.value), 10, 120) })}
         />
       </label>
 
@@ -98,12 +103,18 @@ export function ForecastConfigPanel({
       </label>
 
       <div className="forecast-config-summary">
-        <span>{selectedDataset.sampleRateFps} fps</span>
-        <span>{selectedDataset.durationSeconds}s 原始序列</span>
-        <span>{selectedDataset.sourcePath}</span>
+        {selectedDataset ? (
+          <>
+            <span>{selectedDataset.sampleRateFps} fps</span>
+            <span>{selectedDataset.durationSeconds}s 原始序列</span>
+            <span>{selectedDataset.sourcePath}</span>
+          </>
+        ) : (
+          <span>请先配置可用数据集与模型</span>
+        )}
       </div>
 
-      <button className="forecast-run-button" type="button" disabled={isRunning} onClick={() => onRun(value)}>
+      <button className="forecast-run-button" type="button" disabled={!canRun} onClick={() => onRun(value)}>
         {isRunning ? "预测运行中" : "运行预测"}
       </button>
     </section>
