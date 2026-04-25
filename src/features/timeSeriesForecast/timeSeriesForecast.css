@@ -340,3 +340,30 @@
     grid-template-columns: 1fr;
   }
 }
+
+.forecast-left-column {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.forecast-empty-state {
+  display: grid;
+  align-content: center;
+  min-height: 320px;
+  padding: var(--space-6);
+  border: 1px dashed rgba(47, 111, 159, 0.24);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.forecast-empty-state h2 {
+  margin: var(--space-2) 0;
+}
+
+.forecast-empty-state p:last-child {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.75;
+}
