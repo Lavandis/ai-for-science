@@ -9,6 +9,7 @@ describe("createMockForecastService", () => {
   });
 
   afterEach(() => {
+    vi.clearAllTimers();
     vi.useRealTimers();
   });
 
@@ -61,6 +62,21 @@ describe("createMockForecastService", () => {
       jobId: job.id,
       targetVariable: "theta",
       metrics: expect.arrayContaining([expect.objectContaining({ label: "PANORAMA RMSE" })])
+    });
+  });
+
+  test("returns a result matching an omega job request", async () => {
+    const service = createMockForecastService();
+    const job = await service.createForecastJob({
+      ...defaultForecastJobRequest,
+      targetVariable: "omega"
+    });
+
+    await vi.advanceTimersByTimeAsync(1600);
+
+    await expect(service.getForecastResult(job.id)).resolves.toMatchObject({
+      jobId: job.id,
+      targetVariable: "omega"
     });
   });
 });

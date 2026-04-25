@@ -16,7 +16,7 @@ type JobStoreEntry = {
   result: ForecastResult;
 };
 
-type MockForecastService = {
+export type MockForecastService = {
   listDatasets: () => Promise<ForecastDataset[]>;
   listModels: () => Promise<ForecastModel[]>;
   createForecastJob: (request: ForecastJobRequest) => Promise<ForecastJob>;
@@ -81,7 +81,10 @@ export function createMockForecastService(): MockForecastService {
 
       jobs.set(id, {
         job,
-        result: createStaticForecastResult(id)
+        result: {
+          ...createStaticForecastResult(id),
+          targetVariable: job.request.targetVariable
+        }
       });
 
       window.setTimeout(() => {
