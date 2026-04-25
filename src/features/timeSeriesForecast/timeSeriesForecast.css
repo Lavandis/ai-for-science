@@ -36,6 +36,31 @@
   gap: var(--space-4);
 }
 
+.forecast-chart-card--empty {
+  min-height: 220px;
+  align-content: center;
+  padding: var(--space-5);
+  border: 1px dashed rgba(47, 111, 159, 0.28);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.forecast-chart-card--empty p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.forecast-chart-card--empty span,
+.forecast-chart-summary {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
 .forecast-chart-card svg {
   width: 100%;
   min-height: 340px;
@@ -45,10 +70,6 @@
   background:
     linear-gradient(180deg, rgba(248, 251, 255, 0.96), rgba(238, 246, 252, 0.9)),
     repeating-linear-gradient(90deg, transparent, transparent 55px, rgba(43, 77, 111, 0.05) 56px);
-}
-
-.forecast-test-band {
-  fill: url("#forecast-test-band");
 }
 
 .forecast-grid-line,
@@ -132,6 +153,13 @@
 
 .chart-legend .legend-physics::before {
   background: #2563eb;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #2563eb 0,
+    #2563eb 8px,
+    transparent 8px,
+    transparent 13px
+  );
 }
 
 .chart-legend .legend-panorama::before {

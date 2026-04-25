@@ -10,6 +10,7 @@ export function ForecastEvaluationTable({ rows }: ForecastEvaluationTableProps) 
     <InfoPanel title="评估切片">
       <div className="table-wrap">
         <table>
+          <caption>预测评估切片对比表</caption>
           <thead>
             <tr>
               <th>时间</th>

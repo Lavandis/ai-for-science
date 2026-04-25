@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { ForecastSeriesPoint } from "./forecastContract";
 
 type ForecastChartProps = {
@@ -14,6 +15,17 @@ function getY(value: number, minValue: number, maxValue: number) {
   return chartHeight - chartPadding - ratio * plotHeight;
 }
 
+function getX(pointSecond: number, firstSecond: number, lastSecond: number) {
+  const plotWidth = chartWidth - chartPadding * 2;
+  const secondRange = lastSecond - firstSecond;
+
+  if (secondRange <= 0) {
+    return chartPadding + plotWidth / 2;
+  }
+
+  return chartPadding + ((pointSecond - firstSecond) / secondRange) * plotWidth;
+}
+
 function toPolyline(
   series: ForecastSeriesPoint[],
   key: "actual" | "physics" | "panorama",
@@ -22,12 +34,11 @@ function toPolyline(
 ) {
   const first = series[0];
   const last = series[series.length - 1];
-  const plotWidth = chartWidth - chartPadding * 2;
 
   return series
     .filter((point) => point[key] !== null)
     .map((point) => {
-      const x = chartPadding + ((point.second - first.second) / (last.second - first.second)) * plotWidth;
+      const x = getX(point.second, first.second, last.second);
       const y = getY(point[key] ?? 0, minValue, maxValue);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
@@ -35,6 +46,17 @@ function toPolyline(
 }
 
 export function ForecastChart({ series }: ForecastChartProps) {
+  const gradientId = useId();
+
+  if (series.length === 0) {
+    return (
+      <div className="forecast-chart-card forecast-chart-card--empty" role="status">
+        <p>暂无预测序列数据</p>
+        <span>运行预测任务后将在此显示真实值、物理基线与 PANORAMA 预测曲线。</span>
+      </div>
+    );
+  }
+
   const values = series.flatMap((point) => [
     point.actual,
     point.physics ?? point.actual,
@@ -42,17 +64,20 @@ export function ForecastChart({ series }: ForecastChartProps) {
   ]);
   const minValue = Math.min(...values) - 0.04;
   const maxValue = Math.max(...values) + 0.04;
-  const splitPoint = series.find((point) => point.phase === "test") ?? series[0];
-  const splitX =
-    chartPadding +
-    ((splitPoint.second - series[0].second) / (series[series.length - 1].second - series[0].second)) *
-      (chartWidth - chartPadding * 2);
+  const firstPoint = series[0];
+  const lastPoint = series[series.length - 1];
+  const splitPoint = series.find((point) => point.phase === "test") ?? firstPoint;
+  const splitX = getX(splitPoint.second, firstPoint.second, lastPoint.second);
+  const summary =
+    splitPoint.phase === "test"
+      ? `共 ${series.length} 个采样点，测试段从 ${splitPoint.second} s 开始。`
+      : `共 ${series.length} 个采样点，当前序列未包含测试段。`;
 
   return (
     <div className="forecast-chart-card" role="img" aria-label="单摆角度真实值、物理基线与 PANORAMA 预测对比图">
       <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
         <defs>
-          <linearGradient id="forecast-test-band" x1="0" x2="1" y1="0" y2="0">
+          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
             <stop offset="0%" stopColor="rgba(47, 111, 159, 0.04)" />
             <stop offset="100%" stopColor="rgba(47, 111, 159, 0.14)" />
           </linearGradient>
@@ -63,6 +88,7 @@ export function ForecastChart({ series }: ForecastChartProps) {
           y={chartPadding}
           width={chartWidth - chartPadding - splitX}
           height={chartHeight - chartPadding * 2}
+          fill={`url(#${gradientId})`}
         />
         {[0, 1, 2, 3].map((index) => {
           const y = chartPadding + index * ((chartHeight - chartPadding * 2) / 3);
@@ -81,6 +107,7 @@ export function ForecastChart({ series }: ForecastChartProps) {
         <span className="legend-panorama">PANORAMA 预测</span>
         <span className="legend-band">测试段</span>
       </div>
+      <p className="forecast-chart-summary">{summary}</p>
     </div>
   );
 }
