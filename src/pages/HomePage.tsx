@@ -23,8 +23,10 @@ const visualCards = [
 export function HomePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isUserPaused, setIsUserPaused] = useState(false);
+  const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isFocusPaused, setIsFocusPaused] = useState(false);
+  const isCarouselPaused = isUserPaused || isHoverPaused || isFocusPaused;
 
   useEffect(() => {
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
@@ -59,12 +61,12 @@ export function HomePage() {
   }, [activeIndex]);
 
   useEffect(() => {
-    if (!isAutoPlaying || isUserPaused) return;
+    if (isCarouselPaused) return;
     const interval = setInterval(() => {
       scrollTo((activeIndex + 1) % moduleCatalog.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [activeIndex, isAutoPlaying, isUserPaused]);
+  }, [activeIndex, isCarouselPaused]);
 
   const scrollTo = (index: number) => {
     const container = scrollRef.current;
@@ -147,12 +149,12 @@ export function HomePage() {
         aria-label="功能入口"
         className="showcase-section"
         id="showcase"
-        onMouseEnter={() => setIsAutoPlaying(false)}
-        onMouseLeave={() => setIsAutoPlaying(true)}
-        onFocusCapture={() => setIsAutoPlaying(false)}
+        onMouseEnter={() => setIsHoverPaused(true)}
+        onMouseLeave={() => setIsHoverPaused(false)}
+        onFocusCapture={() => setIsFocusPaused(true)}
         onBlurCapture={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) {
-            setIsAutoPlaying(true);
+            setIsFocusPaused(false);
           }
         }}
       >

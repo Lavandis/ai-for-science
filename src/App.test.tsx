@@ -6,6 +6,7 @@ import App from "./App";
 describe("AI for Science routes", () => {
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   test("renders the home page with links to the three product modules", () => {
@@ -49,6 +50,67 @@ describe("AI for Science routes", () => {
     fireEvent.click(pauseButton);
     expect(within(featureEntrySection).getByRole("button", { name: "继续轮播" })).toBeInTheDocument();
     expect(screen.getByText(/识别与预测能力/)).toBeInTheDocument();
+  });
+
+  test("keeps the home carousel paused until hover and keyboard focus are both cleared", async () => {
+    vi.useFakeTimers();
+    const originalScrollTo = HTMLElement.prototype.scrollTo;
+    const scrollToMock = vi.fn();
+    HTMLElement.prototype.scrollTo = scrollToMock;
+
+    try {
+      render(
+        <MemoryRouter initialEntries={["/"]}>
+          <App />
+        </MemoryRouter>
+      );
+
+      const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
+      const firstDetailLink = within(featureEntrySection).getByRole("link", { name: "了解更多：图像识别" });
+
+      fireEvent.mouseEnter(featureEntrySection);
+      fireEvent.focus(firstDetailLink);
+      fireEvent.mouseLeave(featureEntrySection);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(4500);
+      });
+
+      expect(scrollToMock).not.toHaveBeenCalled();
+
+      fireEvent.blur(firstDetailLink, { relatedTarget: document.body });
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(4500);
+      });
+
+      expect(scrollToMock).toHaveBeenCalledTimes(1);
+    } finally {
+      HTMLElement.prototype.scrollTo = originalScrollTo;
+    }
+  });
+
+  test("starts the home carousel paused for reduced motion users", () => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }));
+
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
+
+    expect(within(featureEntrySection).getByRole("button", { name: "继续轮播" })).toBeInTheDocument();
   });
 
   test("renders 图像识别 as an independent page", () => {
