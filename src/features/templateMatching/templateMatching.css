@@ -1,0 +1,22 @@
+.recommendation-card {
+  display: grid;
+  grid-template-columns: 1fr minmax(140px, 0.32fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.recommendation-card h3 {
+  margin: var(--space-2) 0;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+}
+
+.recommendation-card p:last-child {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+@media (max-width: 720px) {
+  .recommendation-card {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,30 @@
+:root {
+  color-scheme: light;
+  font-family:
+    "Noto Sans SC",
+    "Source Han Sans SC",
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+  --color-page: #f5f8fb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #edf5fb;
+  --color-text: #172536;
+  --color-muted: #607082;
+  --color-border: #dce6ee;
+  --color-accent: #2f6f9f;
+  --color-accent-dark: #24577d;
+  --color-accent-soft: #7da8c6;
+  --shadow-soft: 0 18px 50px rgba(29, 59, 87, 0.09);
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --max-width: 1120px;
+}

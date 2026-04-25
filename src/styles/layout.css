@@ -1,0 +1,348 @@
+.app-shell {
+  width: min(100% - 2rem, var(--max-width));
+  margin: 0 auto;
+  padding: var(--space-5) 0 var(--space-7);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  margin-bottom: var(--space-7);
+  border: 1px solid rgba(220, 230, 238, 0.8);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 12px 36px rgba(29, 59, 87, 0.07);
+  backdrop-filter: blur(18px);
+}
+
+.brand,
+.site-nav a,
+.button-link {
+  min-height: 44px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  color: var(--color-text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--color-accent);
+  border-radius: 999px;
+  box-shadow: 12px 0 0 -3px var(--color-accent-soft);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.site-nav a.active,
+.site-nav a:hover {
+  color: var(--color-accent-dark);
+  background: var(--color-surface-soft);
+}
+
+.page-stack {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.hero-section,
+.page-header,
+.info-panel,
+.feature-card,
+.metric-card {
+  border: 1px solid rgba(220, 230, 238, 0.92);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
+  gap: var(--space-6);
+  align-items: stretch;
+  padding: clamp(2rem, 5vw, 4rem);
+  border-radius: var(--radius-xl);
+}
+
+.hero-section h1,
+.page-header h1 {
+  max-width: 760px;
+  margin: var(--space-2) 0 var(--space-4);
+  font-size: clamp(2.7rem, 8vw, 5.6rem);
+  letter-spacing: -0.06em;
+  line-height: 0.96;
+}
+
+.hero-copy,
+.page-header p,
+.feature-card p,
+.api-note {
+  color: var(--color-muted);
+  line-height: 1.75;
+}
+
+.hero-copy {
+  max-width: 690px;
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+}
+
+.hero-note {
+  display: grid;
+  align-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #eef6fc, #ffffff);
+}
+
+.hero-note span,
+.eyebrow {
+  margin: 0;
+  color: var(--color-accent-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-note strong {
+  font-size: 1.65rem;
+}
+
+.hero-note p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.feature-grid,
+.module-layout,
+.metric-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.feature-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-card,
+.info-panel,
+.page-header,
+.metric-card {
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.feature-card {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.feature-card h2,
+.info-panel h2 {
+  margin: 0;
+}
+
+.feature-card p {
+  margin: 0;
+}
+
+.clean-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.clean-list li {
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--color-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button-link:hover {
+  background: var(--color-accent-dark);
+}
+
+.page-header {
+  padding: clamp(2rem, 5vw, 3.5rem);
+}
+
+.page-header h1 {
+  font-size: clamp(2.3rem, 6vw, 4.6rem);
+}
+
+.page-header p:last-child {
+  max-width: 780px;
+  margin: 0;
+}
+
+.module-layout {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+}
+
+.info-panel {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.info-panel--soft {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(237, 245, 251, 0.92));
+}
+
+.field-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.field-row {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.field-row span {
+  color: var(--color-accent-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.field-row p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.metric-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metric-card {
+  display: grid;
+  gap: var(--space-2);
+  box-shadow: none;
+}
+
+.metric-card p,
+.metric-card span {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.metric-card strong {
+  color: var(--color-accent-dark);
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.api-note {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 0.94rem;
+}
+
+@media (max-width: 1080px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .site-header,
+  .hero-section,
+  .feature-grid,
+  .module-layout,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    display: grid;
+    border-radius: var(--radius-lg);
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 1rem, var(--max-width));
+    padding-top: var(--space-3);
+  }
+
+  .hero-section,
+  .page-header,
+  .feature-card,
+  .info-panel,
+  .metric-card {
+    padding: var(--space-5);
+  }
+
+  .site-nav a {
+    padding: 0 var(--space-3);
+  }
+
+  th,
+  td {
+    padding: 0.85rem;
+    white-space: nowrap;
+  }
+}
