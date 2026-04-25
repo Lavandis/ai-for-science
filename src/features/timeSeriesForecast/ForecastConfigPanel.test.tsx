@@ -118,6 +118,36 @@ describe("ForecastConfigPanel", () => {
     expect(onRun).not.toHaveBeenCalled();
   });
 
+  test("disables run when selected target variable is not supported by the dataset", () => {
+    const onRun = vi.fn();
+    const omegaOnlyDataset: ForecastDataset = {
+      id: "pendulum-omega-only",
+      name: "单摆角速度样例",
+      sourcePath: "data/processed/omega_only.csv",
+      sampleRateFps: 120,
+      durationSeconds: 180,
+      variables: ["omega"],
+      description: "仅包含 omega 角速度。"
+    };
+
+    render(
+      <ForecastConfigPanel
+        datasets={[omegaOnlyDataset]}
+        models={forecastModels}
+        value={{ ...defaultForecastJobRequest, datasetId: omegaOnlyDataset.id, targetVariable: "theta" }}
+        isRunning={false}
+        onChange={vi.fn()}
+        onRun={onRun}
+      />
+    );
+
+    const runButton = screen.getByRole("button", { name: "运行预测" });
+
+    expect(runButton).toBeDisabled();
+    fireEvent.click(runButton);
+    expect(onRun).not.toHaveBeenCalled();
+  });
+
   test("updates sample rate and target variable when dataset changes", () => {
     const onChange = vi.fn();
     const omegaOnlyDataset: ForecastDataset = {

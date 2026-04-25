@@ -33,4 +33,23 @@ describe("ForecastRunStatus", () => {
     expect(progressbar).toHaveAttribute("aria-valuenow", "100");
     expect(progressbar.firstElementChild).toHaveStyle({ width: "100%" });
   });
+
+  test("sanitizes non-finite progress before rendering progressbar state", () => {
+    const job: ForecastJob = {
+      id: "forecast-job-002",
+      status: "running",
+      createdAt: "2026-04-25T10:00:00.000Z",
+      updatedAt: "2026-04-25T10:00:01.000Z",
+      request: defaultForecastJobRequest,
+      progress: Number.NaN,
+      message: "预测任务运行中。"
+    };
+
+    render(<ForecastRunStatus status="running" job={job} errorMessage={null} />);
+
+    const progressbar = screen.getByRole("progressbar", { name: "任务进度 0%" });
+
+    expect(progressbar).toHaveAttribute("aria-valuenow", "0");
+    expect(progressbar.firstElementChild).toHaveStyle({ width: "0%" });
+  });
 });

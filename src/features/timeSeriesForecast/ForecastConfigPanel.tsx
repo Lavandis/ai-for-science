@@ -25,7 +25,8 @@ export function ForecastConfigPanel({
 
   const selectedDataset = datasets.find((dataset) => dataset.id === value.datasetId);
   const selectedModel = models.find((model) => model.id === value.modelId);
-  const canRun = !isRunning && Boolean(selectedDataset) && Boolean(selectedModel);
+  const isTargetSupported = selectedDataset?.variables.includes(value.targetVariable) ?? false;
+  const canRun = !isRunning && Boolean(selectedDataset) && Boolean(selectedModel) && isTargetSupported;
   const targetVariables = selectedDataset?.variables ?? ["theta", "omega"];
 
   const updateDataset = (datasetId: string) => {
