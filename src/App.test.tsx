@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import App from "./App";
@@ -68,7 +68,7 @@ describe("AI for Science routes", () => {
   });
 
   test("renders 时序预测 as an interactive PANORAMA workbench", async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.useFakeTimers();
 
     render(
       <MemoryRouter initialEntries={["/time-series-forecast"]}>
@@ -81,21 +81,55 @@ describe("AI for Science routes", () => {
     expect(screen.getByRole("button", { name: "运行预测" })).toBeInTheDocument();
     expect(screen.getByText("尚未运行")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
-    expect(await screen.findByText("forecast-job-1")).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
+    });
+    expect(screen.getByText("forecast-job-1")).toBeInTheDocument();
     expect(screen.getByText("预测任务已进入队列")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "预测运行中" })).toBeDisabled();
+    expect(screen.getByText("正在准备 PANORAMA 预测")).toBeInTheDocument();
 
-    await vi.advanceTimersByTimeAsync(700);
-    expect(await screen.findByText("正在执行 PANORAMA 滚动积分")).toBeInTheDocument();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(700);
+    });
+    expect(screen.getByText("正在执行 PANORAMA 滚动积分")).toBeInTheDocument();
 
-    await vi.advanceTimersByTimeAsync(900);
-    expect(await screen.findByText("预测完成")).toBeInTheDocument();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1050);
+    });
+    expect(screen.getByText("预测完成")).toBeInTheDocument();
     expect(screen.getByText("PANORAMA RMSE")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "运行预测" })).toBeEnabled();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
+    });
+    expect(screen.getByText("forecast-job-2")).toBeInTheDocument();
+    expect(screen.getByText("预测任务已进入队列")).toBeInTheDocument();
+    expect(screen.queryByText("PANORAMA RMSE")).not.toBeInTheDocument();
 
     expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "模板匹配" })).not.toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  test("creates a fresh forecast service for each time series page render", async () => {
+    vi.useFakeTimers();
+
+    render(
+      <MemoryRouter initialEntries={["/time-series-forecast"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
+    });
+
+    expect(screen.getByText("forecast-job-1")).toBeInTheDocument();
 
     vi.useRealTimers();
   });

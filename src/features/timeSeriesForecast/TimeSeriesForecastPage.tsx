@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InfoPanel } from "../../components/InfoPanel";
 import { PageHeader } from "../../components/PageHeader";
 import {
@@ -15,7 +15,7 @@ import { ForecastMetrics } from "./ForecastMetrics";
 import { ForecastPipeline } from "./ForecastPipeline";
 import { ForecastRunStatus } from "./ForecastRunStatus";
 import type { ForecastJob, ForecastJobRequest, ForecastJobStatus, ForecastResult } from "./forecastContract";
-import { mockForecastService } from "./mockForecastService";
+import { createMockForecastService } from "./mockForecastService";
 import "./timeSeriesForecast.css";
 
 export function TimeSeriesForecastPage() {
@@ -23,41 +23,75 @@ export function TimeSeriesForecastPage() {
   const [job, setJob] = useState<ForecastJob | null>(null);
   const [result, setResult] = useState<ForecastResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const activeRunId = useRef(0);
+  const activeJobId = useRef<string | null>(null);
 
   const status: ForecastJobStatus = job?.status ?? "idle";
   const isRunning = status === "queued" || status === "running";
 
-  const service = useMemo(() => mockForecastService, []);
+  const service = useMemo(() => createMockForecastService(), []);
 
   useEffect(() => {
     if (!job || job.status === "completed" || job.status === "failed") return;
 
+    let isCancelled = false;
+    const pollingJobId = job.id;
+
     const interval = window.setInterval(async () => {
       try {
-        const nextJob = await service.getForecastJob(job.id);
+        const nextJob = await service.getForecastJob(pollingJobId);
+
+        if (isCancelled || activeJobId.current !== pollingJobId) return;
+
         setJob(nextJob);
 
         if (nextJob.status === "completed") {
           const nextResult = await service.getForecastResult(nextJob.id);
+          if (isCancelled || activeJobId.current !== pollingJobId) return;
           setResult(nextResult);
         }
       } catch (error) {
-        setErrorMessage(error instanceof Error ? error.message : "状态同步失败");
+        if (isCancelled || activeJobId.current !== pollingJobId) return;
+
+        const message = error instanceof Error ? error.message : "状态同步失败";
+        setErrorMessage(message);
+        setJob((currentJob) => {
+          if (!currentJob || currentJob.id !== pollingJobId) return currentJob;
+
+          return {
+            ...currentJob,
+            status: "failed",
+            updatedAt: new Date().toISOString(),
+            progress: 100,
+            message
+          };
+        });
       }
     }, 350);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      isCancelled = true;
+      window.clearInterval(interval);
+    };
   }, [job, service]);
 
   const runForecast = async (request: ForecastJobRequest) => {
+    activeRunId.current += 1;
+    const runId = activeRunId.current;
+
     setErrorMessage(null);
     setResult(null);
 
     try {
       const nextJob = await service.createForecastJob(request);
+      if (runId !== activeRunId.current) return;
+
+      activeJobId.current = nextJob.id;
       setJob(nextJob);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "创建预测任务失败");
+      if (runId === activeRunId.current) {
+        setErrorMessage(error instanceof Error ? error.message : "创建预测任务失败");
+      }
     }
   };
 
@@ -98,6 +132,12 @@ export function TimeSeriesForecastPage() {
         <InfoPanel title="长时滚动预测" tone="soft">
           {result ? (
             <ForecastChart series={result.series} />
+          ) : isRunning ? (
+            <div className="forecast-empty-state forecast-empty-state--running" role="status">
+              <p className="eyebrow">Running</p>
+              <h2>正在准备 PANORAMA 预测</h2>
+              <p>任务已提交，正在同步队列状态并等待滚动积分结果。</p>
+            </div>
           ) : (
             <div className="forecast-empty-state">
               <p className="eyebrow">Ready</p>

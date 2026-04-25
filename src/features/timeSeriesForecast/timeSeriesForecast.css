@@ -367,3 +367,10 @@
   color: var(--color-muted);
   line-height: 1.75;
 }
+
+.forecast-empty-state--running {
+  border-style: solid;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 14rem),
+    rgba(255, 255, 255, 0.72);
+}
