@@ -25,6 +25,9 @@ export function TimeSeriesForecastPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const activeRunId = useRef(0);
   const activeJobId = useRef<string | null>(null);
+  const pollRequestId = useRef(0);
+  const isPolling = useRef(false);
+  const resultJobId = useRef<string | null>(null);
 
   const status: ForecastJobStatus = job?.status ?? "idle";
   const isRunning = status === "queued" || status === "running";
@@ -38,20 +41,29 @@ export function TimeSeriesForecastPage() {
     const pollingJobId = job.id;
 
     const interval = window.setInterval(async () => {
+      if (isPolling.current) return;
+
+      isPolling.current = true;
+      pollRequestId.current += 1;
+      const requestId = pollRequestId.current;
+
       try {
         const nextJob = await service.getForecastJob(pollingJobId);
 
-        if (isCancelled || activeJobId.current !== pollingJobId) return;
+        if (isCancelled || activeJobId.current !== pollingJobId || requestId !== pollRequestId.current) return;
+
+        if (nextJob.status === "completed" && resultJobId.current !== nextJob.id) {
+          const nextResult = await service.getForecastResult(nextJob.id);
+          if (isCancelled || activeJobId.current !== pollingJobId || requestId !== pollRequestId.current) return;
+          resultJobId.current = nextJob.id;
+          setJob(nextJob);
+          setResult(nextResult);
+          return;
+        }
 
         setJob(nextJob);
-
-        if (nextJob.status === "completed") {
-          const nextResult = await service.getForecastResult(nextJob.id);
-          if (isCancelled || activeJobId.current !== pollingJobId) return;
-          setResult(nextResult);
-        }
       } catch (error) {
-        if (isCancelled || activeJobId.current !== pollingJobId) return;
+        if (isCancelled || activeJobId.current !== pollingJobId || requestId !== pollRequestId.current) return;
 
         const message = error instanceof Error ? error.message : "状态同步失败";
         setErrorMessage(message);
@@ -66,6 +78,10 @@ export function TimeSeriesForecastPage() {
             message
           };
         });
+      } finally {
+        if (requestId === pollRequestId.current) {
+          isPolling.current = false;
+        }
       }
     }, 350);
 
@@ -79,6 +95,9 @@ export function TimeSeriesForecastPage() {
     activeRunId.current += 1;
     const runId = activeRunId.current;
 
+    pollRequestId.current += 1;
+    isPolling.current = false;
+    resultJobId.current = null;
     setErrorMessage(null);
     setResult(null);
 

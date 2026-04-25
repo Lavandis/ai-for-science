@@ -52,4 +52,39 @@ describe("ForecastRunStatus", () => {
     expect(progressbar).toHaveAttribute("aria-valuenow", "0");
     expect(progressbar.firstElementChild).toHaveStyle({ width: "0%" });
   });
+
+  test("announces job state and message changes without folding progress into the live text", () => {
+    const job: ForecastJob = {
+      id: "forecast-job-003",
+      status: "queued",
+      createdAt: "2026-04-25T10:00:00.000Z",
+      updatedAt: "2026-04-25T10:00:01.000Z",
+      request: defaultForecastJobRequest,
+      progress: 12,
+      message: "预测任务已进入队列"
+    };
+
+    const { rerender } = render(<ForecastRunStatus status="queued" job={job} errorMessage={null} />);
+
+    expect(screen.getByRole("region", { name: "预测任务状态" })).toBeInTheDocument();
+
+    const status = screen.getByRole("status", { name: "预测任务状态更新" });
+
+    expect(status).toHaveTextContent("forecast-job-003");
+    expect(status).toHaveTextContent("queued");
+    expect(status).toHaveTextContent("预测任务已进入队列");
+    expect(status).not.toHaveTextContent("12%");
+
+    rerender(
+      <ForecastRunStatus
+        status="failed"
+        job={{ ...job, status: "failed", progress: 100, message: "状态同步失败" }}
+        errorMessage="状态同步失败"
+      />
+    );
+
+    expect(screen.getByRole("status", { name: "预测任务状态更新" })).toHaveTextContent("failed");
+    expect(screen.getByRole("status", { name: "预测任务状态更新" })).toHaveTextContent("状态同步失败");
+    expect(screen.getByRole("progressbar", { name: "任务进度 100%" })).toBeInTheDocument();
+  });
 });
