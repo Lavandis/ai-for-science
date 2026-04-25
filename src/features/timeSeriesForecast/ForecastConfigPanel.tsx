@@ -23,8 +23,43 @@ export function ForecastConfigPanel({
     onChange({ ...value, ...nextValue });
   };
 
-  const selectedDataset = datasets.find((dataset) => dataset.id === value.datasetId) ?? datasets[0];
-  const canRun = !isRunning && datasets.length > 0 && models.length > 0;
+  const selectedDataset = datasets.find((dataset) => dataset.id === value.datasetId);
+  const selectedModel = models.find((model) => model.id === value.modelId);
+  const canRun = !isRunning && Boolean(selectedDataset) && Boolean(selectedModel);
+  const targetVariables = selectedDataset?.variables ?? ["theta", "omega"];
+
+  const updateDataset = (datasetId: string) => {
+    const nextDataset = datasets.find((dataset) => dataset.id === datasetId);
+
+    if (!nextDataset) {
+      update({ datasetId });
+      return;
+    }
+
+    update({
+      datasetId,
+      sampleRateFps: nextDataset.sampleRateFps,
+      targetVariable: nextDataset.variables.includes(value.targetVariable)
+        ? value.targetVariable
+        : (nextDataset.variables[0] ?? value.targetVariable)
+    });
+  };
+
+  const updateNumber = (
+    input: HTMLInputElement,
+    min: number,
+    max: number,
+    onValidValue: (nextValue: number) => void
+  ) => {
+    const rawValue = input.value;
+    const numericValue = Number(rawValue);
+
+    if (input.validity.badInput || (rawValue !== "" && !Number.isFinite(numericValue))) {
+      return;
+    }
+
+    onValidValue(clamp(numericValue, min, max));
+  };
 
   return (
     <section className="forecast-config-card" aria-label="预测配置">
@@ -36,7 +71,7 @@ export function ForecastConfigPanel({
 
       <label className="forecast-control">
         <span>数据集</span>
-        <select value={value.datasetId} onChange={(event) => update({ datasetId: event.target.value })}>
+        <select value={value.datasetId} onChange={(event) => updateDataset(event.target.value)}>
           {datasets.length === 0 ? <option value="">暂无可用数据集</option> : null}
           {datasets.map((dataset) => (
             <option key={dataset.id} value={dataset.id}>
@@ -64,8 +99,8 @@ export function ForecastConfigPanel({
           value={value.targetVariable}
           onChange={(event) => update({ targetVariable: event.target.value as ForecastVariable })}
         >
-          <option value="theta">theta 摆角</option>
-          <option value="omega">omega 角速度</option>
+          {targetVariables.includes("theta") ? <option value="theta">theta 摆角</option> : null}
+          {targetVariables.includes("omega") ? <option value="omega">omega 角速度</option> : null}
         </select>
       </label>
 
@@ -77,7 +112,9 @@ export function ForecastConfigPanel({
           step="5"
           type="number"
           value={Math.round(value.trainRatio * 100)}
-          onChange={(event) => update({ trainRatio: clamp(Number(event.target.value), 50, 90) / 100 })}
+          onChange={(event) =>
+            updateNumber(event.currentTarget, 50, 90, (nextValue) => update({ trainRatio: nextValue / 100 }))
+          }
         />
       </label>
 
@@ -89,7 +126,9 @@ export function ForecastConfigPanel({
           step="10"
           type="number"
           value={value.horizonSeconds}
-          onChange={(event) => update({ horizonSeconds: clamp(Number(event.target.value), 10, 120) })}
+          onChange={(event) =>
+            updateNumber(event.currentTarget, 10, 120, (nextValue) => update({ horizonSeconds: nextValue }))
+          }
         />
       </label>
 
