@@ -670,3 +670,22 @@ body {
     flex-wrap: wrap;
   }
 }
+
+/* =========================================
+   补充自动化测试要求的网格布局配置
+========================================= */
+.feature-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1080px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
