@@ -31,6 +31,78 @@
   stroke-dasharray: 7 8;
 }
 
+.forecast-chart-card {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.forecast-chart-card svg {
+  width: 100%;
+  min-height: 340px;
+  overflow: visible;
+  border: 1px solid rgba(47, 111, 159, 0.12);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.96), rgba(238, 246, 252, 0.9)),
+    repeating-linear-gradient(90deg, transparent, transparent 55px, rgba(43, 77, 111, 0.05) 56px);
+}
+
+.forecast-test-band {
+  fill: url("#forecast-test-band");
+}
+
+.forecast-grid-line,
+.forecast-axis {
+  stroke: rgba(52, 74, 98, 0.22);
+  stroke-width: 1;
+}
+
+.forecast-axis {
+  stroke-width: 1.4;
+}
+
+.forecast-split {
+  stroke: rgba(15, 23, 42, 0.28);
+  stroke-dasharray: 8 8;
+  stroke-width: 1.5;
+}
+
+.series-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4.5;
+}
+
+.series-line--actual {
+  stroke: #16a34a;
+}
+
+.series-line--physics {
+  stroke: #2563eb;
+  stroke-dasharray: 10 9;
+}
+
+.series-line--panorama {
+  stroke: #dc2626;
+}
+
+.forecast-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pipeline-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.pipeline-step {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
@@ -54,6 +126,37 @@
   background: var(--color-accent-soft);
 }
 
+.chart-legend .legend-actual::before {
+  background: #16a34a;
+}
+
+.chart-legend .legend-physics::before {
+  background: #2563eb;
+}
+
+.chart-legend .legend-panorama::before {
+  background: #dc2626;
+}
+
+.chart-legend span.legend-band::before {
+  height: 10px;
+  background: rgba(47, 111, 159, 0.18);
+}
+
+.pipeline-step span {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+}
+
+.pipeline-step strong {
+  display: block;
+  margin: var(--space-1) 0;
+  color: var(--color-accent-dark);
+  font-size: 1.12rem;
+}
+
+.pipeline-step p,
 .summary-copy {
   margin: 0;
   color: var(--color-muted);
@@ -192,4 +295,20 @@
 
 .forecast-status--failed .forecast-progress span {
   background: linear-gradient(90deg, #dc2626, #f97316);
+}
+
+@media (max-width: 1080px) {
+  .forecast-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .forecast-chart-card svg {
+    min-height: 260px;
+  }
+
+  .forecast-metrics {
+    grid-template-columns: 1fr;
+  }
 }
