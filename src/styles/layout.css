@@ -417,7 +417,10 @@ body {
 .carousel-pagination { 
   display: flex; 
   justify-content: center; 
+  align-items: center;
+  gap: var(--space-3);
   margin-top: 40px; 
+  padding: 0 var(--space-4);
 }
 
 .pagination-pill { 
@@ -442,6 +445,26 @@ body {
 .pagination-dot.active { 
   width: 40px; 
   background: #111; 
+}
+
+.carousel-toggle {
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #1d1d1f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.carousel-toggle:hover,
+.carousel-toggle:focus-visible {
+  background: #ffffff;
+  outline: 3px solid rgba(0, 113, 227, 0.16);
+  outline-offset: 2px;
 }
 
 /* 模块页基础布局 */
@@ -591,6 +614,7 @@ body {
   .match-target { width: 150px; height: 150px; }
 
   .site-header {
+    box-sizing: border-box;
     width: min(calc(100% - 1rem), 800px);
     height: auto;
     flex-wrap: wrap;
@@ -639,6 +663,10 @@ body {
   }
 
   .card-actions {
+    flex-wrap: wrap;
+  }
+
+  .carousel-pagination {
     flex-wrap: wrap;
   }
 }

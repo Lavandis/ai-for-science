@@ -33,6 +33,21 @@ describe("AI for Science routes", () => {
     expect(within(featureEntrySection).getByRole("heading", { name: "图像识别" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
+    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：图像识别" })).toHaveAttribute(
+      "href",
+      "/image-recognition"
+    );
+    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：模板匹配" })).toHaveAttribute(
+      "href",
+      "/template-matching"
+    );
+    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：时序预测" })).toHaveAttribute(
+      "href",
+      "/time-series-forecast"
+    );
+    const pauseButton = within(featureEntrySection).getByRole("button", { name: "暂停轮播" });
+    fireEvent.click(pauseButton);
+    expect(within(featureEntrySection).getByRole("button", { name: "继续轮播" })).toBeInTheDocument();
     expect(screen.getByText(/识别与预测能力/)).toBeInTheDocument();
   });
 

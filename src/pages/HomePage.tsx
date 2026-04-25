@@ -24,6 +24,13 @@ export function HomePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isUserPaused, setIsUserPaused] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setIsUserPaused(true);
+    }
+  }, []);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -52,12 +59,12 @@ export function HomePage() {
   }, [activeIndex]);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || isUserPaused) return;
     const interval = setInterval(() => {
       scrollTo((activeIndex + 1) % moduleCatalog.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [activeIndex, isAutoPlaying]);
+  }, [activeIndex, isAutoPlaying, isUserPaused]);
 
   const scrollTo = (index: number) => {
     const container = scrollRef.current;
@@ -142,6 +149,12 @@ export function HomePage() {
         id="showcase"
         onMouseEnter={() => setIsAutoPlaying(false)}
         onMouseLeave={() => setIsAutoPlaying(true)}
+        onFocusCapture={() => setIsAutoPlaying(false)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsAutoPlaying(true);
+          }
+        }}
       >
         <div className="showcase-inner">
           <div className="carousel-container" ref={scrollRef}>
@@ -154,7 +167,9 @@ export function HomePage() {
                       <p>{visualCards[index].subtitle}</p>
                     </div>
                     <div className="card-actions">
-                      <Link to={feature.href} className="btn-apple-blue">了解更多</Link>
+                      <Link to={feature.href} className="btn-apple-blue" aria-label={`了解更多：${feature.title}`}>
+                        了解更多
+                      </Link>
                       <Link to={feature.href} className="btn-apple-outline">{feature.actionLabel}</Link>
                     </div>
                   </div>
@@ -177,6 +192,14 @@ export function HomePage() {
                 />
               ))}
             </div>
+            <button
+              type="button"
+              className="carousel-toggle"
+              aria-pressed={isUserPaused}
+              onClick={() => setIsUserPaused((current) => !current)}
+            >
+              {isUserPaused ? "继续轮播" : "暂停轮播"}
+            </button>
           </div>
         </div>
       </section>

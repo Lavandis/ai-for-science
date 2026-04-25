@@ -14,6 +14,7 @@ describe("shared layout styles", () => {
     expect(layoutCss).toContain(".metric-grid {\n  display: grid;");
     expect(layoutCss).toContain("@media (max-width: 860px)");
     expect(layoutCss).toContain(".module-layout,\n  .metric-grid {\n    grid-template-columns: 1fr;\n  }");
+    expect(layoutCss).toContain(".site-header {\n    box-sizing: border-box;");
   });
 });
 
