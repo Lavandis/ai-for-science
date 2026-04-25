@@ -417,7 +417,10 @@ body {
 .carousel-pagination { 
   display: flex; 
   justify-content: center; 
+  align-items: center;
+  gap: var(--space-3);
   margin-top: 40px; 
+  padding: 0 var(--space-4);
 }
 
 .pagination-pill { 
@@ -444,11 +447,159 @@ body {
   background: #111; 
 }
 
-/* 隐藏无关内容与旧页面兼容 */
-.page-stack { display: block; }
-.info-panel, .metric-card { display: none; }
-.page-header { padding: 4rem; text-align: center; }
-.page-header h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; }
+.carousel-toggle {
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #1d1d1f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.carousel-toggle:hover,
+.carousel-toggle:focus-visible {
+  background: #ffffff;
+  outline: 3px solid rgba(0, 113, 227, 0.16);
+  outline-offset: 2px;
+}
+
+/* 模块页基础布局 */
+.page-stack {
+  display: grid;
+  gap: var(--space-6);
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 9rem 0 var(--space-8);
+}
+
+.page-header {
+  max-width: 760px;
+  padding: 0;
+  text-align: left;
+}
+
+.page-header h1 {
+  margin: var(--space-2) 0 var(--space-3);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.page-header p:last-child {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.8;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.module-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.info-panel,
+.metric-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-soft);
+}
+
+.info-panel {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  padding: clamp(1.1rem, 3vw, 1.5rem);
+}
+
+.info-panel--soft {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(239, 247, 252, 0.86));
+}
+
+.info-panel h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+}
+
+.metric-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.metric-card p,
+.metric-card span {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.metric-card strong {
+  color: var(--color-text);
+  font-size: clamp(1.55rem, 4vw, 2.25rem);
+  letter-spacing: -0.03em;
+}
+
+.field-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.field-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.field-row span {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.field-row p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.api-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
 
 /* 极限响应式 */
 @media (max-width: 860px) {
@@ -461,7 +612,65 @@ body {
   .lens-inner { width: 220px; height: 220px; }
   .glass-panel { width: 320px; height: 480px; }
   .match-target { width: 150px; height: 150px; }
+
+  .site-header {
+    box-sizing: border-box;
+    width: min(calc(100% - 1rem), 800px);
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 0.75rem;
+  }
+
+  .site-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .page-stack {
+    padding-top: 11rem;
+  }
+
+  .module-layout,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
 }
+
+@media (max-width: 520px) {
+  .hero-title {
+    font-size: 3.2rem;
+  }
+
+  .hero-copy {
+    padding: 0 var(--space-4);
+    font-size: 1.08rem;
+  }
+
+  .apple-card {
+    height: 500px;
+    border-radius: 30px;
+  }
+
+  .card-header {
+    padding: 32px 28px 0;
+  }
+
+  .card-actions {
+    flex-wrap: wrap;
+  }
+
+  .carousel-pagination {
+    flex-wrap: wrap;
+  }
+}
+
 /* =========================================
    补充自动化测试要求的网格布局配置
 ========================================= */
@@ -476,11 +685,7 @@ body {
 }
 
 @media (max-width: 860px) {
-  .site-header,
-  .hero-section,
-  .feature-grid,
-  .module-layout,
-  .metric-grid {
+  .feature-grid {
     grid-template-columns: 1fr;
   }
 }

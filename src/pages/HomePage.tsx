@@ -23,7 +23,16 @@ const visualCards = [
 export function HomePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isUserPaused, setIsUserPaused] = useState(false);
+  const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isFocusPaused, setIsFocusPaused] = useState(false);
+  const isCarouselPaused = isUserPaused || isHoverPaused || isFocusPaused;
+
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setIsUserPaused(true);
+    }
+  }, []);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -52,12 +61,12 @@ export function HomePage() {
   }, [activeIndex]);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (isCarouselPaused) return;
     const interval = setInterval(() => {
       scrollTo((activeIndex + 1) % moduleCatalog.length);
-    }, 4500); 
+    }, 4500);
     return () => clearInterval(interval);
-  }, [activeIndex, isAutoPlaying]);
+  }, [activeIndex, isCarouselPaused]);
 
   const scrollTo = (index: number) => {
     const container = scrollRef.current;
@@ -66,7 +75,7 @@ export function HomePage() {
     const targetSlide = slides[index];
     if (targetSlide) {
       const targetLeft = targetSlide.offsetLeft - (container.clientWidth / 2) + (targetSlide.clientWidth / 2);
-      container.scrollTo({ left: targetLeft, behavior: 'smooth' });
+      container.scrollTo({ left: targetLeft, behavior: "smooth" });
     }
   };
 
@@ -117,49 +126,37 @@ export function HomePage() {
 
   return (
     <div className="home-container">
-
-          {/* ========================================================= */}
-          {/* 【新增】不可见的自动化测试锚点，绝对不影响界面的完美效果 */}
-          <section 
-            aria-label="功能入口" 
-            style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}
-          >
-            <h1>AI for Science</h1>
-            <h2>图像识别</h2>
-            <h2>模板匹配</h2>
-            <h2>时序预测</h2>
-            <p>图像识别、模板匹配与时序预测</p>
-            <a href="/image-recognition">进入图像识别</a>
-            <a href="/template-matching">进入模板匹配</a>
-            <a href="/time-series-forecast">进入时序预测</a>
-          </section>
-          {/* ========================================================= */}
-
-
       <section className="hero-section" id="hero">
         <div className="hero-ambient-glow"></div>
         <div className="hero-content">
-          <div className="hero-badge animate-fade" style={{ animationDelay: '0.1s' }}>
+          <div className="hero-badge animate-fade" style={{ animationDelay: "0.1s" }}>
             <span className="pulse-dot"></span> AI for Science v2.0
           </div>
-          <h1 className="hero-title animate-fade" style={{ animationDelay: '0.2s' }}>
+          <h1 className="hero-title animate-fade" style={{ animationDelay: "0.2s" }}>
             探索未知的边界<br />
             <span className="text-gradient">触手可及</span>
           </h1>
-          <p className="hero-copy animate-fade" style={{ animationDelay: '0.3s' }}>
+          <p className="hero-copy animate-fade" style={{ animationDelay: "0.3s" }}>
             将前沿的识别与预测能力 注入极致优雅的工作流
           </p>
-          <div className="hero-actions animate-fade" style={{ animationDelay: '0.4s' }}>
+          <div className="hero-actions animate-fade" style={{ animationDelay: "0.4s" }}>
             <a href="#showcase" className="btn-primary-massive">开启探索之旅</a>
           </div>
         </div>
       </section>
 
-      <section 
-        className="showcase-section" 
+      <section
+        aria-label="功能入口"
+        className="showcase-section"
         id="showcase"
-        onMouseEnter={() => setIsAutoPlaying(false)} 
-        onMouseLeave={() => setIsAutoPlaying(true)}
+        onMouseEnter={() => setIsHoverPaused(true)}
+        onMouseLeave={() => setIsHoverPaused(false)}
+        onFocusCapture={() => setIsFocusPaused(true)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsFocusPaused(false);
+          }
+        }}
       >
         <div className="showcase-inner">
           <div className="carousel-container" ref={scrollRef}>
@@ -172,8 +169,10 @@ export function HomePage() {
                       <p>{visualCards[index].subtitle}</p>
                     </div>
                     <div className="card-actions">
-                      <Link to={feature.href} className="btn-apple-blue">了解更多</Link>
-                      <Link to={feature.href} className="btn-apple-outline">进入模块</Link>
+                      <Link to={feature.href} className="btn-apple-blue" aria-label={`了解更多：${feature.title}`}>
+                        了解更多
+                      </Link>
+                      <Link to={feature.href} className="btn-apple-outline">{feature.actionLabel}</Link>
                     </div>
                   </div>
                   <div className="card-visual">
@@ -189,11 +188,20 @@ export function HomePage() {
               {moduleCatalog.map((_, index) => (
                 <button
                   key={index}
-                  className={`pagination-dot ${activeIndex === index ? 'active' : ''}`}
+                  className={`pagination-dot ${activeIndex === index ? "active" : ""}`}
+                  aria-label={`切换到${visualCards[index].title}`}
                   onClick={() => scrollTo(index)}
                 />
               ))}
             </div>
+            <button
+              type="button"
+              className="carousel-toggle"
+              aria-pressed={isUserPaused}
+              onClick={() => setIsUserPaused((current) => !current)}
+            >
+              {isUserPaused ? "继续轮播" : "暂停轮播"}
+            </button>
           </div>
         </div>
       </section>
