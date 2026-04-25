@@ -17,7 +17,7 @@ describe("AI for Science routes", () => {
 
     const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
 
-    expect(screen.getByRole("heading", { name: /AI for Science/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "探索未知的边界触手可及" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("link", { name: "进入图像识别" })).toHaveAttribute(
       "href",
       "/image-recognition"
@@ -33,7 +33,7 @@ describe("AI for Science routes", () => {
     expect(within(featureEntrySection).getByRole("heading", { name: "图像识别" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
-    expect(screen.getByText(/图像识别、模板匹配与时序预测/)).toBeInTheDocument();
+    expect(screen.getByText(/识别与预测能力/)).toBeInTheDocument();
   });
 
   test("renders 图像识别 as an independent page", () => {

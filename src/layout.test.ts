@@ -7,13 +7,13 @@ const imageRecognitionCss = readFileSync(
   resolve(process.cwd(), "src/features/imageRecognition/imageRecognition.css"),
   "utf8"
 );
-describe("homepage feature grid layout", () => {
-  test("uses three columns by default and collapses at the expected breakpoints", () => {
-    expect(layoutCss).toContain(".feature-grid {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}");
-    expect(layoutCss).toContain("@media (max-width: 1080px) {\n  .feature-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}");
-    expect(layoutCss).toContain(
-      "@media (max-width: 860px) {\n  .site-header,\n  .hero-section,\n  .feature-grid,\n  .module-layout,\n  .metric-grid {\n    grid-template-columns: 1fr;\n  }"
-    );
+describe("shared layout styles", () => {
+  test("keeps the home carousel and module pages responsive", () => {
+    expect(layoutCss).toContain(".carousel-container");
+    expect(layoutCss).toContain(".module-layout {\n  display: grid;");
+    expect(layoutCss).toContain(".metric-grid {\n  display: grid;");
+    expect(layoutCss).toContain("@media (max-width: 860px)");
+    expect(layoutCss).toContain(".module-layout,\n  .metric-grid {\n    grid-template-columns: 1fr;\n  }");
   });
 });
 
