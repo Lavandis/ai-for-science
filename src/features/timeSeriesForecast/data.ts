@@ -92,6 +92,8 @@ export const forecastMetrics: ForecastMetric[] = [
   { label: "外推窗口", value: "60 s", note: "测试段滚动预测" }
 ];
 
+export const seriesPoints = [28, 34, 31, 39, 42, 48, 45, 52, 58, 61, 64, 69];
+
 export const pendulumSeries: ForecastSeriesPoint[] = [
   { second: 0, actual: -0.263, physics: null, panorama: null, phase: "train" },
   { second: 5, actual: -0.188, physics: null, panorama: null, phase: "train" },
