@@ -5,7 +5,8 @@ import type {
   ForecastMetric,
   ForecastModel,
   ForecastResult,
-  ForecastSeriesPoint
+  ForecastSeriesPoint,
+  ForecastVariable
 } from "./forecastContract";
 
 export type { ForecastSeriesPoint as PendulumSeriesPoint } from "./forecastContract";
@@ -122,15 +123,108 @@ export const forecastRows: ForecastEvaluationRow[] = [
   { time: "85 s", actual: "0.151", physics: "0.239", panorama: "0.159", note: "长时误差仍可控" }
 ];
 
-export function createStaticForecastResult(jobId: string): ForecastResult {
+const variableMeta: Record<
+  ForecastVariable,
+  {
+    name: string;
+    unit: string;
+    panoramaRmse: string;
+    physicsRmse: string;
+    improvement: string;
+    conclusion: string;
+  }
+> = {
+  theta: {
+    name: "摆角 theta",
+    unit: "rad",
+    panoramaRmse: "0.0186 rad",
+    physicsRmse: "0.0418 rad",
+    improvement: "+55.5%",
+    conclusion: "PANORAMA 曲线相较纯物理基线更贴近真实角度序列，尤其在长时预测后段保留了更稳定的相位与幅值。"
+  },
+  omega: {
+    name: "角速度 omega",
+    unit: "rad/s",
+    panoramaRmse: "0.052 rad/s",
+    physicsRmse: "0.119 rad/s",
+    improvement: "+56.3%",
+    conclusion: "PANORAMA 曲线相较纯物理基线更贴近真实角速度序列，测试段后半段的相位漂移更小。"
+  }
+};
+
+const evaluationSeconds = new Set([40, 55, 70, 85]);
+
+function toOmegaSeries(point: ForecastSeriesPoint): ForecastSeriesPoint {
+  return {
+    ...point,
+    actual: Number((point.actual * 0.42).toFixed(3)),
+    physics: point.physics === null ? null : Number((point.physics * 0.46).toFixed(3)),
+    panorama: point.panorama === null ? null : Number((point.panorama * 0.43).toFixed(3))
+  };
+}
+
+function formatValue(value: number | null, unit: string) {
+  return value === null ? "未启用" : `${value.toFixed(3)} ${unit}`;
+}
+
+function createResultSeries(targetVariable: ForecastVariable, baselineEnabled: boolean) {
+  const series = targetVariable === "omega" ? pendulumSeries.map(toOmegaSeries) : pendulumSeries.map((point) => ({ ...point }));
+
+  if (baselineEnabled) return series;
+
+  return series.map((point) => ({
+    ...point,
+    physics: null
+  }));
+}
+
+function createResultRows(series: ForecastSeriesPoint[], targetVariable: ForecastVariable, baselineEnabled: boolean) {
+  const meta = variableMeta[targetVariable];
+
+  return series
+    .filter((point) => evaluationSeconds.has(point.second))
+    .map((point) => ({
+      time: `${point.second} s`,
+      actual: formatValue(point.actual, meta.unit),
+      physics: baselineEnabled ? formatValue(point.physics, meta.unit) : "未启用",
+      panorama: formatValue(point.panorama, meta.unit),
+      note: baselineEnabled ? "测试段预测对比" : "未启用物理基线对照"
+    }));
+}
+
+function createResultMetrics(targetVariable: ForecastVariable, horizonSeconds: number, baselineEnabled: boolean): ForecastMetric[] {
+  const meta = variableMeta[targetVariable];
+  const metrics: ForecastMetric[] = [
+    { label: "PANORAMA RMSE", value: meta.panoramaRmse, note: `${meta.name} 静态评估示例` }
+  ];
+
+  if (baselineEnabled) {
+    metrics.push(
+      { label: "物理基线 RMSE", value: meta.physicsRmse, note: "同一测试窗口" },
+      { label: "误差改善", value: meta.improvement, note: "相对纯物理模型" }
+    );
+  } else {
+    metrics.push({ label: "基线对照", value: "已关闭", note: "本次运行仅显示 PANORAMA 预测" });
+  }
+
+  metrics.push({ label: "外推窗口", value: `${horizonSeconds} s`, note: "测试段滚动预测" });
+
+  return metrics;
+}
+
+export function createStaticForecastResult(jobId: string, request = defaultForecastJobRequest): ForecastResult {
+  const series = createResultSeries(request.targetVariable, request.baselineEnabled);
+
   return {
     jobId,
-    targetVariable: "theta",
-    series: pendulumSeries,
-    metrics: forecastMetrics,
-    evaluationRows: forecastRows,
-    conclusion:
-      "PANORAMA 曲线相较纯物理基线更贴近真实角度序列，尤其在长时预测后段保留了更稳定的相位与幅值。",
+    targetVariable: request.targetVariable,
+    baselineEnabled: request.baselineEnabled,
+    series,
+    metrics: createResultMetrics(request.targetVariable, request.horizonSeconds, request.baselineEnabled),
+    evaluationRows: createResultRows(series, request.targetVariable, request.baselineEnabled),
+    conclusion: request.baselineEnabled
+      ? variableMeta[request.targetVariable].conclusion
+      : `${variableMeta[request.targetVariable].name} 结果已生成；本次运行关闭物理基线，仅展示 PANORAMA 预测与真实序列对照。`,
     modelSummary: {
       physicsTerm: "F_p：阻尼单摆动力学",
       augmentationTerm: "F_a：神经网络残差修正",

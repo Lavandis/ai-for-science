@@ -210,4 +210,33 @@ describe("AI for Science routes", () => {
 
     vi.useRealTimers();
   });
+
+  test("renders omega results without physics baseline when configured", async () => {
+    vi.useFakeTimers();
+
+    render(
+      <MemoryRouter initialEntries={["/time-series-forecast"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText("输出变量"), { target: { value: "omega" } });
+    fireEvent.click(screen.getByLabelText("启用纯物理基线对比"));
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
+    });
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1750);
+    });
+
+    expect(screen.getByRole("img", { name: /角速度 omega真实值与 PANORAMA 预测对比图/ })).toBeInTheDocument();
+    expect(screen.getByText("真实角速度 omega")).toBeInTheDocument();
+    expect(screen.getByText("基线对照")).toBeInTheDocument();
+    expect(screen.getByText("已关闭")).toBeInTheDocument();
+    expect(screen.queryByText("纯物理基线")).not.toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
 });

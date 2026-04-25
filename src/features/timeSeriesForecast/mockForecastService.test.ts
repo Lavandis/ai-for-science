@@ -76,7 +76,29 @@ describe("createMockForecastService", () => {
 
     await expect(service.getForecastResult(job.id)).resolves.toMatchObject({
       jobId: job.id,
-      targetVariable: "omega"
+      targetVariable: "omega",
+      baselineEnabled: true,
+      metrics: expect.arrayContaining([expect.objectContaining({ value: expect.stringContaining("rad/s") })]),
+      evaluationRows: expect.arrayContaining([expect.objectContaining({ actual: expect.stringContaining("rad/s") })])
     });
+  });
+
+  test("omits physics baseline values when baseline comparison is disabled", async () => {
+    const service = createMockForecastService();
+    const job = await service.createForecastJob({
+      ...defaultForecastJobRequest,
+      baselineEnabled: false
+    });
+
+    await vi.advanceTimersByTimeAsync(1600);
+
+    const result = await service.getForecastResult(job.id);
+
+    expect(result.baselineEnabled).toBe(false);
+    expect(result.series.every((point) => point.physics === null)).toBe(true);
+    expect(result.metrics).not.toEqual(expect.arrayContaining([expect.objectContaining({ label: "物理基线 RMSE" })]));
+    expect(result.evaluationRows).toEqual(
+      expect.arrayContaining([expect.objectContaining({ physics: "未启用" })])
+    );
   });
 });

@@ -9,7 +9,7 @@ function getSeriesLines(container: HTMLElement) {
 
 describe("ForecastChart", () => {
   test("renders a clear empty state when series is empty", () => {
-    render(<ForecastChart series={[]} />);
+    render(<ForecastChart baselineEnabled={true} series={[]} targetVariable="theta" />);
 
     expect(screen.getByRole("status")).toHaveTextContent("暂无预测序列数据");
   });
@@ -19,7 +19,7 @@ describe("ForecastChart", () => {
       { second: 10, actual: 0.12, physics: 0.13, panorama: 0.11, phase: "test" }
     ];
 
-    const { container } = render(<ForecastChart series={series} />);
+    const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
@@ -32,7 +32,7 @@ describe("ForecastChart", () => {
       { second: 10, actual: 0.15, physics: 0.16, panorama: 0.14, phase: "test" }
     ];
 
-    const { container } = render(<ForecastChart series={series} />);
+    const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
@@ -44,10 +44,24 @@ describe("ForecastChart", () => {
       { second: 5, actual: 0.18, physics: null, panorama: null, phase: "train" }
     ];
 
-    const { container } = render(<ForecastChart series={series} />);
+    const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
     expect(screen.getByText(/共 2 个采样点/)).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
+  });
+
+  test("labels omega charts and hides the physics baseline when it is disabled", () => {
+    const series: ForecastSeriesPoint[] = [
+      { second: 40, actual: -0.05, physics: null, panorama: -0.04, phase: "test" },
+      { second: 45, actual: 0.08, physics: null, panorama: 0.07, phase: "test" }
+    ];
+
+    const { container } = render(<ForecastChart baselineEnabled={false} series={series} targetVariable="omega" />);
+
+    expect(screen.getByRole("img", { name: /角速度 omega/ })).toBeInTheDocument();
+    expect(screen.getByText("真实角速度 omega")).toBeInTheDocument();
+    expect(screen.queryByText("纯物理基线")).not.toBeInTheDocument();
+    expect(getSeriesLines(container)).toHaveLength(2);
   });
 });

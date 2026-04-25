@@ -66,6 +66,7 @@ export type ForecastEvaluationRow = {
 export type ForecastResult = {
   jobId: string;
   targetVariable: ForecastVariable;
+  baselineEnabled: boolean;
   series: ForecastSeriesPoint[];
   metrics: ForecastMetric[];
   evaluationRows: ForecastEvaluationRow[];

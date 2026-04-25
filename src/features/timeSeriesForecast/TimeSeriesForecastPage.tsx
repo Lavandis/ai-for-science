@@ -150,7 +150,11 @@ export function TimeSeriesForecastPage() {
 
         <InfoPanel title="长时滚动预测" tone="soft">
           {result ? (
-            <ForecastChart series={result.series} />
+            <ForecastChart
+              baselineEnabled={result.baselineEnabled}
+              series={result.series}
+              targetVariable={result.targetVariable}
+            />
           ) : isRunning ? (
             <div className="forecast-empty-state forecast-empty-state--running" role="status">
               <p className="eyebrow">Running</p>
@@ -172,7 +176,7 @@ export function TimeSeriesForecastPage() {
           <ForecastMetrics metrics={result.metrics} status={status} />
           <div className="forecast-detail-grid">
             <ForecastPipeline stages={modelStages} />
-            <ForecastEvaluationTable rows={result.evaluationRows} />
+            <ForecastEvaluationTable rows={result.evaluationRows} targetVariable={result.targetVariable} />
           </div>
           <InfoPanel title="预测结论">
             <p className="summary-copy">{result.conclusion}</p>

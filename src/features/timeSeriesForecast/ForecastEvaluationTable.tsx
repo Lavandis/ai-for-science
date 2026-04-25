@@ -1,11 +1,12 @@
 import { InfoPanel } from "../../components/InfoPanel";
-import type { ForecastEvaluationRow } from "./forecastContract";
+import type { ForecastEvaluationRow, ForecastVariable } from "./forecastContract";
 
 type ForecastEvaluationTableProps = {
   rows: ForecastEvaluationRow[];
+  targetVariable: ForecastVariable;
 };
 
-export function ForecastEvaluationTable({ rows }: ForecastEvaluationTableProps) {
+export function ForecastEvaluationTable({ rows, targetVariable }: ForecastEvaluationTableProps) {
   return (
     <InfoPanel title="评估切片">
       <div className="table-wrap">
@@ -14,7 +15,7 @@ export function ForecastEvaluationTable({ rows }: ForecastEvaluationTableProps) 
           <thead>
             <tr>
               <th>时间</th>
-              <th>真实 theta</th>
+              <th>真实 {targetVariable}</th>
               <th>物理基线</th>
               <th>PANORAMA</th>
               <th>说明</th>

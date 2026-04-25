@@ -81,10 +81,7 @@ export function createMockForecastService(): MockForecastService {
 
       jobs.set(id, {
         job,
-        result: {
-          ...createStaticForecastResult(id),
-          targetVariable: job.request.targetVariable
-        }
+        result: createStaticForecastResult(id, job.request)
       });
 
       window.setTimeout(() => {
