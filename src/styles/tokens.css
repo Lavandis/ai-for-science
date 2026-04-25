@@ -1,30 +1,69 @@
 :root {
-  color-scheme: light;
-  font-family:
-    "Noto Sans SC",
-    "Source Han Sans SC",
-    "PingFang SC",
-    "Microsoft YaHei",
-    sans-serif;
-  --color-page: #f5f8fb;
-  --color-surface: #ffffff;
-  --color-surface-soft: #edf5fb;
-  --color-text: #172536;
-  --color-muted: #607082;
-  --color-border: #dce6ee;
-  --color-accent: #2f6f9f;
-  --color-accent-dark: #24577d;
-  --color-accent-soft: #7da8c6;
-  --shadow-soft: 0 18px 50px rgba(29, 59, 87, 0.09);
-  --radius-xl: 28px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --max-width: 1120px;
+  --color-page: #f8fafc; /* 极浅的蓝灰背景，比纯白更有质感 */
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  
+  --color-accent-start: #6366f1; /* 贴近图片中的亮紫色 */
+  --color-accent-end: #8b5cf6;
+  --gradient-ai: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  
+  --radius-pill: 999px;
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 全局进场与呼吸动画 */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes breatheGlow {
+  0%, 100% { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05), 0 0 30px rgba(99, 102, 241, 0.05); transform: translateY(0); }
+  50% { box-shadow: 0 30px 60px -10px rgba(0,0,0,0.08), 0 0 50px rgba(139, 92, 246, 0.15); transform: translateY(-4px); }
+}
+
+@keyframes pulseBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  background-color: var(--color-page);
+  /* 打造高级的隐现光影背景 */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--color-text);
+}
+
+.animate-fade {
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.text-gradient {
+  background: var(--gradient-ai);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: pulseBorder 5s ease infinite;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-accent-start);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
 }
