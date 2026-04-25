@@ -59,3 +59,122 @@
   color: var(--color-muted);
   line-height: 1.85;
 }
+
+.forecast-config-card,
+.forecast-status {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid rgba(47, 111, 159, 0.16);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(238, 247, 252, 0.86)),
+    radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.12), transparent 16rem);
+  box-shadow: var(--shadow-soft);
+}
+
+.forecast-config-card h2,
+.forecast-status h2 {
+  margin: var(--space-1) 0 var(--space-2);
+  letter-spacing: -0.03em;
+}
+
+.forecast-config-card p,
+.forecast-status p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.forecast-control {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.forecast-control select,
+.forecast-control input {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0 var(--space-3);
+  border: 1px solid rgba(47, 111, 159, 0.24);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.forecast-control select:focus,
+.forecast-control input:focus {
+  border-color: var(--color-accent);
+  outline: 3px solid rgba(47, 111, 159, 0.16);
+}
+
+.forecast-check {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.forecast-check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-accent);
+}
+
+.forecast-config-summary,
+.forecast-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.forecast-config-summary span,
+.forecast-status-meta span {
+  padding: 0.42rem 0.72rem;
+  border: 1px solid rgba(47, 111, 159, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-muted);
+  font-size: 0.86rem;
+}
+
+.forecast-run-button {
+  min-height: 3rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 0 16px 28px rgba(47, 111, 159, 0.22);
+}
+
+.forecast-run-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  box-shadow: none;
+}
+
+.forecast-progress {
+  height: 0.72rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(47, 111, 159, 0.12);
+}
+
+.forecast-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #16a34a, #38bdf8);
+  transition: width 220ms ease;
+}
+
+.forecast-status--failed .forecast-progress span {
+  background: linear-gradient(90deg, #dc2626, #f97316);
+}
