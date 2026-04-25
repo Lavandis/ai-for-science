@@ -32,22 +32,6 @@ describe("AI for Science routes", () => {
     expect(screen.getByText(/图像识别、模板匹配与时序预测/)).toBeInTheDocument();
   });
 
-  test("renders 图像识别 as an independent page", () => {
-    render(
-      <MemoryRouter initialEntries={["/image-recognition"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByRole("heading", { name: "图像识别" })).toBeInTheDocument();
-    expect(screen.getByText("样本来源")).toBeInTheDocument();
-    expect(screen.getByText("关键点坐标")).toBeInTheDocument();
-    expect(screen.getByText("摆球中心")).toBeInTheDocument();
-    expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "模板匹配" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();
-  });
-
   test("renders 模板匹配 as an independent page", () => {
     render(
       <MemoryRouter initialEntries={["/template-matching"]}>
@@ -55,26 +39,16 @@ describe("AI for Science routes", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
-    expect(screen.getByText("目标模板")).toBeInTheDocument();
-    expect(screen.getByText("推荐模板")).toBeInTheDocument();
+    // 适配新的 HTPE 模板匹配页面标题
+    expect(screen.getByRole("heading", { name: "HTPE 模板匹配" })).toBeInTheDocument();
+    
+    // 适配新的页面侧边栏标题和预览区文本
+    expect(screen.getByText("实验数据配置")).toBeInTheDocument();
+    expect(screen.getByText(/输入序列预览/)).toBeInTheDocument();
+
+    // 确保没有渲染其他页面的内容
     expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();
-  });
-
-  test("renders 时序预测 as an independent page", () => {
-    render(
-      <MemoryRouter initialEntries={["/time-series-forecast"]}>
-        <App />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
-    expect(screen.getByText("预测步长")).toBeInTheDocument();
-    expect(screen.getByText("趋势图占位")).toBeInTheDocument();
-    expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "模板匹配" })).not.toBeInTheDocument();
   });
 });

@@ -224,26 +224,78 @@ body {
 
 .carousel-container::-webkit-scrollbar { display: none; }
 
+/* =========================================
+   3. 画廊展示区 (Showcase & Cards)
+========================================= */
+/* ... 保留原有部分 container 的设定 ... */
+.card-actions { 
+  display: flex; 
+  gap: 16px; 
+  margin-top: 15px; 
+}
+
+/* 蓝色的“了解更多”按钮 */
+.btn-apple-blue { 
+  background: #0071e3; 
+  color: #fff; 
+  padding: 14px 28px; 
+  border-radius: 999px; 
+  font-weight: 700; 
+  text-decoration: none; 
+  font-size: 1.05rem; 
+  transition: all 0.3s ease;
+}
+
+.btn-apple-blue:hover {
+  background: #005bb5;
+  transform: scale(1.02);
+}
+
+/* 🚀 全新的纯白“进入模块”边框按钮 */
+.btn-apple-outline { 
+  background: transparent; 
+  color: #ffffff; /* 纯白文字 */
+  border: 2px solid rgba(255, 255, 255, 0.8); /* 纯白边框，带一点通透感 */
+  padding: 12px 26px; 
+  border-radius: 999px; 
+  font-weight: 700; 
+  text-decoration: none; 
+  font-size: 1.05rem; 
+  transition: all 0.3s ease; 
+}
+
+/* 鼠标悬浮时的反转交互特效 */
+.btn-apple-outline:hover {
+  background: #ffffff; /* 悬浮时背景填满白色 */
+  color: #000000; /* 文字反转为纯黑，对比强烈 */
+  transform: scale(1.02); /* 轻微放大 */
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* 淡淡的白色光晕 */
+}
 .carousel-slide { 
-  flex: 0 0 min(1100px, 90vw); 
+  /* 🚀 放大卡片宽度：从 1100px 扩大到 1300px，占比从 90vw 扩大到 95vw */
+  flex: 0 0 min(1300px, 95vw); 
   scroll-snap-align: center; 
   scroll-snap-stop: always; 
 }
 
 .apple-card {
-  height: 680px; 
+  /* 🚀 放大卡片高度：从 680px 拔高到 780px */
+  height: 780px; 
   background: #000; 
-  border-radius: 48px;
+  /* 🚀 增大圆角，以匹配更大尺寸的画幅 */
+  border-radius: 56px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+  /* 🚀 加深加宽阴影，提升“悬浮”与高保真质感 */
+  box-shadow: 0 50px 100px rgba(0,0,0,0.3);
   position: relative;
   transition: transform 0.5s ease;
 }
 
 .card-header { 
-  padding: 60px 60px 0; 
+  /* 顶部留出更多呼吸感 */
+  padding: 70px 70px 0; 
   display: flex; 
   justify-content: space-between; 
   align-items: flex-start; 
@@ -251,49 +303,180 @@ body {
   position: relative; 
 }
 
-.card-titles h2 { font-size: 4rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.03em; }
-.card-titles p { font-size: 1.8rem; color: #a1a1a6; font-weight: 600; margin: 8px 0 0; }
+/* 🚀 放大标题和副标题字号 */
+.card-titles h2 { font-size: 5rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.04em; }
+.card-titles p { font-size: 2.2rem; color: #a1a1a6; font-weight: 600; margin: 8px 0 0; }
 
-.card-actions { display: flex; gap: 16px; margin-top: 15px; }
-.btn-apple-blue { background: #0071e3; color: #fff; padding: 14px 28px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 1.05rem; }
-.btn-apple-outline { background: transparent; color: #0071e3; border: 2px solid #0071e3; padding: 12px 26px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 1.05rem; }
 
-.card-visual { 
-  flex: 1; 
-  position: relative; 
-  display: flex; 
-  justify-content: center; 
-  align-items: flex-end; 
-  overflow: hidden; 
+/* =========================================
+   新增：视频卡片专属样式 (模板匹配)
+========================================= */
+.video-art {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* 🚀 渐变遮罩：让视频顶部逐渐变透明，与黑色卡片无缝融合 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 15%, black 40%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 15%, black 40%);
 }
 
-.dynamic-art { 
-  width: 100%; 
-  height: 100%; 
-  position: absolute; 
-  top: 0; left: 0; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
+.feature-video {
+  width: 100%;
+  height: 100%;
+  /* 保证视频铺满整个卡片下半区，不会变形 */
+  object-fit: cover;
+  opacity: 0.95;
+}
+
+/* 极限响应式（适配大卡片在小屏幕的情况） */
+@media (max-width: 860px) {
+  .carousel-slide { flex: 0 0 92vw; }
+  .apple-card { height: 600px; border-radius: 40px; }
+  .card-header { padding: 40px 40px 0; flex-direction: column; }
+  .card-titles h2 { font-size: 3.2rem; }
+  .card-titles p { font-size: 1.5rem; }
 }
 
 /* =========================================
-   4. 视觉动画特效 1: 图像识别镜头
+   4. 视觉动画特效 1: YOLO-Pose 卷积层原理 (硬核 3D 视差)
 ========================================= */
-.lens-halo { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,113,227,0.2) 0%, transparent 60%); bottom: -200px; animation: haloPulse 4s infinite alternate;}
-@keyframes haloPulse { 0%{ transform: scale(1); opacity: 0.5; } 100%{ transform: scale(1.2); opacity: 1; } }
+.yolo-art {
+  width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+  display: flex; justify-content: center; align-items: center;
+  /* 开启 3D 摄像机视角 */
+  perspective: 1600px;
+  overflow: hidden;
+}
 
-.lens-outer { width: 480px; height: 480px; border-radius: 50%; background: linear-gradient(145deg, #1f1f1f, #020202); box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 4px 10px rgba(255,255,255,0.15); display: flex; justify-content: center; align-items: center; position: absolute; bottom: -80px; }
-.lens-shutter { position: absolute; width: 90%; height: 90%; border-radius: 50%; border: 4px dashed rgba(255,255,255,0.05); animation: spin 20s linear infinite; }
-.lens-inner { width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #0071e3, #000c24); box-shadow: inset 0 -20px 50px rgba(0,0,0,1), 0 0 30px rgba(0,113,227,0.4); display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;}
-.lens-core { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #ffffff 0%, #38bdf8 20%, #001233 80%); box-shadow: 0 0 50px #38bdf8; }
-.lens-glare { position: absolute; width: 200%; height: 50%; background: rgba(255,255,255,0.1); transform: rotate(-45deg) translateY(-50px); }
-.scan-laser { position: absolute; width: 120%; height: 4px; background: #38bdf8; box-shadow: 0 0 30px 10px rgba(56,189,248, 0.6); top: 0; animation: scanIntense 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate; z-index: 10; }
+.yolo-scene {
+  position: relative;
+  width: 500px; height: 500px;
+  transform-style: preserve-3d;
+  /* 倾斜平面，打造等距视角 */
+  transform: rotateX(60deg) rotateZ(-35deg);
+  animation: sceneFloat 12s ease-in-out infinite alternate;
+  margin-top: 220px;  /* 原来是 80px，整体往下移 */
+  margin-left: 280px
+}
 
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes scanIntense { 0% { top: 5%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
+@keyframes sceneFloat {
+  0% { transform: rotateX(60deg) rotateZ(-35deg) translateY(0); }
+  100% { transform: rotateX(55deg) rotateZ(-25deg) translateY(-40px); }
+}
 
+/* 底层：输入图像网格 */
+.yolo-grid {
+  position: absolute; width: 100%; height: 100%; top:0; left:0;
+  background:
+    linear-gradient(rgba(0, 113, 227, 0.25) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 113, 227, 0.25) 2px, transparent 2px);
+  background-size: 50px 50px;
+  border: 2px solid rgba(0, 113, 227, 0.8);
+  box-shadow: 0 0 80px rgba(0, 113, 227, 0.3) inset;
+  transform: translateZ(0);
+}
 
+/* 卷积核滑窗 */
+.conv-scanner {
+  position: absolute; width: 150px; height: 150px; top: 0; left: 0;
+  background: rgba(56, 189, 248, 0.2);
+  border: 3px solid #38bdf8;
+  box-shadow: 0 0 30px #38bdf8, inset 0 0 20px #38bdf8;
+  transform: translateZ(5px);
+  animation: convScan 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes convScan {
+  0% { transform: translate(0, 0) translateZ(5px); }
+  25% { transform: translate(350px, 0) translateZ(5px); }
+  50% { transform: translate(350px, 350px) translateZ(5px); }
+  75% { transform: translate(0, 350px) translateZ(5px); }
+  100% { transform: translate(0, 0) translateZ(5px); }
+}
+
+/* 中间层：特征图 (Feature Pyramid Network) */
+.feature-map {
+  position: absolute; width: 100%; height: 100%; top:0; left:0;
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.05);
+}
+.feature-map.level-1 { transform: translateZ(100px) scale(0.9); animation: pulseLayer 4s infinite alternate; }
+.feature-map.level-2 { transform: translateZ(200px) scale(0.8); animation: pulseLayer 4s infinite alternate 1s; }
+
+@keyframes pulseLayer {
+  0% { box-shadow: 0 0 20px rgba(139, 92, 246, 0) inset; border-color: rgba(139, 92, 246, 0.3); }
+  100% { box-shadow: 0 0 50px rgba(139, 92, 246, 0.5) inset; border-color: rgba(139, 92, 246, 0.8); }
+}
+
+/* 顶层：YOLO Bounding Box */
+.yolo-bbox {
+  position: absolute; width: 260px; height: 380px;
+  top: 60px; left: 120px;
+  border: 3px solid #10b981;
+  /* 悬浮在最高层 */
+  transform: translateZ(320px);
+  background: rgba(16, 185, 129, 0.05);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.2) inset, 0 0 40px rgba(16, 185, 129, 0.5);
+  display: flex; justify-content: center; align-items: center;
+  animation: bboxAppear 6s infinite;
+}
+
+.bbox-label {
+  position: absolute; top: -32px; left: -3px;
+  background: #10b981; color: #000;
+  padding: 6px 14px; font-weight: bold; font-family: monospace;
+  font-size: 18px; border-radius: 4px 4px 0 0;
+}
+
+@keyframes bboxAppear {
+  0%, 25% { opacity: 0; transform: translateZ(320px) scale(0.95); box-shadow: none; }
+  35%, 90% { opacity: 1; transform: translateZ(320px) scale(1); }
+  100% { opacity: 0; transform: translateZ(320px) scale(1.05); }
+}
+
+/* 顶层：Pose 关键点骨架 */
+.pose-skeleton {
+  width: 80%; height: 80%;
+  overflow: visible;
+  /* 抵消场景的 3D 翻转，让小人直立面对屏幕 */
+  transform: rotateZ(35deg) rotateX(-60deg) translateY(-20px) scale(1.2);
+}
+
+.pose-line {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px #38bdf8);
+  /* 利用虚线偏移实现连线生长动画 */
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawPose 6s infinite;
+}
+
+.pose-node {
+  fill: #fff;
+  stroke: #f59e0b; /* 橙黄色高亮 */
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px #f59e0b);
+  opacity: 0;
+  animation: nodeAppear 6s infinite;
+}
+
+@keyframes drawPose {
+  0%, 35% { stroke-dashoffset: 1000; }
+  55%, 90% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes nodeAppear {
+  0%, 30% { opacity: 0; transform: scale(0.5); }
+  40%, 90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
 /* =========================================
    5. 视觉动画特效 2: 模板匹配 (修复版)
 ========================================= */
