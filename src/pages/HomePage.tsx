@@ -112,7 +112,7 @@ export function HomePage() {
                  <circle cx="100" cy="180" r="7" className="pose-node" style={{animationDelay: '2.9s'}}/>
                  <circle cx="80" cy="240" r="7" className="pose-node" style={{animationDelay: '3.0s'}}/>
                  <circle cx="120" cy="240" r="7" className="pose-node" style={{animationDelay: '3.0s'}}/>
-                 <circle cx="80" cy="290" r="7" className="pose-node" style={{animationDelay: '3.1s'}}/>
+                 <circle cx="80" cy="290" r="7" className="pose-node" style={{animationDelay: '3.0s'}}/>
                  <circle cx="120" cy="290" r="7" className="pose-node" style={{animationDelay: '3.1s'}}/>
               </svg>
             </div>
@@ -176,13 +176,29 @@ export function HomePage() {
           <div className="hero-badge animate-fade" style={{ animationDelay: '0.1s' }}>
             <span className="pulse-dot"></span> AI for Science v2.0
           </div>
+          {/* ========================================================= */}
+          {/* 【重要修改】更新标题和样式 */}
           <h1 className="hero-title animate-fade" style={{ animationDelay: '0.2s' }}>
-            探索未知的边界<br />
-            <span className="text-gradient">触手可及</span>
+            {/* 使用 display: block 和 marginBottom 精确拉大这两行之间的距离 */}
+            <span className="text-gradient" style={{ display: 'block', marginBottom: '30px' }}>
+              科学边界
+            </span>
+            <span style={{ color: '#000000', display: 'block' }}>
+              下一代物理通用模型
+            </span>
           </h1>
-          <p className="hero-copy animate-fade" style={{ animationDelay: '0.3s' }}>
-            将前沿的识别与预测能力 注入极致优雅的工作流
+          
+          <p 
+            className="hero-copy animate-fade" 
+            style={{ 
+              animationDelay: '0.3s', 
+              letterSpacing: '14px', /* 🚀 大幅度增大字符间距 */
+              marginLeft: '14px'     /* 修正因 letter-spacing 导致的整体视觉偏移，保证完美居中 */
+            }}
+          >
+            探索未知的边界 触手可及
           </p>
+          {/* ========================================================= */}
           <div className="hero-actions animate-fade" style={{ animationDelay: '0.4s' }}>
             <a href="#showcase" className="btn-primary-massive">开启探索之旅</a>
           </div>
