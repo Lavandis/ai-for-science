@@ -121,7 +121,7 @@ export function HomePage() {
       );
     }
     
-    // 🚀 卡片 2: 无缝融合的本地高保真视频背景
+    // 🚀 卡片 2: 模板匹配 - pi.mp4
     if (index === 1) {
       return (
         <div className="dynamic-art video-art">
@@ -137,14 +137,17 @@ export function HomePage() {
       );
     }
 
-    // 🚀 卡片 3: 时序波形预测动画
+    // 🚀 卡片 3: 时序预测 - afa.mp4
     return (
-      <div className="dynamic-art wave-art">
-        <svg viewBox="0 0 800 300" preserveAspectRatio="none">
-          <path className="glow-line" d="M0,150 C100,150 150,50 250,50 C350,50 400,250 500,250 C600,250 650,100 800,100" />
-          <path className="core-line" d="M0,150 C100,150 150,50 250,50 C350,50 400,250 500,250 C600,250 650,100 800,100" />
-          <circle cx="500" cy="250" r="8" className="pulse-point" />
-        </svg>
+      <div className="dynamic-art video-art">
+        <video 
+          src="/afa.mp4" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="feature-video"
+        />
       </div>
     );
   };
@@ -152,7 +155,6 @@ export function HomePage() {
   return (
     <div className="home-container">
 
-      {/* ========================================================= */}
       {/* 隐形锚点：专供自动化测试工具 (Vitest) 抓取，不影响视觉呈现 */}
       <section 
         aria-label="功能入口" 
@@ -167,7 +169,6 @@ export function HomePage() {
         <a href="/template-matching">进入模板匹配</a>
         <a href="/time-series-forecast">进入时序预测</a>
       </section>
-      {/* ========================================================= */}
 
       {/* 第一屏：巨幕 Hero 标题 */}
       <section className="hero-section" id="hero">
@@ -176,10 +177,9 @@ export function HomePage() {
           <div className="hero-badge animate-fade" style={{ animationDelay: '0.1s' }}>
             <span className="pulse-dot"></span> AI for Science v2.0
           </div>
-          {/* ========================================================= */}
-          {/* 【重要修改】更新标题和样式 */}
+          
+          {/* 更新后的标题与间距 */}
           <h1 className="hero-title animate-fade" style={{ animationDelay: '0.2s' }}>
-            {/* 使用 display: block 和 marginBottom 精确拉大这两行之间的距离 */}
             <span className="text-gradient" style={{ display: 'block', marginBottom: '30px' }}>
               科学边界
             </span>
@@ -192,13 +192,13 @@ export function HomePage() {
             className="hero-copy animate-fade" 
             style={{ 
               animationDelay: '0.3s', 
-              letterSpacing: '14px', /* 🚀 大幅度增大字符间距 */
-              marginLeft: '14px'     /* 修正因 letter-spacing 导致的整体视觉偏移，保证完美居中 */
+              letterSpacing: '14px', 
+              marginLeft: '14px' 
             }}
           >
             探索未知的边界 触手可及
           </p>
-          {/* ========================================================= */}
+
           <div className="hero-actions animate-fade" style={{ animationDelay: '0.4s' }}>
             <a href="#showcase" className="btn-primary-massive">开启探索之旅</a>
           </div>
