@@ -70,7 +70,7 @@ export type ForecastResult = {
   jobId: string;
   targetVariable: ForecastVariable;
   baselineEnabled: boolean;
-  source?: "static_demo" | "panorama_project_assets";
+  source?: "static_demo" | "panorama_project_assets" | "panorama_realtime_backend";
   generatedFrom?: {
     dataset: string;
     model: string;

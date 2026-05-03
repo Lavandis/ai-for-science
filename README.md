@@ -6,7 +6,7 @@
 - 模板匹配
 - 时序预测
 
-目前版本为纯前端静态原型，重点是页面结构、模块边界和后续模型接入的扩展点；暂未接入真实后端或模型服务。
+目前版本包含 React 前端和 FastAPI 后端。图像识别、模板匹配仍保留现有演示/接口入口；时序预测已接入 PANORAMA 后端实时推理。
 
 ## 功能模块
 
@@ -24,10 +24,10 @@
 
 ### 3. 时序预测
 
-- 以 PANORAMA 单摆实验真实模型输出为默认示例，展示预测配置、任务状态、趋势图、指标和评估表
-- 使用前端 mock service 模拟任务式接口，流程为配置内置单摆数据集、运行预测任务、查看状态和预测结果
-- 默认结果由 `assets/PANORAMA_PROJECT-master` 中的 `panorama_model.pth` 和 `pendulum_data_updated.csv` 生成
-- 后续接入真实模型服务时，可替换 `src/features/timeSeriesForecast/mockForecastService.ts`
+- 以 PANORAMA 单摆实验真实模型为默认示例，展示预测配置、任务状态、趋势图、指标和评估表
+- 前端点击“运行预测”后调用 FastAPI 任务接口，由后端实时加载 `panorama_model.pth` 和 `pendulum_data_updated.csv` 执行滚动预测
+- 前端测试环境仍保留 mock service，真实运行默认调用 `http://127.0.0.1:8000`
+- API 契约集中在 `src/features/timeSeriesForecast/forecastContract.ts`，HTTP service 位于 `src/features/timeSeriesForecast/forecastService.ts`
 
 ## 技术栈
 
@@ -40,17 +40,36 @@
 
 ## 本地启动
 
-### 方式 1：开发模式
+### 方式 1：前后端开发模式
 
 ```bash
 npm install
+assets/PANORAMA_PROJECT-master/.venv/bin/python -m pip install -r requirements-backend.txt
+assets/PANORAMA_PROJECT-master/.venv/bin/python main.py
+```
+
+另开一个终端启动前端：
+
+```bash
 npm run dev
 ```
 
-启动后打开终端输出的本地地址，通常是：
+启动后打开前端地址，通常是：
 
 ```text
 http://localhost:5173
+```
+
+后端默认运行在：
+
+```text
+http://127.0.0.1:8000
+```
+
+如果后端地址不同，可以在前端启动前设置：
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000 npm run dev
 ```
 
 ### 方式 2：Docker
@@ -77,6 +96,8 @@ http://localhost:8080
 ```bash
 npm test
 npm run build
+assets/PANORAMA_PROJECT-master/.venv/bin/python -m unittest tests.test_forecast_api tests.test_panorama_forecast_service
+assets/PANORAMA_PROJECT-master/.venv/bin/python main.py
 assets/PANORAMA_PROJECT-master/.venv/bin/python scripts/generate_panorama_forecast_fixture.py
 docker build -t ai-for-science-frontend:test .
 ```
@@ -97,13 +118,14 @@ src/
 ## 当前状态
 
 - 已完成三模块前端原型
+- 时序预测已支持 FastAPI 后端实时 PANORAMA 推理
 - 已支持响应式首页布局
 - 已提供 Docker 部署方式
 - 已通过本地测试与生产构建验证
 
 ## 后续可扩展方向
 
-- 接入真实模型 API
+- 将图像识别和模板匹配后端依赖整理为可移植配置
 - 增加文件上传与任务状态反馈
 - 增加实验结果持久化
 - 增加更多 AI for Science 子模块

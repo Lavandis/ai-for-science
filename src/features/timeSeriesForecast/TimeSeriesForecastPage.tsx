@@ -15,7 +15,7 @@ import { ForecastMetrics } from "./ForecastMetrics";
 import { ForecastPipeline } from "./ForecastPipeline";
 import { ForecastRunStatus } from "./ForecastRunStatus";
 import type { ForecastJob, ForecastJobRequest, ForecastJobStatus, ForecastResult } from "./forecastContract";
-import { createMockForecastService } from "./mockForecastService";
+import { createForecastService } from "./forecastService";
 import "./timeSeriesForecast.css";
 
 export function TimeSeriesForecastPage() {
@@ -32,7 +32,7 @@ export function TimeSeriesForecastPage() {
   const status: ForecastJobStatus = job?.status ?? "idle";
   const isRunning = status === "queued" || status === "running";
 
-  const service = useMemo(() => createMockForecastService(), []);
+  const service = useMemo(() => createForecastService(), []);
 
   useEffect(() => {
     if (!job || job.status === "completed" || job.status === "failed") return;
@@ -184,7 +184,7 @@ export function TimeSeriesForecastPage() {
         </>
       ) : null}
 
-      <p className="api-note">API seam：`forecastContract.ts` 定义任务式接口类型，`mockForecastService.ts` 后续可替换为真实 HTTP service。</p>
+      <p className="api-note">API seam：当前通过 `forecastService.ts` 调用 FastAPI 后端；测试环境保留 mock service 作为离线替身。</p>
     </div>
   );
 }

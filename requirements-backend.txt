@@ -1,0 +1,9 @@
+fastapi
+httpx
+matplotlib
+numpy
+pandas
+python-multipart
+PyYAML
+torch
+uvicorn

@@ -147,7 +147,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--horizon-seconds", type=float, default=60.0)
-    parser.add_argument("--chart-points", type=int, default=180)
+    parser.add_argument("--chart-points", type=int, default=1200)
     args = parser.parse_args()
 
     PANORAMA, calculate_rmse_numpy, get_theta_omega = import_panorama_modules()

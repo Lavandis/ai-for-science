@@ -1,17 +1,33 @@
-import cv2
-import math
 import asyncio
+import csv
+import math
 import os
 import sys
 import tempfile
-import csv
-import pandas as pd
-import numpy as np
-import torch
+import threading
 import traceback
-from fastapi import FastAPI, UploadFile, File, Form, WebSocket
+from datetime import datetime, timezone
+
+import numpy as np
+import pandas as pd
+import torch
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from ultralytics import YOLO
+from pydantic import BaseModel
+
+from panorama_forecast_service import run_panorama_forecast
+
+try:
+    import cv2
+except Exception as e:
+    cv2 = None
+    print(f"OpenCV 加载失败，图像识别接口将不可用: {e}")
+
+try:
+    from ultralytics import YOLO
+except Exception as e:
+    YOLO = None
+    print(f"Ultralytics 加载失败，图像识别接口将不可用: {e}")
 
 app = FastAPI()
 
@@ -26,13 +42,15 @@ app.add_middleware(
 # ==========================================
 # 1. YOLO 视频跟踪模型初始化 (绝对路径)
 # ==========================================
-MODEL_PATH = r"D:\yolov12-main\best.pt" 
-print(f"正在加载 YOLO 模型: {MODEL_PATH} ...")
-try:
-    model = YOLO(MODEL_PATH)
-    print("YOLO 模型加载成功！")
-except Exception as e:
-    print(f"YOLO 模型加载失败: {e}")
+MODEL_PATH = r"D:\yolov12-main\best.pt"
+model = None
+if YOLO is not None:
+    print(f"正在加载 YOLO 模型: {MODEL_PATH} ...")
+    try:
+        model = YOLO(MODEL_PATH)
+        print("YOLO 模型加载成功！")
+    except Exception as e:
+        print(f"YOLO 模型加载失败: {e}")
 
 # ==========================================
 # 2. HTPE 模板匹配模型初始化 (绝对路径)
@@ -66,11 +84,126 @@ try:
     print("HTPE 模型加载成功！")
 except Exception as e:
     print(f"HTPE 模型加载失败 (请检查路径是否准确): {e}")
-    traceback.print_exc()
 
 # ==========================================
 # 3. API 路由
 # ==========================================
+
+forecast_jobs = {}
+forecast_results = {}
+forecast_sequence = 0
+forecast_lock = threading.Lock()
+
+
+class ForecastJobRequest(BaseModel):
+    datasetId: str
+    modelId: str
+    targetVariable: str = "theta"
+    trainRatio: float = 0.75
+    horizonSeconds: float = 60
+    sampleRateFps: float = 200
+    baselineEnabled: bool = True
+
+
+def now_iso():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def clone_job(job):
+    return {**job, "request": {**job["request"]}}
+
+
+def update_forecast_job(job_id, **updates):
+    with forecast_lock:
+        job = forecast_jobs.get(job_id)
+        if job is None:
+            return
+        forecast_jobs[job_id] = {**job, **updates, "updatedAt": now_iso()}
+
+
+def run_forecast_job(job_id, request):
+    update_forecast_job(job_id, status="running", progress=58, message="正在执行 PANORAMA 实时滚动积分")
+    try:
+        result = run_panorama_forecast(job_id=job_id, request=request)
+        with forecast_lock:
+            forecast_results[job_id] = result
+        update_forecast_job(job_id, status="completed", progress=100, message="预测完成")
+    except Exception as e:
+        traceback.print_exc()
+        update_forecast_job(job_id, status="failed", progress=100, message=f"预测失败: {e}")
+
+
+@app.get("/api/forecast/datasets")
+async def list_forecast_datasets():
+    return [
+        {
+            "id": "pendulum-200fps",
+            "name": "PANORAMA 单摆实验真实数据",
+            "sourcePath": "assets/PANORAMA_PROJECT-master/data/processed/pendulum_data_updated.csv",
+            "sampleRateFps": 200,
+            "durationSeconds": 240,
+            "variables": ["theta", "omega"],
+            "description": "来自 PANORAMA_PROJECT 的真实单摆 CSV，包含 theta 摆角和 omega 角速度。",
+        }
+    ]
+
+
+@app.get("/api/forecast/models")
+async def list_forecast_models():
+    return [
+        {
+            "id": "panorama-v1",
+            "name": "PANORAMA 混合动力学模型",
+            "kind": "panorama",
+            "version": "pth-realtime",
+            "description": "后端实时加载 panorama_model.pth，执行物理白盒项加神经残差项的滚动积分。",
+            "supportsBaselineComparison": True,
+        }
+    ]
+
+
+@app.post("/api/forecast/jobs")
+async def create_forecast_job(request: ForecastJobRequest):
+    global forecast_sequence
+
+    with forecast_lock:
+        forecast_sequence += 1
+        job_id = f"forecast-job-{forecast_sequence}"
+        created_at = now_iso()
+        job = {
+            "id": job_id,
+            "status": "queued",
+            "createdAt": created_at,
+            "updatedAt": created_at,
+            "request": request.model_dump(),
+            "progress": 12,
+            "message": "预测任务已进入队列",
+        }
+        forecast_jobs[job_id] = job
+
+    thread = threading.Thread(target=run_forecast_job, args=(job_id, request.model_dump()), daemon=True)
+    thread.start()
+    return clone_job(job)
+
+
+@app.get("/api/forecast/jobs/{job_id}")
+async def get_forecast_job(job_id: str):
+    with forecast_lock:
+        job = forecast_jobs.get(job_id)
+        if job is None:
+            raise HTTPException(status_code=404, detail="预测任务不存在")
+        return clone_job(job)
+
+
+@app.get("/api/forecast/jobs/{job_id}/result")
+async def get_forecast_result(job_id: str):
+    with forecast_lock:
+        job = forecast_jobs.get(job_id)
+        if job is None:
+            raise HTTPException(status_code=404, detail="预测任务不存在")
+        if job["status"] != "completed":
+            raise HTTPException(status_code=409, detail="预测任务尚未完成")
+        return forecast_results[job_id]
 
 @app.post("/upload")
 async def upload_video(
@@ -95,6 +228,10 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     csv_file = None
     try:
+        if cv2 is None or model is None:
+            await websocket.send_json({"error": "图像识别模型未加载，无法执行视频跟踪"})
+            return
+
         config = await websocket.receive_json()
         video_path, pendulum_length, static_x, pixel_ratio, real_fps, save_path = (
             config.get("video_path"), float(config.get("pendulumLength")), float(config.get("staticX")),

@@ -1,4 +1,15 @@
-import { useId } from "react";
+import { useMemo, useState } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceArea,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from "recharts";
 import type { ForecastSeriesPoint, ForecastVariable } from "./forecastContract";
 
 type ForecastChartProps = {
@@ -7,32 +18,37 @@ type ForecastChartProps = {
   targetVariable: ForecastVariable;
 };
 
+type SeriesKey = "actual" | "physics" | "panorama";
+
+type ChartPoint = {
+  second: number;
+  actual: number | null;
+  physics: number | null;
+  panorama: number | null;
+  phase: "train" | "test";
+};
+
 const variableLabel: Record<ForecastVariable, string> = {
   theta: "单摆角度",
   omega: "角速度 omega"
 };
 
-const chartWidth = 920;
-const chartHeight = 320;
-const chartPadding = 42;
-type SeriesKey = "actual" | "physics" | "panorama";
+const variableUnit: Record<ForecastVariable, string> = {
+  theta: "rad",
+  omega: "rad/s"
+};
 
-function getY(value: number, minValue: number, maxValue: number) {
-  const plotHeight = chartHeight - chartPadding * 2;
-  const ratio = (value - minValue) / (maxValue - minValue);
-  return chartHeight - chartPadding - ratio * plotHeight;
-}
+const seriesNames: Record<SeriesKey, string> = {
+  actual: "真实值",
+  physics: "纯物理基线",
+  panorama: "PANORAMA 预测"
+};
 
-function getX(pointSecond: number, firstSecond: number, lastSecond: number) {
-  const plotWidth = chartWidth - chartPadding * 2;
-  const secondRange = lastSecond - firstSecond;
-
-  if (secondRange <= 0) {
-    return chartPadding + plotWidth / 2;
-  }
-
-  return chartPadding + ((pointSecond - firstSecond) / secondRange) * plotWidth;
-}
+const seriesColors: Record<SeriesKey, string> = {
+  actual: "#16a34a",
+  physics: "#2563eb",
+  panorama: "#dc2626"
+};
 
 function getSeriesValue(point: ForecastSeriesPoint, key: SeriesKey, targetVariable: ForecastVariable) {
   if (targetVariable === "omega") {
@@ -44,23 +60,119 @@ function getSeriesValue(point: ForecastSeriesPoint, key: SeriesKey, targetVariab
   return point[key];
 }
 
-function toPolyline(series: ForecastSeriesPoint[], key: SeriesKey, targetVariable: ForecastVariable, minValue: number, maxValue: number) {
-  const first = series[0];
-  const last = series[series.length - 1];
+function toChartPoint(point: ForecastSeriesPoint, targetVariable: ForecastVariable): ChartPoint {
+  return {
+    second: point.second,
+    actual: getSeriesValue(point, "actual", targetVariable),
+    physics: getSeriesValue(point, "physics", targetVariable),
+    panorama: getSeriesValue(point, "panorama", targetVariable),
+    phase: point.phase
+  };
+}
 
-  return series
-    .filter((point) => getSeriesValue(point, key, targetVariable) !== null)
-    .map((point) => {
-      const x = getX(point.second, first.second, last.second);
-      const y = getY(getSeriesValue(point, key, targetVariable) ?? 0, minValue, maxValue);
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
+function formatTick(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function ForecastLineChart({
+  baselineEnabled,
+  chartData,
+  height,
+  targetVariable
+}: {
+  baselineEnabled: boolean;
+  chartData: ChartPoint[];
+  height: number;
+  targetVariable: ForecastVariable;
+}) {
+  const unit = variableUnit[targetVariable];
+  const firstPoint = chartData[0];
+  const lastPoint = chartData[chartData.length - 1];
+  const splitPoint = chartData.find((point) => point.phase === "test") ?? firstPoint;
+
+  return (
+    <div className="forecast-recharts-frame" role="img" aria-label={`${variableLabel[targetVariable]}真实值${baselineEnabled ? "、物理基线" : ""}与 PANORAMA 预测对比图`}>
+      <ResponsiveContainer width="100%" height={height}>
+        <LineChart data={chartData} margin={{ top: 18, right: 28, bottom: 30, left: 16 }}>
+          <CartesianGrid stroke="rgba(52, 74, 98, 0.16)" strokeDasharray="4 6" />
+          <XAxis
+            dataKey="second"
+            domain={[firstPoint.second, lastPoint.second]}
+            label={{ value: "时间 (s)", position: "insideBottom", offset: -18, fill: "#64748b", fontSize: 13 }}
+            tick={{ fill: "#64748b", fontSize: 12 }}
+            tickFormatter={formatTick}
+            type="number"
+          />
+          <YAxis
+            label={{
+              value: `${variableLabel[targetVariable]} (${unit})`,
+              angle: -90,
+              position: "insideLeft",
+              fill: "#64748b",
+              fontSize: 13
+            }}
+            tick={{ fill: "#64748b", fontSize: 12 }}
+            tickFormatter={(value) => Number(value).toFixed(2)}
+            width={72}
+          />
+          <Tooltip
+            formatter={(value, name) => {
+              const numericValue = typeof value === "number" ? value : Number(value ?? 0);
+              return [`${numericValue.toFixed(5)} ${unit}`, seriesNames[name as SeriesKey] ?? name];
+            }}
+            labelFormatter={(value) => `t = ${Number(value).toFixed(2)} s`}
+          />
+          <Legend verticalAlign="top" height={36} />
+          <ReferenceArea
+            x1={splitPoint.second}
+            x2={lastPoint.second}
+            fill="rgba(47, 111, 159, 0.12)"
+            stroke="rgba(47, 111, 159, 0.22)"
+            label={{ value: "测试段", fill: "#64748b", fontSize: 12, position: "insideTopRight" }}
+          />
+          <Line
+            connectNulls
+            dataKey="actual"
+            dot={false}
+            isAnimationActive={false}
+            name={seriesNames.actual}
+            stroke={seriesColors.actual}
+            strokeWidth={2.2}
+            type="monotone"
+          />
+          {baselineEnabled ? (
+            <Line
+              connectNulls
+              dataKey="physics"
+              dot={false}
+              isAnimationActive={false}
+              name={seriesNames.physics}
+              stroke={seriesColors.physics}
+              strokeDasharray="8 8"
+              strokeWidth={2.2}
+              type="monotone"
+            />
+          ) : null}
+          <Line
+            connectNulls
+            dataKey="panorama"
+            dot={false}
+            isAnimationActive={false}
+            name={seriesNames.panorama}
+            stroke={seriesColors.panorama}
+            strokeWidth={2.4}
+            type="monotone"
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }
 
 export function ForecastChart({ baselineEnabled, series, targetVariable }: ForecastChartProps) {
-  const gradientId = useId();
+  const [isExpanded, setIsExpanded] = useState(false);
   const label = variableLabel[targetVariable];
+  const chartData = useMemo(() => series.map((point) => toChartPoint(point, targetVariable)), [series, targetVariable]);
 
   if (series.length === 0) {
     return (
@@ -71,64 +183,53 @@ export function ForecastChart({ baselineEnabled, series, targetVariable }: Forec
     );
   }
 
-  const values = series.flatMap((point) => {
-    const actual = getSeriesValue(point, "actual", targetVariable);
-    const panorama = getSeriesValue(point, "panorama", targetVariable) ?? actual;
-    const pointValues = [actual, panorama];
-    return baselineEnabled ? [...pointValues, getSeriesValue(point, "physics", targetVariable) ?? actual] : pointValues;
-  }).filter((value): value is number => value !== null);
-  const minValue = Math.min(...values) - 0.04;
-  const maxValue = Math.max(...values) + 0.04;
   const firstPoint = series[0];
-  const lastPoint = series[series.length - 1];
   const splitPoint = series.find((point) => point.phase === "test") ?? firstPoint;
-  const splitX = getX(splitPoint.second, firstPoint.second, lastPoint.second);
   const summary =
     splitPoint.phase === "test"
       ? `共 ${series.length} 个采样点，测试段从 ${splitPoint.second} s 开始。`
       : `共 ${series.length} 个采样点，当前序列未包含测试段。`;
 
   return (
-    <div
-      className="forecast-chart-card"
-      role="img"
-      aria-label={`${label}真实值${baselineEnabled ? "、物理基线" : ""}与 PANORAMA 预测对比图`}
-    >
-      <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
-        <defs>
-          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="rgba(47, 111, 159, 0.04)" />
-            <stop offset="100%" stopColor="rgba(47, 111, 159, 0.14)" />
-          </linearGradient>
-        </defs>
-        <rect
-          className="forecast-test-band"
-          x={splitX}
-          y={chartPadding}
-          width={chartWidth - chartPadding - splitX}
-          height={chartHeight - chartPadding * 2}
-          fill={`url(#${gradientId})`}
-        />
-        {[0, 1, 2, 3].map((index) => {
-          const y = chartPadding + index * ((chartHeight - chartPadding * 2) / 3);
-          return <line className="forecast-grid-line" key={index} x1={chartPadding} x2={chartWidth - chartPadding} y1={y} y2={y} />;
-        })}
-        <line className="forecast-axis" x1={chartPadding} x2={chartWidth - chartPadding} y1={chartHeight - chartPadding} y2={chartHeight - chartPadding} />
-        <line className="forecast-axis" x1={chartPadding} x2={chartPadding} y1={chartPadding} y2={chartHeight - chartPadding} />
-        <line className="forecast-split" x1={splitX} x2={splitX} y1={chartPadding} y2={chartHeight - chartPadding} />
-        <polyline className="series-line series-line--actual" points={toPolyline(series, "actual", targetVariable, minValue, maxValue)} />
-        {baselineEnabled ? (
-          <polyline className="series-line series-line--physics" points={toPolyline(series, "physics", targetVariable, minValue, maxValue)} />
-        ) : null}
-        <polyline className="series-line series-line--panorama" points={toPolyline(series, "panorama", targetVariable, minValue, maxValue)} />
-      </svg>
-      <div className="chart-legend">
+    <div className="forecast-chart-card">
+      <div className="forecast-chart-toolbar">
+        <div>
+          <p className="eyebrow">Standard Plot</p>
+          <h3>{label}预测对比</h3>
+        </div>
+        <button className="forecast-expand-button" type="button" onClick={() => setIsExpanded(true)}>
+          放大查看预测图
+        </button>
+      </div>
+
+      <ForecastLineChart baselineEnabled={baselineEnabled} chartData={chartData} height={360} targetVariable={targetVariable} />
+
+      <div className="forecast-chart-readable-legend" aria-label="预测图坐标与图例">
+        <span>横轴：时间 (s)</span>
+        <span>纵轴：{label} ({variableUnit[targetVariable]})</span>
         <span className="legend-actual">真实{label}</span>
         {baselineEnabled ? <span className="legend-physics">纯物理基线</span> : null}
         <span className="legend-panorama">PANORAMA 预测</span>
-        <span className="legend-band">测试段</span>
       </div>
+
       <p className="forecast-chart-summary">{summary}</p>
+
+      {isExpanded ? (
+        <div className="forecast-chart-dialog-backdrop">
+          <section className="forecast-chart-dialog" role="dialog" aria-label="放大预测图" aria-modal="true">
+            <div className="forecast-chart-dialog-header">
+              <div>
+                <p className="eyebrow">标准坐标视图</p>
+                <h2>{label}真实值{baselineEnabled ? "、物理基线" : ""}与 PANORAMA 预测</h2>
+              </div>
+              <button className="forecast-expand-button" type="button" onClick={() => setIsExpanded(false)}>
+                关闭放大图
+              </button>
+            </div>
+            <ForecastLineChart baselineEnabled={baselineEnabled} chartData={chartData} height={620} targetVariable={targetVariable} />
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

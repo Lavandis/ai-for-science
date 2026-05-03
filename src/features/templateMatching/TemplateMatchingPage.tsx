@@ -212,10 +212,13 @@ export function TemplateMatchingPage() {
                       contentStyle={{ backgroundColor: '#fff', border: '1px solid #dadce0', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', color: '#202124' }}
                       labelStyle={{ display: 'none' }}
                       itemStyle={{ color: '#202124', fontSize: '13px' }}
-                      formatter={(value: number, name: string) => [
-                        value.toFixed(4), 
-                        name === 'realAngle' ? "Observed Angle (rad)" : "Predicted Angle (rad)"
-                      ]}
+                      formatter={(value, name) => {
+                        const numericValue = typeof value === 'number' ? value : Number(value ?? 0);
+                        return [
+                          numericValue.toFixed(4),
+                          name === 'realAngle' ? "Observed Angle (rad)" : "Predicted Angle (rad)"
+                        ];
+                      }}
                     />
                     
                     <Line type="monotone" dataKey="realAngle" stroke="#1a73e8" dot={false} strokeWidth={2.5} opacity={0.9} isAnimationActive={!result} />

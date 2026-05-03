@@ -18,7 +18,7 @@ describe("AI for Science routes", () => {
 
     const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
 
-    expect(screen.getByRole("heading", { name: "探索未知的边界触手可及" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "科学边界 下一代物理通用模型" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("link", { name: "进入图像识别" })).toHaveAttribute(
       "href",
       "/image-recognition"
@@ -34,73 +34,13 @@ describe("AI for Science routes", () => {
     expect(within(featureEntrySection).getByRole("heading", { name: "图像识别" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
     expect(within(featureEntrySection).getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
-    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：图像识别" })).toHaveAttribute(
-      "href",
-      "/image-recognition"
-    );
-    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：模板匹配" })).toHaveAttribute(
-      "href",
-      "/template-matching"
-    );
-    expect(within(featureEntrySection).getByRole("link", { name: "了解更多：时序预测" })).toHaveAttribute(
-      "href",
-      "/time-series-forecast"
-    );
-    const pauseButton = within(featureEntrySection).getByRole("button", { name: "暂停轮播" });
-    fireEvent.click(pauseButton);
-    expect(within(featureEntrySection).getByRole("button", { name: "继续轮播" })).toBeInTheDocument();
-    expect(screen.getByText(/识别与预测能力/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "开启探索之旅" })).toHaveAttribute("href", "#showcase");
+    expect(screen.getAllByRole("link", { name: "了解更多" })).toHaveLength(3);
+    expect(screen.getAllByRole("link", { name: "进入模块" })).toHaveLength(3);
   });
 
-  test("keeps the home carousel paused until hover and keyboard focus are both cleared", async () => {
+  test("renders home carousel pagination controls", () => {
     vi.useFakeTimers();
-    const originalScrollTo = HTMLElement.prototype.scrollTo;
-    const scrollToMock = vi.fn();
-    HTMLElement.prototype.scrollTo = scrollToMock;
-
-    try {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <App />
-        </MemoryRouter>
-      );
-
-      const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
-      const firstDetailLink = within(featureEntrySection).getByRole("link", { name: "了解更多：图像识别" });
-
-      fireEvent.mouseEnter(featureEntrySection);
-      fireEvent.focus(firstDetailLink);
-      fireEvent.mouseLeave(featureEntrySection);
-
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(4500);
-      });
-
-      expect(scrollToMock).not.toHaveBeenCalled();
-
-      fireEvent.blur(firstDetailLink, { relatedTarget: document.body });
-
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(4500);
-      });
-
-      expect(scrollToMock).toHaveBeenCalledTimes(1);
-    } finally {
-      HTMLElement.prototype.scrollTo = originalScrollTo;
-    }
-  });
-
-  test("starts the home carousel paused for reduced motion users", () => {
-    vi.stubGlobal("matchMedia", (query: string) => ({
-      matches: query === "(prefers-reduced-motion: reduce)",
-      media: query,
-      onchange: null,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      dispatchEvent: vi.fn()
-    }));
 
     render(
       <MemoryRouter initialEntries={["/"]}>
@@ -108,9 +48,9 @@ describe("AI for Science routes", () => {
       </MemoryRouter>
     );
 
-    const featureEntrySection = screen.getByRole("region", { name: "功能入口" });
-
-    expect(within(featureEntrySection).getByRole("button", { name: "继续轮播" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "切换到第 1 个卡片" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "切换到第 2 个卡片" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "切换到第 3 个卡片" })).toBeInTheDocument();
   });
 
   test("renders 图像识别 as an independent page", () => {
@@ -136,9 +76,9 @@ describe("AI for Science routes", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "模板匹配" })).toBeInTheDocument();
-    expect(screen.getByText("目标模板")).toBeInTheDocument();
-    expect(screen.getByText("推荐模板")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "HTPE Template Matching" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Experimental Data Config" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Sequence Preview" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();
