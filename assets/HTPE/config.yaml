@@ -1,0 +1,50 @@
+defaults:
+  - model: hybrid_cnn_transformer
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# ================= 物理环境 =================
+physics:
+  g: 9.81
+  L: 1.0         
+  m: 0.033        
+  theta0_deg: 15.0
+  t_max: 180.0    # ✅ 修改为 3 分钟 (180秒)
+  dt: 0.005      # ✅ 修改为 200Hz (1/200 = 0.005)
+
+# ================= 数据生成 =================
+generation:
+  save_dir: "datasets/train_data"
+  k1_range: [0.001, 0.030]
+  k1_step: 0.001
+  k2_range: [0.0010, 0.0050]
+  k2_step: 0.0001
+  L_range: [0.75, 0.85]
+  L_step: 0.01
+
+inference:
+  model_path: "best_model_cpu300.pt"
+  data_dir: "D:/Users/zp061/Desktop/小摆角"
+  resample: true
+  to_radians: false
+  show_length_estimate: true
+  length_estimate_center: 0.8
+  length_estimate_half_span: 0.004
+  length_reference_hz: 200.0
+
+train:
+  global_batch_size: 64
+  epochs: 150
+  eval_interval: 5
+  num_workers: 8
+  pin_memory: True
+  val_split: 0.2
+  
+  optimizer:
+    lr: 5e-4
+    weight_decay: 1e-2
+    beta1: 0.9
+    beta2: 0.95

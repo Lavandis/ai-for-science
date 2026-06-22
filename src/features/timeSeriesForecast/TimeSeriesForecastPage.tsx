@@ -183,8 +183,6 @@ export function TimeSeriesForecastPage() {
           </InfoPanel>
         </>
       ) : null}
-
-      <p className="api-note">API seam：当前通过 `forecastService.ts` 调用 FastAPI 后端；测试环境保留 mock service 作为离线替身。</p>
     </div>
   );
 }

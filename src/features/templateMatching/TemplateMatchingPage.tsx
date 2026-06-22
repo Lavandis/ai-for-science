@@ -35,12 +35,17 @@ export function TemplateMatchingPage() {
       const reader = new FileReader();
       reader.onload = (event) => {
         const text = event.target?.result as string;
-        const lines = text.split('\n').slice(1); 
+        const allLines = text.split('\n');
+        const headers = allLines[0].split(',').map(h => h.trim());
+        const angleIdx = headers.indexOf('Angle_rad') !== -1
+          ? headers.indexOf('Angle_rad')
+          : headers.length - 1;
+        const lines = allLines.slice(1);
         const parsedData: DataPoint[] = lines
           .filter(line => line.trim() !== '')
           .map((line, idx) => {
             const columns = line.split(',');
-            const angleVal = parseFloat(columns[columns.length - 1]); 
+            const angleVal = parseFloat(columns[angleIdx]);
             return {
               index: idx,
               realAngle: isNaN(angleVal) ? 0 : angleVal,
@@ -56,20 +61,24 @@ export function TemplateMatchingPage() {
   };
 
   const startMatching = async () => {
-    if (!file || fullData.length === 0) return alert("请先上传数据");
+    if (!file || fullData.length === 0) return alert("请先上传 CSV 文件。");
     setLoading(true);
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/match-template", {
+      const response = await fetch("/match-template", {
         method: "POST",
         body: formData,
       });
+      if (!response.ok) {
+        alert("连接后端失败，请确认已运行 ./tunnel/start.sh（HTTP " + response.status + "）");
+        return;
+      }
       const data = await response.json();
 
       if (data.error) {
-        alert("推理错误: " + data.error);
+        alert("推理错误：" + data.error);
       } else {
         setResult(data);
         
@@ -90,7 +99,7 @@ export function TemplateMatchingPage() {
         }
       }
     } catch (err: any) {
-      alert("连接后端失败: " + err.message);
+      alert("连接后端失败：" + err.message);
     } finally {
       setLoading(false);
     }
@@ -98,7 +107,7 @@ export function TemplateMatchingPage() {
 
   return (
     // 修改为 100vw 强行占满视口
-    <div className="page-stack" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#fff', color: '#3c4043', fontFamily: 'Product Sans, Segoe UI, Roboto, Helvetica, Arial, sans-serif', padding: '0', margin: '0', width: '100vw', maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div className="page-stack" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#fff', color: '#3c4043', fontFamily: 'Product Sans, Segoe UI, Roboto, Helvetica, Arial, sans-serif', padding: '100px 0 0', margin: '0', width: '100vw', maxWidth: '100vw', overflowX: 'hidden' }}>
       <style>
         {`
           /* 🚀 终极杀手锏：强制打破 Vite/React 根节点的 1280px 宽度限制 */
@@ -160,33 +169,39 @@ export function TemplateMatchingPage() {
       </style>
 
       {/* 顶部标题栏 */}
-      <div className="smooth-enter" style={{ margin: '0' }}>
+      <div className="smooth-enter" style={{ margin: '0 0 28px' }}>
         <div style={{ padding: '20px 40px 10px', display: 'flex', alignItems: 'center' }}>
           <span className="bubble-blue">AI for Science</span>
-          <h1 style={{ color: '#202124', fontSize: '32px', fontWeight: 500, margin: '0', letterSpacing: '-0.5px', fontFamily: '"Product Sans", serif' }}>HTPE Template Matching</h1>
+          <h1 style={{ color: '#202124', fontSize: '32px', fontWeight: 500, margin: '0', letterSpacing: '-0.5px', fontFamily: '"Product Sans", serif' }}>HTPE 模板匹配</h1>
         </div>
-        <p style={{ color: '#5f6368', padding: '0 40px', fontSize: '16px', margin: '0 0 20px' }}>Upload CSV sequence data to extract angle values and invert physical parameters using a hybrid Transformer model.</p>
+        <p style={{ color: '#5f6368', padding: '0 40px', fontSize: '16px', margin: '0' }}>上传 CSV 时序数据，提取角度序列，并使用混合 Transformer 模型反演物理参数。</p>
       </div>
 
       <div style={{ display: 'flex', gap: '32px', flexGrow: 1, padding: '0 40px 40px 40px', width: '100%', boxSizing: 'border-box' }}>
         
         <div className="google-card smooth-enter delay-1" style={{ flex: '0 0 340px', width: '340px', padding: '24px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
           <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#202124', marginBottom: '28px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-             Experimental Data Config
+             实验数据配置
           </h2>
           
           <div style={{ marginBottom: 'auto' }}>
             <label style={{ display: 'block', fontSize: '14px', color: '#5f6368', marginBottom: '12px' }}>
-              Sequence Source (.csv)
+              序列数据源（.csv）
             </label>
-            <div className="google-input-area" style={{ padding: '20px', cursor: 'pointer', textAlign: 'center', overflow: 'hidden' }}>
-              <input type="file" accept=".csv" onChange={handleFileChange} style={{ width: '100%', outline: 'none', color: '#3c4043', fontSize: '13px' }} />
-            </div>
+            <label className="google-input-area" style={{ display: 'block', padding: '20px', cursor: 'pointer', textAlign: 'center', overflow: 'hidden' }}>
+              <input type="file" accept=".csv" onChange={handleFileChange} style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }} />
+              <span style={{ display: 'block', color: '#202124', fontWeight: 700 }}>
+                选择 CSV 文件
+              </span>
+              <span style={{ display: 'block', color: '#5f6368', fontSize: '13px', marginTop: '8px', wordBreak: 'break-all' }}>
+                {file ? file.name : "尚未选择文件"}
+              </span>
+            </label>
           </div>
 
           <button onClick={startMatching} className="google-btn" disabled={loading || !file}
             style={{ width: '100%', padding: '16px', fontSize: '14px', marginTop: '30px' }}>
-            {loading ? 'Inverting Parameters...' : '▶ Start Parameter Inversion'}
+            {loading ? '正在反演参数...' : '▶ 开始参数反演'}
           </button>
         </div>
 
@@ -195,9 +210,9 @@ export function TemplateMatchingPage() {
           <div className="google-card smooth-enter delay-2" style={{ flexGrow: 1, minHeight: '450px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#202124', paddingBottom: '16px', borderBottom: '1px solid #dadce0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {result ? "Dynamic Simulation Validation (CPU)" : "Sequence Preview"}
+                {result ? "动力学仿真验证（CPU）" : "序列预览"}
               </span>
-              {result && <span style={{ fontSize: '13px', color: '#777', fontWeight: 400 }}>🔵 Observed | <span style={{color: '#1e8e3e', fontWeight: 'bold'}}>🟢 Prediction</span></span>}
+              {result && <span style={{ fontSize: '13px', color: '#777', fontWeight: 400 }}>🔵 观测值 | <span style={{color: '#1e8e3e', fontWeight: 'bold'}}>🟢 预测值</span></span>}
             </h3>
             
             <div style={{ flexGrow: 1, paddingTop: '20px', margin: '0 -10px' }}>
@@ -216,7 +231,7 @@ export function TemplateMatchingPage() {
                         const numericValue = typeof value === 'number' ? value : Number(value ?? 0);
                         return [
                           numericValue.toFixed(4),
-                          name === 'realAngle' ? "Observed Angle (rad)" : "Predicted Angle (rad)"
+                          name === 'realAngle' ? "观测角度（rad）" : "预测角度（rad）"
                         ];
                       }}
                     />
@@ -229,13 +244,13 @@ export function TemplateMatchingPage() {
 
                     {result && (
                       <ReferenceLine x={fullData.length - 1} stroke="#bdc1c6" strokeDasharray="3 3" 
-                        label={{ position: 'top', value: 'Simulation Start Point', fill: '#9aa0a6', fontSize: 13, fontWeight: 'bold' }} />
+                        label={{ position: 'top', value: '仿真起点', fill: '#9aa0a6', fontSize: 13, fontWeight: 'bold' }} />
                     )}
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#444', backgroundColor: '#fff', border: '1px dashed #dadce0', borderRadius: '8px', margin: '0 10px' }}>
-                  <span style={{ fontSize: '13px', textTransform: 'uppercase', color: '#9aa0a6' }}>AWAITING DATA STREAM...</span>
+                  <span style={{ fontSize: '13px', textTransform: 'uppercase', color: '#9aa0a6' }}>等待数据流...</span>
                 </div>
               )}
             </div>
@@ -245,7 +260,7 @@ export function TemplateMatchingPage() {
             <div className="google-card" style={{ flex: '1 1 200px', padding: '24px', borderLeft: 'none', backgroundColor: '#fff' }}>
               <div style={{ fontSize: '15px', color: '#5f6368', marginBottom: '12px', fontWeight: 500, display: 'flex', alignItems: 'baseline' }}>
                 <span className="bubble-blue">k<sub>1</sub></span>
-                Damping Coefficient
+                阻尼系数
               </div>
               <div style={{ fontSize: '38px', fontWeight: '800', color: result ? '#1a73e8' : '#e0e0e0', fontFamily: 'monospace', letterSpacing: '-1px' }}>
                 {result && result.k1 !== undefined ? Number(result.k1).toFixed(6) : "---"}
@@ -255,7 +270,7 @@ export function TemplateMatchingPage() {
             <div className="google-card" style={{ flex: '1 1 200px', padding: '24px', borderLeft: 'none', backgroundColor: '#fff' }}>
               <div style={{ fontSize: '15px', color: '#5f6368', marginBottom: '12px', fontWeight: 500, display: 'flex', alignItems: 'baseline' }}>
                 <span className="bubble-green">k<sub>2</sub></span>
-                Stiffness Coefficient
+                刚度系数
               </div>
               <div style={{ fontSize: '38px', fontWeight: '800', color: result ? '#1e8e3e' : '#e0e0e0', fontFamily: 'monospace', letterSpacing: '-1px' }}>
                 {result && result.k2 !== undefined ? Number(result.k2).toFixed(6) : "---"}

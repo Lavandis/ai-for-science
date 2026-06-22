@@ -3,7 +3,7 @@ import type { ForecastDataset, ForecastJob, ForecastJobRequest, ForecastModel, F
 
 export type ForecastService = MockForecastService;
 
-const defaultApiBaseUrl = "http://127.0.0.1:8000";
+const defaultApiBaseUrl = "";
 
 function trimTrailingSlash(value: string) {
   return value.replace(/\/+$/, "");

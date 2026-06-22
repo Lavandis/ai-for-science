@@ -76,9 +76,9 @@ describe("AI for Science routes", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "HTPE Template Matching" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Experimental Data Config" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Sequence Preview" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "HTPE 模板匹配" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "实验数据配置" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "序列预览" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();

@@ -49,13 +49,14 @@ export const ImageRecognitionPage: React.FC = () => {
     formData.append('savePath', savePath);
 
     try {
-      const res = await fetch('http://localhost:8000/upload', {
+      const res = await fetch('/upload', {
         method: 'POST',
         body: formData,
       });
       const configData = await res.json();
 
-      const ws = new WebSocket('ws://localhost:8000/ws/track');
+      const wsProto = location.protocol === 'https:' ? 'wss' : 'ws';
+      const ws = new WebSocket(`${wsProto}://${location.host}/ws/track`);
       wsRef.current = ws;
 
       ws.onopen = () => {

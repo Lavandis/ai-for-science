@@ -2,6 +2,7 @@ import asyncio
 import csv
 import math
 import os
+import re
 import sys
 import tempfile
 import threading
@@ -42,7 +43,7 @@ app.add_middleware(
 # ==========================================
 # 1. YOLO 视频跟踪模型初始化 (绝对路径)
 # ==========================================
-MODEL_PATH = r"D:\yolov12-main\best.pt"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "assets/PANORAMA_PROJECT-master/assets/models/best.pt")
 model = None
 if YOLO is not None:
     print(f"正在加载 YOLO 模型: {MODEL_PATH} ...")
@@ -53,37 +54,84 @@ if YOLO is not None:
         print(f"YOLO 模型加载失败: {e}")
 
 # ==========================================
-# 2. HTPE 模板匹配模型初始化 (绝对路径)
+# 2. HTPE 模板匹配模型初始化
 # ==========================================
-HTPE_DIR = r"D:\Users\zp061\Desktop\HTPE"
-HTPE_MODEL_PATH = r"D:\Users\zp061\Desktop\ai-for-science\src\best_model_cpu1.pt"
+HTPE_MODEL_PATH = os.path.join(os.path.dirname(__file__), "assets/HTPE/best_model_cpu300.pt")
 
-if HTPE_DIR not in sys.path:
-    sys.path.append(HTPE_DIR)
+import torch.nn.functional as F
+
+class _RMSNorm(torch.nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.scale = torch.nn.Parameter(torch.ones(dim))
+    def forward(self, x):
+        return x / (x.pow(2).mean(-1, keepdim=True) + 1e-6).sqrt() * self.scale
+
+class _Attn(torch.nn.Module):
+    def __init__(self, dim=256, heads=8):
+        super().__init__()
+        self.h, self.d = heads, dim // heads
+        self.qkv_proj = torch.nn.Linear(dim, 3 * dim, bias=False)
+        self.o_proj = torch.nn.Linear(dim, dim, bias=False)
+    def forward(self, x):
+        B, L, D = x.shape
+        qkv = self.qkv_proj(x).reshape(B, L, 3, self.h, self.d).permute(2, 0, 3, 1, 4)
+        q, k, v = qkv.unbind(0)
+        out = F.scaled_dot_product_attention(q, k, v)
+        return self.o_proj(out.transpose(1, 2).reshape(B, L, D))
+
+class _FFN(torch.nn.Module):
+    def __init__(self, dim=256, hid=665):
+        super().__init__()
+        self.gate_up = torch.nn.Linear(dim, 2 * hid, bias=False)
+        self.down = torch.nn.Linear(hid, dim, bias=False)
+    def forward(self, x):
+        g, u = self.gate_up(x).chunk(2, -1)
+        return self.down(F.silu(g) * u)
+
+class _Block(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.norm1, self.attn = _RMSNorm(256), _Attn()
+        self.norm2, self.ffn = _RMSNorm(256), _FFN()
+    def forward(self, x):
+        x = x + self.attn(self.norm1(x))
+        x = x + self.ffn(self.norm2(x))
+        return x
+
+class HTPEModel(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.backbone = torch.nn.Sequential(
+            torch.nn.Conv1d(1, 32, 7), torch.nn.BatchNorm1d(32), torch.nn.ReLU(),
+            torch.nn.Conv1d(32, 64, 7), torch.nn.BatchNorm1d(64), torch.nn.ReLU(),
+            torch.nn.Conv1d(64, 256, 7), torch.nn.BatchNorm1d(256), torch.nn.ReLU(),
+        )
+        self.layers = torch.nn.ModuleList([_Block() for _ in range(4)])
+        self.pool_attn = torch.nn.Sequential(
+            torch.nn.Linear(256, 128), torch.nn.Tanh(), torch.nn.Linear(128, 1)
+        )
+        self.final_norm = _RMSNorm(256)
+        self.head = torch.nn.Sequential(
+            torch.nn.Linear(256, 256, bias=False), torch.nn.GELU(), torch.nn.Linear(256, 2, bias=False)
+        )
+    def forward(self, x):  # x: [B, L, 1]
+        x = self.backbone(x.transpose(1, 2)).transpose(1, 2)  # [B, L', 256]
+        for layer in self.layers:
+            x = layer(x)
+        x = self.final_norm(x)
+        w = self.pool_attn(x).softmax(1)
+        x = (x * w).sum(1)
+        return self.head(x)
 
 htpe_model = None
 try:
-    from utils.functions import load_model_class
-    from hydra import initialize_config_dir, compose
-    from hydra.core.global_hydra import GlobalHydra
-    
-    print(f"正在加载 HTPE 模型配置和权重...")
-    print(f"HTPE 目录: {HTPE_DIR}")
-    print(f"模型权重: {HTPE_MODEL_PATH}")
-    
-    GlobalHydra.instance().clear()
-    
-    with initialize_config_dir(version_base=None, config_dir=os.path.join(HTPE_DIR, "conf")):
-        cfg = compose(config_name="config")
-        
-    ModelClass = load_model_class(cfg.model.identifier)
-    htpe_model = ModelClass(cfg.model)
-    
-    htpe_model.load_state_dict(torch.load(HTPE_MODEL_PATH, map_location=torch.device("cpu")))
+    htpe_model = HTPEModel()
+    htpe_model.load_state_dict(torch.load(HTPE_MODEL_PATH, map_location="cpu", weights_only=False))
     htpe_model.eval()
     print("HTPE 模型加载成功！")
 except Exception as e:
-    print(f"HTPE 模型加载失败 (请检查路径是否准确): {e}")
+    print(f"HTPE 模型加载失败: {e}")
 
 # ==========================================
 # 3. API 路由
@@ -292,27 +340,43 @@ async def match_template(file: UploadFile = File(...)):
     
     if htpe_model is None:
         return {"error": "HTPE模型未加载，请检查后端 Python 终端。"}
-        
+
     try:
         df = pd.read_csv(file.file, encoding='utf-8-sig')
         if df.empty: return {"error": "CSV 是空的"}
 
-        data = df.iloc[:, -1].values
-        data = pd.to_numeric(data, errors='coerce')
-        data_clean = data[~np.isnan(data)].astype(np.float32)
+        # 智能查找角度列（参考 predict.py）
+        angle_candidates = ["anglerad", "thetarad", "theta", "angle", "angledeg", "value"]
+        norm = lambda s: re.sub(r"[^a-z0-9]+", "", s.strip().lower())
+        col_map = {norm(c): c for c in df.columns}
+        angle_col = next((col_map[k] for k in angle_candidates if k in col_map), None)
+        if angle_col is None:
+            angle_col = "Angle_rad" if "Angle_rad" in df.columns else df.columns[-1]
+        data = pd.to_numeric(df[angle_col], errors='coerce').to_numpy(np.float32)
+        data_clean = data[np.isfinite(data)]
 
-        if len(data_clean) < 5: 
-            return {"error": f"有效数据点太少"}
+        if len(data_clean) < 5:
+            return {"error": "有效数据点太少"}
 
-        target_len = 72000
-        current_len = len(data_clean)
-        if current_len > target_len:
-            data_padded = data_clean[:target_len]
+        # 若有时间列，重采样到 200Hz
+        time_candidates = {"time", "t", "sec", "seconds", "timestamp"}
+        time_col = next((c for c in df.columns if norm(c) in time_candidates), None)
+        target_len = 36000
+        if time_col is not None:
+            t = pd.to_numeric(df[time_col], errors='coerce').to_numpy(np.float64)
+            mask = np.isfinite(t) & np.isfinite(data)
+            t, data_clean = t[mask], data[mask]
+            target_t = t[0] + np.arange(target_len) * 0.005
+            data_clean = np.interp(target_t, t, data_clean).astype(np.float32)
         else:
-            data_padded = np.pad(data_clean, (0, target_len - current_len), 'constant')
-            
-        input_tensor = torch.tensor(data_padded, dtype=torch.float32).unsqueeze(0).unsqueeze(-1)
-        
+            n = len(data_clean)
+            if n >= target_len:
+                data_clean = data_clean[:target_len]
+            else:
+                data_clean = np.pad(data_clean, (0, target_len - n), 'edge')
+
+        input_tensor = torch.tensor(data_clean, dtype=torch.float32).unsqueeze(0).unsqueeze(-1)
+
         with torch.no_grad():
             pred = htpe_model(input_tensor)
             k1_pred = pred[0, 0].item()
@@ -334,15 +398,26 @@ async def match_template(file: UploadFile = File(...)):
                 v_last = float(data_clean[-1] - data_clean[-5]) / 4.0
             else:
                 v_last = float(data_clean[-1] - data_clean[-2])
-            
-            # 3. 动力学积分：预测未来 1000 帧
+
+            # 3. RK4 动力学积分：预测未来 1000 帧
+            g, L, m_pend, fps = 9.81, 1.0, 0.033, 200
+            dt_sec = 1.0 / fps
             curr_theta = theta_last
-            curr_v = v_last
+            curr_v = v_last * fps  # rad/帧 → rad/s
+
+            def deriv(th, v):
+                a = (-(k1_pred / m_pend) * v
+                     - (k2_pred * L / m_pend) * abs(v) * v
+                     - (g / L) * math.sin(th))
+                return v, a
+
             for _ in range(1000):
-                # 单摆微分方程: θ'' = -k1*θ' - k2*sin(θ)
-                acc = -k1_pred * curr_v - k2_pred * math.sin(curr_theta)
-                curr_v += acc * dt
-                curr_theta += curr_v * dt
+                v1, a1 = deriv(curr_theta, curr_v)
+                v2, a2 = deriv(curr_theta + 0.5*dt_sec*v1, curr_v + 0.5*dt_sec*a1)
+                v3, a3 = deriv(curr_theta + 0.5*dt_sec*v2, curr_v + 0.5*dt_sec*a2)
+                v4, a4 = deriv(curr_theta + dt_sec*v3,     curr_v + dt_sec*a3)
+                curr_theta += dt_sec * (v1 + 2*v2 + 2*v3 + v4) / 6
+                curr_v     += dt_sec * (a1 + 2*a2 + 2*a3 + a4) / 6
                 predicted_sequence.append(round(curr_theta, 6))
                 
         except Exception as e:
@@ -353,7 +428,7 @@ async def match_template(file: UploadFile = File(...)):
             "k1": round(k1_pred, 6),
             "k2": round(k2_pred, 6),
             "file_name": file.filename,
-            "original_len": current_len,
+            "original_len": len(data_clean),
             "predicted_sequence": predicted_sequence # 把预测数组传给前端
         }
         
