@@ -93,7 +93,7 @@ export function createMockForecastService(): MockForecastService {
           status: "running",
           updatedAt: new Date().toISOString(),
           progress: 58,
-          message: "正在执行 PANORAMA 滚动积分"
+          message: "正在执行 ORION 滚动积分"
         };
         jobs.set(id, entry);
       }, 700);

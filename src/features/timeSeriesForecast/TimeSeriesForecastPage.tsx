@@ -1,18 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { InfoPanel } from "../../components/InfoPanel";
-import { PageHeader } from "../../components/PageHeader";
 import {
   defaultForecastJobRequest,
-  experimentProfile,
   forecastDatasets,
-  forecastModels,
-  modelStages
+  forecastModels
 } from "./data";
 import { ForecastChart } from "./ForecastChart";
 import { ForecastConfigPanel } from "./ForecastConfigPanel";
 import { ForecastEvaluationTable } from "./ForecastEvaluationTable";
 import { ForecastMetrics } from "./ForecastMetrics";
-import { ForecastPipeline } from "./ForecastPipeline";
 import { ForecastRunStatus } from "./ForecastRunStatus";
 import type { ForecastJob, ForecastJobRequest, ForecastJobStatus, ForecastResult } from "./forecastContract";
 import { createForecastService } from "./forecastService";
@@ -116,27 +111,13 @@ export function TimeSeriesForecastPage() {
 
   return (
     <div className="page-stack forecast-page">
-      <PageHeader
-        eyebrow="PANORAMA 静态前端样例"
-        title="时序预测"
-        description="面向单摆实验的长时预测工作台：展示实验配置、物理基线、PANORAMA 预测曲线和误差摘要。当前使用前端 mock service 模拟任务式接口。"
-      />
-
-      <section className="forecast-hero" aria-label="PANORAMA 模型概览">
-        <div>
-          <p className="eyebrow">Hybrid Dynamics</p>
-          <h2>{experimentProfile.title}</h2>
-          <p>{experimentProfile.description}</p>
-        </div>
-        <div className="forecast-model-card">
-          <span>当前模型</span>
-          <strong>{experimentProfile.model}</strong>
-          <small>{experimentProfile.source}</small>
-        </div>
-      </section>
+      <header className="forecast-page-header">
+        <h1>时序预测</h1>
+        <p>基于单摆观测序列，比较 ORION 预测与物理基线。</p>
+      </header>
 
       <div className="forecast-workbench">
-        <div className="forecast-left-column">
+        <aside className="forecast-left-column">
           <ForecastConfigPanel
             datasets={forecastDatasets}
             models={forecastModels}
@@ -146,9 +127,9 @@ export function TimeSeriesForecastPage() {
             onRun={runForecast}
           />
           <ForecastRunStatus status={status} job={job} errorMessage={errorMessage} />
-        </div>
+        </aside>
 
-        <InfoPanel title="长时滚动预测" tone="soft">
+        <section className="forecast-result-panel" aria-label="预测结果">
           {result ? (
             <ForecastChart
               baselineEnabled={result.baselineEnabled}
@@ -157,30 +138,26 @@ export function TimeSeriesForecastPage() {
             />
           ) : isRunning ? (
             <div className="forecast-empty-state forecast-empty-state--running" role="status">
-              <p className="eyebrow">Running</p>
-              <h2>正在准备 PANORAMA 预测</h2>
-              <p>任务已提交，正在同步队列状态并等待滚动积分结果。</p>
+              <h2>正在计算 ORION 预测</h2>
+              <p>正在读取观测窗口并执行滚动积分。</p>
             </div>
           ) : (
             <div className="forecast-empty-state">
-              <p className="eyebrow">Ready</p>
-              <h2>等待运行预测</h2>
-              <p>点击左侧“运行预测”后，将模拟创建任务、轮询状态并加载 PANORAMA 预测结果。</p>
+              <h2>尚无预测结果</h2>
+              <p>设置左侧参数后运行预测。</p>
             </div>
           )}
-        </InfoPanel>
+        </section>
       </div>
 
       {result ? (
         <>
           <ForecastMetrics metrics={result.metrics} status={status} />
-          <div className="forecast-detail-grid">
-            <ForecastPipeline stages={modelStages} />
+          <p className="forecast-conclusion">{result.conclusion}</p>
+          <details className="forecast-diagnostics">
+            <summary>查看评估数据</summary>
             <ForecastEvaluationTable rows={result.evaluationRows} targetVariable={result.targetVariable} />
-          </div>
-          <InfoPanel title="预测结论">
-            <p className="summary-copy">{result.conclusion}</p>
-          </InfoPanel>
+          </details>
         </>
       ) : null}
     </div>

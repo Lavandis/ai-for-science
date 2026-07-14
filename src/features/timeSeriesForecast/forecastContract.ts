@@ -15,7 +15,7 @@ export type ForecastDataset = {
 export type ForecastModel = {
   id: string;
   name: string;
-  kind: "panorama" | "physics_baseline";
+  kind: "orion" | "physics_baseline";
   version: string;
   description: string;
   supportsBaselineComparison: boolean;

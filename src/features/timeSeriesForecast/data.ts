@@ -15,42 +15,34 @@ export type { ForecastSeriesPoint as PendulumSeriesPoint } from "./forecastContr
 export const forecastDatasets: ForecastDataset[] = [
   {
     id: "pendulum-200fps",
-    name: "PANORAMA 单摆实验真实数据",
+    name: "单摆实验真实数据",
     sourcePath: "assets/PANORAMA_PROJECT-master/data/processed/pendulum_data_updated.csv",
     sampleRateFps: 200,
     durationSeconds: 240,
     variables: ["theta", "omega"],
-    description: "来自 PANORAMA_PROJECT 的真实单摆 CSV，包含 theta 摆角和由时间序列导出的 omega 角速度。"
+    description: "包含 theta 摆角和由时间序列导出的 omega 角速度。"
   }
 ];
 
 export const forecastModels: ForecastModel[] = [
   {
-    id: "panorama-v1",
-    name: "PANORAMA 混合动力学模型",
-    kind: "panorama",
+    id: "orion-v1",
+    name: "ORION 混合动力学模型",
+    kind: "orion",
     version: "pth-fixture",
-    description: "物理白盒项 F_p 加已加载 panorama_model.pth 的神经残差项 F_a，并按原始 fps 数值积分。",
+    description: "物理白盒项结合神经残差修正，并按原始 fps 数值积分。",
     supportsBaselineComparison: true
   }
 ];
 
 export const defaultForecastJobRequest: ForecastJobRequest = {
   datasetId: "pendulum-200fps",
-  modelId: "panorama-v1",
+  modelId: "orion-v1",
   targetVariable: "theta",
   trainRatio: 0.75,
   horizonSeconds: 60,
   sampleRateFps: 200,
   baselineEnabled: true
-};
-
-export const experimentProfile = {
-  title: "单摆实验长时预测",
-  model: "PANORAMA 混合动力学模型",
-  description:
-    "以 PANORAMA_PROJECT 中的真实单摆角度序列为例，将物理白盒模型、神经残差修正和数值积分组合起来，对测试段进行滚动外推。",
-  source: "assets/PANORAMA_PROJECT-master"
 };
 
 export const forecastInputs = [
@@ -80,15 +72,8 @@ export const forecastInputs = [
   }
 ];
 
-export const modelStages = [
-  { label: "01 数据预处理", value: "Time / theta / omega", note: "从角度序列构造状态量" },
-  { label: "02 物理先验", value: "F_p", note: "重力、摆长、阻尼项" },
-  { label: "03 神经残差", value: "F_a", note: "修正未建模实验误差" },
-  { label: "04 数值积分", value: "Rollout", note: "按原始 fps 外推测试段" }
-];
-
 export const forecastMetrics: ForecastMetric[] = [
-  { label: "PANORAMA RMSE", value: "0.0186 rad", note: "静态评估示例" },
+  { label: "ORION RMSE", value: "0.0186 rad", note: "评估窗口" },
   { label: "物理基线 RMSE", value: "0.0418 rad", note: "同一测试窗口" },
   { label: "误差改善", value: "+55.5%", note: "相对纯物理模型" },
   { label: "外推窗口", value: "60 s", note: "测试段滚动预测" }
@@ -141,7 +126,7 @@ const variableMeta: Record<
     panoramaRmse: "0.0186 rad",
     physicsRmse: "0.0418 rad",
     improvement: "+55.5%",
-    conclusion: "PANORAMA 曲线相较纯物理基线更贴近真实角度序列，尤其在长时预测后段保留了更稳定的相位与幅值。"
+    conclusion: "ORION 曲线相较纯物理基线更贴近真实角度序列，尤其在长时预测后段保留了更稳定的相位与幅值。"
   },
   omega: {
     name: "角速度 omega",
@@ -149,11 +134,15 @@ const variableMeta: Record<
     panoramaRmse: "0.052 rad/s",
     physicsRmse: "0.119 rad/s",
     improvement: "+56.3%",
-    conclusion: "PANORAMA 曲线相较纯物理基线更贴近真实角速度序列，测试段后半段的相位漂移更小。"
+    conclusion: "ORION 曲线相较纯物理基线更贴近真实角速度序列，测试段后半段的相位漂移更小。"
   }
 };
 
 const evaluationSeconds = new Set([40, 55, 70, 85]);
+
+function toOrionCopy(value: string) {
+  return value.replaceAll("PANORAMA", "ORION");
+}
 
 function toOmegaSeries(point: ForecastSeriesPoint): ForecastSeriesPoint {
   return {
@@ -196,7 +185,7 @@ function createResultRows(series: ForecastSeriesPoint[], targetVariable: Forecas
 function createResultMetrics(targetVariable: ForecastVariable, horizonSeconds: number, baselineEnabled: boolean): ForecastMetric[] {
   const meta = variableMeta[targetVariable];
   const metrics: ForecastMetric[] = [
-    { label: "PANORAMA RMSE", value: meta.panoramaRmse, note: `${meta.name} 静态评估示例` }
+    { label: "ORION RMSE", value: meta.panoramaRmse, note: `${meta.name} 评估窗口` }
   ];
 
   if (baselineEnabled) {
@@ -205,7 +194,7 @@ function createResultMetrics(targetVariable: ForecastVariable, horizonSeconds: n
       { label: "误差改善", value: meta.improvement, note: "相对纯物理模型" }
     );
   } else {
-    metrics.push({ label: "基线对照", value: "已关闭", note: "本次运行仅显示 PANORAMA 预测" });
+    metrics.push({ label: "基线对照", value: "已关闭", note: "本次仅显示 ORION 预测" });
   }
 
   metrics.push({ label: "外推窗口", value: `${horizonSeconds} s`, note: "测试段滚动预测" });
@@ -241,9 +230,13 @@ function selectRealSeries(targetVariable: ForecastVariable, baselineEnabled: boo
 
 function selectRealMetrics(targetVariable: ForecastVariable, baselineEnabled: boolean): ForecastMetric[] {
   const summary = panoramaForecastFixture.variableSummaries[targetVariable];
-  const metrics = summary.metrics.filter(
-    (metric) => baselineEnabled || (metric.label !== "物理基线 RMSE" && metric.label !== "误差改善")
-  );
+  const metrics = summary.metrics
+    .filter((metric) => baselineEnabled || (metric.label !== "物理基线 RMSE" && metric.label !== "误差改善"))
+    .map((metric) => ({
+      ...metric,
+      label: toOrionCopy(metric.label),
+      note: toOrionCopy(metric.note)
+    }));
 
   if (baselineEnabled) return metrics;
 
@@ -252,7 +245,7 @@ function selectRealMetrics(targetVariable: ForecastVariable, baselineEnabled: bo
 
   return [
     ...panoramaMetric,
-    { label: "基线对照", value: "已关闭", note: "本次运行仅显示 PANORAMA 预测" },
+    { label: "基线对照", value: "已关闭", note: "本次仅显示 ORION 预测" },
     ...(horizonMetric ? [horizonMetric] : [])
   ];
 }
@@ -261,7 +254,7 @@ function selectRealRows(targetVariable: ForecastVariable, baselineEnabled: boole
   return panoramaForecastFixture.variableSummaries[targetVariable].evaluationRows.map((row) => ({
     ...row,
     physics: baselineEnabled ? row.physics : "未启用",
-    note: baselineEnabled ? row.note : "未启用物理基线对照"
+    note: baselineEnabled ? toOrionCopy(row.note) : "未启用物理基线对照"
   }));
 }
 
@@ -286,7 +279,7 @@ export function createRealPanoramaForecastResult(
     metrics: selectRealMetrics(targetVariable, baselineEnabled),
     evaluationRows: selectRealRows(targetVariable, baselineEnabled),
     conclusion: baselineEnabled
-      ? `该结果由 assets/PANORAMA_PROJECT-master 中的真实模型权重和单摆数据生成。${summary.conclusion}`
-      : `${variableMeta[targetVariable].name} 结果由真实 PANORAMA 模型和单摆数据生成；本次运行关闭物理基线，仅展示 PANORAMA 预测与真实序列对照。`
+      ? toOrionCopy(summary.conclusion)
+      : `${variableMeta[targetVariable].name}结果由 ORION 生成；本次运行关闭物理基线，仅展示 ORION 预测与真实序列对照。`
   };
 }

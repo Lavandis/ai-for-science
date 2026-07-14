@@ -20,7 +20,7 @@ describe("createMockForecastService", () => {
       expect.arrayContaining([expect.objectContaining({ id: "pendulum-200fps" })])
     );
     await expect(service.listModels()).resolves.toEqual(
-      expect.arrayContaining([expect.objectContaining({ id: "panorama-v1" })])
+      expect.arrayContaining([expect.objectContaining({ id: "orion-v1" })])
     );
   });
 
@@ -39,7 +39,7 @@ describe("createMockForecastService", () => {
     expect(await service.getForecastJob(job.id)).toMatchObject({
       status: "running",
       progress: 58,
-      message: "正在执行 PANORAMA 滚动积分"
+      message: "正在执行 ORION 滚动积分"
     });
 
     await vi.advanceTimersByTimeAsync(900);
@@ -62,7 +62,7 @@ describe("createMockForecastService", () => {
       jobId: job.id,
       targetVariable: "theta",
       source: "panorama_project_assets",
-      metrics: expect.arrayContaining([expect.objectContaining({ label: "PANORAMA RMSE" })])
+      metrics: expect.arrayContaining([expect.objectContaining({ label: "ORION RMSE" })])
     });
   });
 

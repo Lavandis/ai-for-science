@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { ForecastChart } from "./ForecastChart";
 import type { ForecastSeriesPoint } from "./forecastContract";
@@ -17,7 +17,7 @@ describe("ForecastChart", () => {
 
     const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
-    expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /单摆角度真实值.*ORION 预测/ })).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
     expect(screen.getByText("横轴：时间 (s)")).toBeInTheDocument();
     expect(screen.getByText("纵轴：单摆角度 (rad)")).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe("ForecastChart", () => {
 
     const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
-    expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /单摆角度真实值.*ORION 预测/ })).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
   });
 
@@ -43,7 +43,7 @@ describe("ForecastChart", () => {
 
     const { container } = render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
-    expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /单摆角度真实值.*ORION 预测/ })).toBeInTheDocument();
     expect(screen.getByText(/共 2 个采样点/)).toBeInTheDocument();
     expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
   });
@@ -56,7 +56,7 @@ describe("ForecastChart", () => {
 
     render(<ForecastChart baselineEnabled={false} series={series} targetVariable="omega" />);
 
-    expect(screen.getByRole("img", { name: /角速度 omega/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /角速度 omega真实值与 ORION 预测/ })).toBeInTheDocument();
     expect(screen.getByText("真实角速度 omega")).toBeInTheDocument();
     expect(screen.queryByText("纯物理基线")).not.toBeInTheDocument();
     expect(screen.getByText("纵轴：角速度 omega (rad/s)")).toBeInTheDocument();
@@ -69,10 +69,11 @@ describe("ForecastChart", () => {
     ];
     render(<ForecastChart baselineEnabled={true} series={series} targetVariable="theta" />);
 
-    fireEvent.click(screen.getByRole("button", { name: "放大查看预测图" }));
+    fireEvent.click(screen.getByRole("button", { name: "放大预测图" }));
 
-    expect(screen.getByRole("dialog", { name: "放大预测图" })).toBeInTheDocument();
-    expect(screen.getByText("标准坐标视图")).toBeInTheDocument();
+    const dialog = screen.getByRole("dialog", { name: "放大预测图" });
+    expect(dialog).toBeInTheDocument();
+    expect(within(dialog).getByText("放大图表")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "关闭放大图" }));
 

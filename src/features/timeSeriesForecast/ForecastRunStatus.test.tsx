@@ -8,9 +8,9 @@ describe("ForecastRunStatus", () => {
   test("uses neutral fallback copy for non-idle status without a job", () => {
     render(<ForecastRunStatus status="running" job={null} errorMessage={null} />);
 
-    expect(screen.getByRole("heading", { name: "任务准备中" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "正在计算" })).toBeInTheDocument();
     expect(screen.getByText("等待任务状态同步。")).toBeInTheDocument();
-    expect(screen.queryByText("配置参数后点击运行，前端会模拟创建预测任务。")).not.toBeInTheDocument();
+    expect(screen.queryByText("设置完成后运行预测。")).not.toBeInTheDocument();
   });
 
   test("clamps progressbar semantics and visual width", () => {
@@ -70,8 +70,7 @@ describe("ForecastRunStatus", () => {
 
     const status = screen.getByRole("status", { name: "预测任务状态更新" });
 
-    expect(status).toHaveTextContent("forecast-job-003");
-    expect(status).toHaveTextContent("queued");
+    expect(status).toHaveTextContent("等待计算");
     expect(status).toHaveTextContent("预测任务已进入队列");
     expect(status).not.toHaveTextContent("12%");
 
@@ -83,7 +82,7 @@ describe("ForecastRunStatus", () => {
       />
     );
 
-    expect(screen.getByRole("status", { name: "预测任务状态更新" })).toHaveTextContent("failed");
+    expect(screen.getByRole("status", { name: "预测任务状态更新" })).toHaveTextContent("运行失败");
     expect(screen.getByRole("status", { name: "预测任务状态更新" })).toHaveTextContent("状态同步失败");
     expect(screen.getByRole("progressbar", { name: "任务进度 100%" })).toBeInTheDocument();
   });

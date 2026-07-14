@@ -5,7 +5,7 @@ import { ForecastConfigPanel } from "./ForecastConfigPanel";
 import type { ForecastDataset } from "./forecastContract";
 
 describe("ForecastConfigPanel", () => {
-  test("renders default PANORAMA configuration", () => {
+  test("renders the default ORION experiment configuration", () => {
     render(
       <ForecastConfigPanel
         datasets={forecastDatasets}
@@ -17,10 +17,11 @@ describe("ForecastConfigPanel", () => {
       />
     );
 
-    expect(screen.getByLabelText("数据集")).toHaveValue("pendulum-200fps");
-    expect(screen.getByLabelText("模型版本")).toHaveValue("panorama-v1");
+    expect(screen.getByRole("heading", { name: "预测设置" })).toBeInTheDocument();
+    expect(screen.getByText("单摆实验真实数据")).toBeInTheDocument();
+    expect(screen.getByText("ORION 混合动力学模型")).toBeInTheDocument();
     expect(screen.getByLabelText("输出变量")).toHaveValue("theta");
-    expect(screen.getByLabelText("训练比例")).toHaveValue(75);
+    expect(screen.getByLabelText("观测窗口比例")).toHaveValue(75);
     expect(screen.getByRole("button", { name: "运行预测" })).toBeEnabled();
   });
 
@@ -72,7 +73,7 @@ describe("ForecastConfigPanel", () => {
 
     expect(screen.getByText("暂无可用数据集")).toBeInTheDocument();
     expect(screen.getByText("暂无可用模型")).toBeInTheDocument();
-    expect(screen.getByText("请先配置可用数据集与模型")).toBeInTheDocument();
+    expect(screen.getByText("请先配置可用数据与模型")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "运行预测" })).toBeDisabled();
   });
 
@@ -90,8 +91,8 @@ describe("ForecastConfigPanel", () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText("训练比例"), { target: { value: "95" } });
-    fireEvent.change(screen.getByLabelText("预测窗口"), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText("观测窗口比例"), { target: { value: "95" } });
+    fireEvent.change(screen.getByLabelText("预测时长"), { target: { value: "" } });
 
     expect(onChange).toHaveBeenNthCalledWith(1, { ...defaultForecastJobRequest, trainRatio: 0.9 });
     expect(onChange).toHaveBeenNthCalledWith(2, { ...defaultForecastJobRequest, horizonSeconds: 10 });
@@ -171,7 +172,7 @@ describe("ForecastConfigPanel", () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText("数据集"), { target: { value: omegaOnlyDataset.id } });
+    fireEvent.change(screen.getByLabelText("实验数据"), { target: { value: omegaOnlyDataset.id } });
 
     expect(onChange).toHaveBeenCalledWith({
       ...defaultForecastJobRequest,
@@ -195,8 +196,8 @@ describe("ForecastConfigPanel", () => {
       />
     );
 
-    const trainRatioInput = screen.getByLabelText("训练比例");
-    const horizonInput = screen.getByLabelText("预测窗口");
+    const trainRatioInput = screen.getByLabelText("观测窗口比例");
+    const horizonInput = screen.getByLabelText("预测时长");
 
     Object.defineProperty(trainRatioInput, "validity", { value: { badInput: true }, configurable: true });
     Object.defineProperty(horizonInput, "validity", { value: { badInput: true }, configurable: true });

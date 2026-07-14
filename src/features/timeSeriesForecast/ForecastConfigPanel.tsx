@@ -65,34 +65,45 @@ export function ForecastConfigPanel({
   return (
     <section className="forecast-config-card" aria-label="预测配置">
       <div>
-        <p className="eyebrow">Forecast Setup</p>
-        <h2>实验与预测配置</h2>
-        <p>使用内置单摆样例数据，先把预测任务流程跑通。</p>
+        <h2>预测设置</h2>
+        <p>设置观测区间与预测时长。</p>
       </div>
 
-      <label className="forecast-control">
-        <span>数据集</span>
-        <select value={value.datasetId} onChange={(event) => updateDataset(event.target.value)}>
-          {datasets.length === 0 ? <option value="">暂无可用数据集</option> : null}
-          {datasets.map((dataset) => (
-            <option key={dataset.id} value={dataset.id}>
-              {dataset.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      {datasets.length > 1 ? (
+        <label className="forecast-control">
+          <span>实验数据</span>
+          <select value={value.datasetId} onChange={(event) => updateDataset(event.target.value)}>
+            {datasets.map((dataset) => (
+              <option key={dataset.id} value={dataset.id}>
+                {dataset.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <div className="forecast-readonly-field">
+          <span>实验数据</span>
+          <strong>{selectedDataset?.name ?? "暂无可用数据集"}</strong>
+        </div>
+      )}
 
-      <label className="forecast-control">
-        <span>模型版本</span>
-        <select value={value.modelId} onChange={(event) => update({ modelId: event.target.value })}>
-          {models.length === 0 ? <option value="">暂无可用模型</option> : null}
-          {models.map((model) => (
-            <option key={model.id} value={model.id}>
-              {model.name} {model.version}
-            </option>
-          ))}
-        </select>
-      </label>
+      {models.length > 1 ? (
+        <label className="forecast-control">
+          <span>预测模型</span>
+          <select value={value.modelId} onChange={(event) => update({ modelId: event.target.value })}>
+            {models.map((model) => (
+              <option key={model.id} value={model.id}>
+                {model.name} {model.version}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <div className="forecast-readonly-field">
+          <span>预测模型</span>
+          <strong>{selectedModel?.name ?? "暂无可用模型"}</strong>
+        </div>
+      )}
 
       <label className="forecast-control">
         <span>输出变量</span>
@@ -106,7 +117,7 @@ export function ForecastConfigPanel({
       </label>
 
       <label className="forecast-control">
-        <span>训练比例</span>
+        <span>观测窗口比例</span>
         <input
           min="50"
           max="90"
@@ -120,7 +131,7 @@ export function ForecastConfigPanel({
       </label>
 
       <label className="forecast-control">
-        <span>预测窗口</span>
+        <span>预测时长</span>
         <input
           min="10"
           max="120"
@@ -142,15 +153,14 @@ export function ForecastConfigPanel({
         <span>启用纯物理基线对比</span>
       </label>
 
-      <div className="forecast-config-summary">
+      <div className="forecast-config-summary" aria-label="数据概览">
         {selectedDataset ? (
           <>
             <span>{selectedDataset.sampleRateFps} fps</span>
-            <span>{selectedDataset.durationSeconds}s 原始序列</span>
-            <span>{selectedDataset.sourcePath}</span>
+            <span>{selectedDataset.durationSeconds} s 序列</span>
           </>
         ) : (
-          <span>请先配置可用数据集与模型</span>
+          <span>请先配置可用数据与模型</span>
         )}
       </div>
 

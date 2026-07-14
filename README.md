@@ -6,7 +6,7 @@
 - 模板匹配
 - 时序预测
 
-目前版本包含 React 前端和 FastAPI 后端。图像识别、模板匹配仍保留现有演示/接口入口；时序预测已接入 PANORAMA 后端实时推理。
+目前版本包含 React 前端和 FastAPI 后端。图像识别、模板匹配仍保留现有演示/接口入口；时序预测已接入 ORION 后端实时推理。
 
 ## 功能模块
 
@@ -24,7 +24,7 @@
 
 ### 3. 时序预测
 
-- 以 PANORAMA 单摆实验真实模型为默认示例，展示预测配置、任务状态、趋势图、指标和评估表
+- 以 ORION 单摆实验预测模型为默认示例，展示预测配置、趋势图、指标和评估表
 - 前端点击“运行预测”后调用 FastAPI 任务接口，由后端实时加载 `panorama_model.pth` 和 `pendulum_data_updated.csv` 执行滚动预测
 - 前端测试环境仍保留 mock service，真实运行默认调用 `http://127.0.0.1:8000`
 - API 契约集中在 `src/features/timeSeriesForecast/forecastContract.ts`，HTTP service 位于 `src/features/timeSeriesForecast/forecastService.ts`
@@ -118,7 +118,7 @@ src/
 ## 当前状态
 
 - 已完成三模块前端原型
-- 时序预测已支持 FastAPI 后端实时 PANORAMA 推理
+- 时序预测已支持 FastAPI 后端实时 ORION 推理
 - 已支持响应式首页布局
 - 已提供 Docker 部署方式
 - 已通过本地测试与生产构建验证

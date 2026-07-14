@@ -84,7 +84,7 @@ describe("AI for Science routes", () => {
     expect(screen.queryByRole("heading", { name: "时序预测" })).not.toBeInTheDocument();
   });
 
-  test("renders 时序预测 as an interactive PANORAMA workbench", async () => {
+  test("renders 时序预测 as an interactive ORION workbench", async () => {
     vi.useFakeTimers();
 
     render(
@@ -94,28 +94,28 @@ describe("AI for Science routes", () => {
     );
 
     expect(screen.getByRole("heading", { name: "时序预测" })).toBeInTheDocument();
-    expect(screen.getByLabelText("数据集")).toHaveValue("pendulum-200fps");
+    expect(screen.getByText("ORION 混合动力学模型")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "运行预测" })).toBeInTheDocument();
-    expect(screen.getByText("尚未运行")).toBeInTheDocument();
+    expect(screen.getByText("准备就绪")).toBeInTheDocument();
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
     });
-    expect(screen.getByText("forecast-job-1")).toBeInTheDocument();
+    expect(screen.getByText("等待计算")).toBeInTheDocument();
     expect(screen.getByText("预测任务已进入队列")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "预测运行中" })).toBeDisabled();
-    expect(screen.getByText("正在准备 PANORAMA 预测")).toBeInTheDocument();
+    expect(screen.getByText("正在计算 ORION 预测")).toBeInTheDocument();
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(700);
     });
-    expect(screen.getByText("正在执行 PANORAMA 滚动积分")).toBeInTheDocument();
+    expect(screen.getByText("正在执行 ORION 滚动积分")).toBeInTheDocument();
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1050);
     });
-    expect(screen.getByText("预测完成")).toBeInTheDocument();
-    expect(screen.getByText("PANORAMA RMSE")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "预测完成" })).toBeInTheDocument();
+    expect(screen.getByText("ORION RMSE")).toBeInTheDocument();
     expect(screen.getByText("0.012909 rad")).toBeInTheDocument();
     expect(screen.getByText("+91.33%")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /单摆角度真实值/ })).toBeInTheDocument();
@@ -124,9 +124,10 @@ describe("AI for Science routes", () => {
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
     });
-    expect(screen.getByText("forecast-job-2")).toBeInTheDocument();
+    expect(screen.getByText("等待计算")).toBeInTheDocument();
     expect(screen.getByText("预测任务已进入队列")).toBeInTheDocument();
-    expect(screen.queryByText("PANORAMA RMSE")).not.toBeInTheDocument();
+    expect(screen.queryByText("ORION RMSE")).not.toBeInTheDocument();
+    expect(screen.queryByText("模型流水线")).not.toBeInTheDocument();
 
     expect(screen.queryByRole("region", { name: "功能入口" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "图像识别" })).not.toBeInTheDocument();
@@ -148,7 +149,7 @@ describe("AI for Science routes", () => {
       fireEvent.click(screen.getByRole("button", { name: "运行预测" }));
     });
 
-    expect(screen.getByText("forecast-job-1")).toBeInTheDocument();
+    expect(screen.getByText("等待计算")).toBeInTheDocument();
 
     vi.useRealTimers();
   });
@@ -173,7 +174,7 @@ describe("AI for Science routes", () => {
       await vi.advanceTimersByTimeAsync(1750);
     });
 
-    expect(screen.getByRole("img", { name: /角速度 omega真实值与 PANORAMA 预测对比图/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /角速度 omega真实值与 ORION 预测对比图/ })).toBeInTheDocument();
     expect(screen.getByText("真实角速度 omega")).toBeInTheDocument();
     expect(screen.getByText("基线对照")).toBeInTheDocument();
     expect(screen.getByText("已关闭")).toBeInTheDocument();
